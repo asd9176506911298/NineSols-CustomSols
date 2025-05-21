@@ -15,10 +15,12 @@ namespace CustomSols {
         private static string playerFolder = assetFolder + "Player";
         private static string menuFolder = assetFolder + "MenuLogo";
         private static string uiChiBallFolder = assetFolder + "UIParryBall";
+        private static string talismanBallFolder = assetFolder + "TalismanBall";
 
         public readonly static Dictionary<string, Sprite> cachePlayerSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheMenuLogoSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheUIChiBallSprites = new Dictionary<string, Sprite>();
+        public readonly static Dictionary<string, Sprite> cacheTalismanBallSprites = new Dictionary<string, Sprite>();
 
         public static void Init() {
             #if DEBUG
@@ -26,6 +28,7 @@ namespace CustomSols {
                 playerFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Player";
                 menuFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\MenuLogo";
                 uiChiBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\UIParryBall";
+                talismanBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\TalismanBall";
 #endif
 
             ToastManager.Toast(assetFolder);
@@ -69,9 +72,22 @@ namespace CustomSols {
                 }
             }
 
-            //foreach (var x in cacheUIParryBallSprites) {
-            //    ToastManager.Toast(x.Key);
-            //}
+            var talismanBallFiles = GetAllFilesWithExtensions(talismanBallFolder, "png");
+            Vector2 talismanBallPivot = new Vector2(0.18f, -1.2f);
+            foreach (var file in talismanBallFiles) {
+                var sprite = LoadSprite(file, talismanBallPivot, 8.0f);
+                if (sprite != null) {
+                    string filename = Path.GetRelativePath(talismanBallFolder, file);
+                    filename = Path.ChangeExtension(filename, null);
+                    if (!cacheTalismanBallSprites.ContainsKey(filename)) {
+                        cacheTalismanBallSprites.Add(filename, sprite);
+                    }
+                }
+            }
+
+            foreach (var x in cacheTalismanBallSprites) {
+                ToastManager.Toast(x.Key);
+            }
         }
 
         public static string[] GetAllFilesWithExtensions(string directory, params string[] extensions) {
@@ -93,8 +109,11 @@ namespace CustomSols {
 
                 byte[] data = File.ReadAllBytes(file);
                 Texture2D tex2D = new Texture2D(2, 2);
+                string filename = Path.GetRelativePath(talismanBallFolder, file);
+                filename = Path.ChangeExtension(filename, null);
                 if (tex2D.LoadImage(data)) {
                     Sprite sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelPerUnit);
+                    sprite.name = filename;
                     return sprite;
                 } else {
                     ToastManager.Toast($"Failed to load sprite: {file}");
