@@ -29,10 +29,12 @@ namespace CustomSols {
                 menuFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\MenuLogo";
                 uiChiBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\UIParryBall";
                 talismanBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\TalismanBall";
-#endif
+            #endif
 
-            ToastManager.Toast(assetFolder);
-            ToastManager.Toast(playerFolder);
+            cachePlayerSprites.Clear();
+            cacheMenuLogoSprites.Clear();
+            cacheUIChiBallSprites.Clear();
+            cacheTalismanBallSprites.Clear();
 
             Vector2 playerPivot = new Vector2(0.5f, 0f);
             var spriteFiles = GetAllFilesWithExtensions(playerFolder, "png");
@@ -85,9 +87,9 @@ namespace CustomSols {
                 }
             }
 
-            foreach (var x in cacheTalismanBallSprites) {
-                ToastManager.Toast(x.Key);
-            }
+            //foreach (var x in cacheMenuLogoSprites) {
+            //    ToastManager.Toast(x.Key);    
+            //}
         }
 
         public static string[] GetAllFilesWithExtensions(string directory, params string[] extensions) {
