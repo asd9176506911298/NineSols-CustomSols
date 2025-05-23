@@ -28,6 +28,9 @@ public class CustomSols : BaseUnityPlugin {
     private ConfigEntry<bool> isEnableUCSuccess= null!;
     private ConfigEntry<bool> isEnableUCCharging = null!;
     private ConfigEntry<bool> isEnableUCAroundEffect = null!;
+
+    private ConfigEntry<Color> UCChargingColor = null!;
+    private ConfigEntry<Color> UCSuccessColor = null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
 
     private Harmony harmony = null!;
@@ -50,6 +53,9 @@ public class CustomSols : BaseUnityPlugin {
         isEnableUCSuccess = Config.Bind("", "UCSuccess Sprite", true, "");
         isEnableUCCharging = Config.Bind("", "UCCharging Sprite", true, "");
         isEnableUCAroundEffect = Config.Bind("", "UCAroundEffect Sprite", true, "");
+
+        UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
+        UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
 
         reloadShortcut = Config.Bind("Shortcut", "Reload Shortcut",
             new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "");
@@ -177,14 +183,14 @@ public class CustomSols : BaseUnityPlugin {
     private void UCSuccess() {
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging") != null) {
             GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging").GetComponent<ParticleSystemRenderer>().materials[0].SetTexture("_MainTex", AssetLoader.cacheParrySprites["UCSuccess"].texture);
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging").GetComponent<ParticleSystem>().startColor = new Color(1.0f, 0.718f, 1f, 1f);
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging").GetComponent<ParticleSystem>().startColor = UCSuccessColor.Value;
         }
     }
 
     private void UCCharging() {
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C") != null) {
             GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C").GetComponent<ParticleSystemRenderer>().materials[0].SetTexture("_MainTex", AssetLoader.cacheParrySprites["UCCharging"].texture);
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C").GetComponent<ParticleSystem>().startColor = new Color(1.0f, 0.837f, 0f, 1f);
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C").GetComponent<ParticleSystem>().startColor = UCChargingColor.Value;
         }
     }
 
