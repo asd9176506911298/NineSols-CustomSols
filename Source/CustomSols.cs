@@ -21,6 +21,13 @@ public class CustomSols : BaseUnityPlugin {
     private ConfigEntry<bool> isEnableMenuLogo = null!;
     private ConfigEntry<bool> isEnableUIChiBall = null!;
     private ConfigEntry<bool> isEnableTalismanBall = null!;
+    private ConfigEntry<bool> isEnableDash = null!;
+    private ConfigEntry<bool> isEnableAirJump = null!;
+    private ConfigEntry<bool> isEnableimPerfectParry = null!;
+    private ConfigEntry<bool> isEnablePerfectParry = null!;
+    private ConfigEntry<bool> isEnableUCSuccess= null!;
+    private ConfigEntry<bool> isEnableUCCharging = null!;
+    private ConfigEntry<bool> isEnableUCAroundEffect = null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
 
     private Harmony harmony = null!;
@@ -32,12 +39,20 @@ public class CustomSols : BaseUnityPlugin {
         // Load patches from any class annotated with @HarmonyPatch
         harmony = Harmony.CreateAndPatchAll(typeof(CustomSols).Assembly);
 
-        isEnablePlayer = Config.Bind("", "Enable Change Player Sprite", true, "");
-        isEnableMenuLogo = Config.Bind("", "Enable Change Menu Logo Image", true, "");
-        isEnableUIChiBall = Config.Bind("", "Enable Change UI Chi Ball", true, "");
-        isEnableTalismanBall = Config.Bind("", "Enable Change Talisman Ball Image", true, "");
-        reloadShortcut = Config.Bind("", "Shortcut",
-            new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "Shortcut to execute");
+        isEnablePlayer = Config.Bind("", "Player Sprite", true, "");
+        isEnableMenuLogo = Config.Bind("", "Menu Logo Sprite", true, "");
+        isEnableUIChiBall = Config.Bind("", "UI Chi Ball", true, "");
+        isEnableTalismanBall = Config.Bind("", "EnableTalisman Ball Sprite", true, "");
+        isEnableDash = Config.Bind("", "Dash Sprite", true, "");
+        isEnableAirJump = Config.Bind("", "AirJump Sprite", true, "");
+        isEnableimPerfectParry = Config.Bind("", "imPerfectParry Sprite", true, "");
+        isEnablePerfectParry = Config.Bind("", "PerfectParry Sprite", true, "");
+        isEnableUCSuccess = Config.Bind("", "UCSuccess Sprite", true, "");
+        isEnableUCCharging = Config.Bind("", "UCCharging Sprite", true, "");
+        isEnableUCAroundEffect = Config.Bind("", "UCAroundEffect Sprite", true, "");
+
+        reloadShortcut = Config.Bind("Shortcut", "Reload Shortcut",
+            new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "");
 
         KeybindManager.Add(this, reload, () => reloadShortcut.Value);
 
@@ -57,39 +72,44 @@ public class CustomSols : BaseUnityPlugin {
         //UI Chi Ball
         if (isEnableUIChiBall.Value)
             changeUIChiBall();
+
+        if (isEnableimPerfectParry.Value) {
+            imPerfectParry();
+        }
+        
     }
 
     private void LateUpdate() {
-        if (isEnablePlayer.Value) 
-        {
-            if (Player.i != null && Player.i.PlayerSprite != null && Player.i.PlayerSprite.sprite != null) {
-                string spriteName = Player.i.PlayerSprite.sprite.name;
-                if (AssetLoader.cachePlayerSprites.ContainsKey(spriteName)) {
-                    Player.i.PlayerSprite.sprite = AssetLoader.cachePlayerSprites[spriteName];  
-                }
-            }
-        }
+        if (isEnablePlayer.Value)
+            PlayerSprite();
 
+        // Perfect Parry
+        if (isEnablePerfectParry.Value)
+            PerfectParry();
 
-        if (isEnableTalismanBall.Value) 
-        {
-            if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo") != null) {
-                if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo").activeSelf)
-                for (int i = 1; i < 6; i++) 
-                {
-                    var ball = GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo/FooDots/D{i}/FooDot ({i})/JENG/Ball");
-                    if (ball != null) 
-                    {
-                        var ballSpriteName = ball.GetComponent<SpriteRenderer>().sprite.name;
-                        if (ballSpriteName == "") continue;
-                        if (AssetLoader.cacheTalismanBallSprites.ContainsKey(ballSpriteName)) 
-                        {
-                            ball.GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheTalismanBallSprites[ballSpriteName];
-                        }
-                    }
-                }
-            }
+        //Dash Sprite
+        if (isEnableDash.Value)
+            Dash();
+
+        //Air Jump Sprite
+        if (isEnableAirJump.Value) {
+            airJump();
         }
+        
+        // UC Parry Around Effect
+        if (isEnableUCAroundEffect.Value)
+            UCAroundEffect();
+
+        //UC Sucess
+        if (isEnableUCSuccess.Value)
+            UCSuccess();
+
+        //UC Charging
+        if (isEnableUCCharging.Value)
+            UCCharging();
+
+        if (isEnableTalismanBall.Value)
+            TalismanBall();
     }
 
     private void changeMenuLogo() {
@@ -113,10 +133,94 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    private void imPerfectParry() {
+        foreach (var x in GameObject.FindObjectsOfType<ParticleSystemRenderer>(true)) {
+            if (x.transform.parent.name == "YeeParryEffect_Not Accurate(Clone)") {
+                x.GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+            }
+        }
+    }
+
+    private void PerfectParry() {
+        if (GameObject.Find("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0") != null) {
+            //ToastManager.Toast(GameObject.Find("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0").GetComponent<SpriteRenderer>().sprite.name);
+            var spriteName = GameObject.Find("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0").GetComponent<SpriteRenderer>().sprite.name;
+            GameObject.Find("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites[spriteName];
+            if (Player.i.Facing == Facings.Left)
+                GameObject.Find("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0").transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            else
+                GameObject.Find("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0").transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+    }
+
+    private void Dash() {
+        if (GameObject.Find("Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0") != null) {
+            var name = GameObject.Find("Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0").GetComponent<SpriteRenderer>().sprite.name;
+            GameObject.Find("Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0").GetComponent<SpriteRenderer>().sprite = AssetLoader.cachePlayerSprites[name];
+        }
+    }
+
+    private void airJump() {
+        if (GameObject.Find("Effect_AirJump(Clone)/Effect_HoHoYee_AirJump0") != null) {
+            var name = GameObject.Find("Effect_AirJump(Clone)/Effect_HoHoYee_AirJump0").GetComponent<SpriteRenderer>().sprite.name;
+            GameObject.Find("Effect_AirJump(Clone)/Effect_HoHoYee_AirJump0").GetComponent<SpriteRenderer>().sprite = AssetLoader.cachePlayerSprites[name];
+        }
+    }
+
+    private void UCAroundEffect() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/Effect_ParryCounterAttack0") != null) {
+            var spriteName = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/Effect_ParryCounterAttack0").GetComponent<SpriteRenderer>().sprite.name;
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/Effect_ParryCounterAttack0").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites[spriteName];
+        }
+    }
+
+    private void UCSuccess() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging").GetComponent<ParticleSystemRenderer>().materials[0].SetTexture("_MainTex", AssetLoader.cacheParrySprites["UCSuccess"].texture);
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging").GetComponent<ParticleSystem>().startColor = new Color(1.0f, 0.718f, 1f, 1f);
+        }
+    }
+
+    private void UCCharging() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C").GetComponent<ParticleSystemRenderer>().materials[0].SetTexture("_MainTex", AssetLoader.cacheParrySprites["UCCharging"].texture);
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C").GetComponent<ParticleSystem>().startColor = new Color(1.0f, 0.837f, 0f, 1f);
+        }
+    }
+
+    private void TalismanBall() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo") != null) {
+            if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo").activeSelf) {
+                for (int i = 1; i < 6; i++) {
+                    var ball = GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo/FooDots/D{i}/FooDot ({i})/JENG/Ball");
+                    if (ball != null) {
+                        var ballSpriteName = ball.GetComponent<SpriteRenderer>().sprite.name;
+                        if (ballSpriteName == "") continue;
+                        if (AssetLoader.cacheTalismanBallSprites.ContainsKey(ballSpriteName)) {
+                            ball.GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheTalismanBallSprites[ballSpriteName];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void PlayerSprite() {
+        if (Player.i != null && Player.i.PlayerSprite != null && Player.i.PlayerSprite.sprite != null) {
+            string spriteName = Player.i.PlayerSprite.sprite.name;
+            if (AssetLoader.cachePlayerSprites.ContainsKey(spriteName)) {
+                Player.i.PlayerSprite.sprite = AssetLoader.cachePlayerSprites[spriteName];
+            }
+        }
+    }
+
     private void reload() {
         AssetLoader.Init();
         changeMenuLogo();
         changeUIChiBall();
+
+        // Not Accurate
+        imPerfectParry();
     }
 
     private void OnDestroy() {
