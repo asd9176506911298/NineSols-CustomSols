@@ -32,7 +32,7 @@ namespace CustomSols {
                 uiChiBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\UIParryBall";
                 talismanBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\TalismanBall";
                 parryFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Parry";
-#endif
+            #endif
 
             cachePlayerSprites.Clear();
             cacheMenuLogoSprites.Clear();

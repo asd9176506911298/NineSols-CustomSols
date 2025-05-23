@@ -116,6 +116,215 @@ public class CustomSols : BaseUnityPlugin {
 
         if (isEnableTalismanBall.Value)
             TalismanBall();
+
+        //Bow
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow") != null) {
+            //ToastManager.Toast(GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow").GetComponent<SpriteRenderer>().sprite.name);
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        }
+
+        //Bow's Aimer
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A") != null) {
+            //ToastManager.Toast(GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A").GetComponent<SpriteRenderer>().sprite.name);
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        }
+
+        //爆破Lv1~3
+        {
+            ////爆破Lv1 基座
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv1 基座 Light
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv1 能量球
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv1 能量球 爆炸 circle_mask
+            //if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core") != null) {
+            //    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv2 基座
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv2 基座 Light
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv2 能量球
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv2 能量球 爆炸 circle_mask
+            //if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core") != null) {
+            //    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv3 基座
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv3 基座 Light
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv3 能量球
+            //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
+            //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////爆破Lv3 能量球 爆炸 circle_mask
+            //if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core") != null) {
+            //    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+        }
+        
+
+        //穿雲lv1~3
+        { 
+            ////穿雲lv1 Bow 光束
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv1 Bow Arrow
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv1 Bow Arrow Light
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv2 Bow 光束
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv2 Bow Arrow
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv2 Bow Arrow Light
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv3 Bow 光束
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv3 Bow Arrow
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+
+            ////穿雲lv3 Bow Arrow Light
+            //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight") != null) {
+            //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+            //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+            //}
+        }
+
+        ////Attack A
+        //if (GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite") != null) {
+        //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+        //    GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //}
+
+        ////Attack B
+        //if (GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite") != null) {
+        //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+        //    GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //}
+
+        ////Attack C
+        //if (GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite") != null) {
+        //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+        //    GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //}
+
+        ////Attack C With Qi Balde Jade
+        //if (GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite") != null) {
+        //    //ToastManager.Toast(GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+        //    GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //}
+
+        ////Attack C With Qi Balde Jade Base
+        //if (GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite") != null) {
+        //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+        //    GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //}
+
+        //// Release Charging Sword Cross Effect
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite") != null) {
+        //    //ToastManager.Toast(GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name);
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //    // Release Charge Sword Sprite
+        //    GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //}
+
+        //// Release Charge Sword Sprite
+        //if (GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite") != null) {
+        //    //ToastManager.Toast(GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name);
+        //    GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //    // Jade Big Sword
+        //    GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+        //}
+
+
+        ////Sword Charge 5 round
+        //if(GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/F5") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/F1").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/F2").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/F3").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/F4").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/F5").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+        //}
+
+        ////Sword Center absorb
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+        //}
+
+        //Eigong Sword 10
+        //GameObject.Find("GameLevel/Room/Prefab/EventBinder/General Boss Fight FSM Object Variant/FSM Animator/LogicRoot/---Boss---/Boss_Yi Gung/MonsterCore/Animator(Proxy)/Animator/View/YiGung/Weapon/Sword/Sword Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["Sword10"];
     }
 
     private void changeMenuLogo() {
