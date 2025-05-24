@@ -262,68 +262,73 @@ public class CustomSols : BaseUnityPlugin {
 
             //穿雲lv1~3 僅須執行一次
             {
-                if (!isEnablePlayer.Value) return;
-                //穿雲lv1 Bow 光束
-                if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束") != null) {
-                    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
-                    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite.pixelsPerUnit);
-                    //GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
-                    //GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().size = new Vector2(488.3f, 64f);
-                    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name;
-                    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
-                }
+                //if (!isEnablePlayer.Value) return;
+                //////穿雲lv1 Bow 光束
+                //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束") != null) {
+                //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
+                //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite.pixelsPerUnit);
+                //    //GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
+                //    //GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().size = new Vector2(488.3f, 64f);
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //}
 
-                ////穿雲lv1 Bow Arrow
-                if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow") != null) {
-                    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name);
-                    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name;
-                    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
-                }
+                ////////穿雲lv1 Bow Arrow
+                //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow") != null) {
+                //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name);
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //}
 
-                ////穿雲lv1 Bow Arrow Light
-                if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight") != null) {
-                    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
-                    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
-                }
+                //////穿雲lv1 Bow Arrow Light
+                //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight") != null) {
+                //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv1(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //}
 
                 ////穿雲lv2 Bow 光束
-                if (GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束") != null) {
-                    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
-                    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name;
-                    GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
-                    //GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
-                    //GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().size = new Vector2(488.3f, 64f);
-                }
+                //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束") != null) {
+                //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //    //GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
+                //    //GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/光束").GetComponent<SpriteRenderer>().size = new Vector2(488.3f, 64f);
+                //}
 
-                ////穿雲lv2 Bow Arrow
+                //////穿雲lv2 Bow Arrow
                 //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow") != null) {
                 //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv2(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
 
-                ////穿雲lv2 Bow Arrow Light
+                //////穿雲lv2 Bow Arrow Light
                 //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight") != null) {
                 //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
 
-                ////穿雲lv3 Bow 光束
+                //////穿雲lv3 Bow 光束
                 //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束") != null) {
                 //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/光束").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
 
-                ////穿雲lv3 Bow Arrow
+                //////穿雲lv3 Bow Arrow
                 //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow") != null) {
                 //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
 
                 ////穿雲lv3 Bow Arrow Light
                 //if (GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight") != null) {
                 //    //ToastManager.Toast(GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    var spriteName = GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("NormalArrow Shoot 穿雲 Lv3(Clone)/NormalArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
             }
         }
