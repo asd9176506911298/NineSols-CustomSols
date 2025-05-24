@@ -122,10 +122,21 @@ namespace CustomSols {
             }
 
             var bowFiles = GetAllFilesWithExtensions(bowFolder, "png");
-            Vector2 bowPivot = new Vector2(0.5f, 0f);
+            Vector2 bowPivot = new Vector2(0.5f, 0.5f);
             foreach (var file in bowFiles) {
                 string filename = Path.GetFileNameWithoutExtension(file);
-                var sprite = LoadSprite(file, bowPivot, 2.0f);
+                Sprite sprite = null;
+                if (filename.StartsWith("Lv1光束")) {
+                    bowPivot = new Vector2(0f, 0.5f);
+                    sprite = LoadSprite(file, bowPivot, 8.0f, new Vector4(212f,0f,212f,0f));
+                }else if (filename.StartsWith("Lv2光束")) {
+                    bowPivot = new Vector2(0f, 0.5f);
+                    sprite = LoadSprite(file, bowPivot, 8.0f, new Vector4(220f, 0f, 220f, 0f));
+                } else if (filename.StartsWith("Lv3光束")) {
+                    bowPivot = new Vector2(0f, 0.5f);
+                    sprite = LoadSprite(file, bowPivot, 8.0f, new Vector4(240f, 0f, 205f, 0f));
+                } else
+                    sprite = LoadSprite(file, bowPivot, 8.0f);
                 if (sprite != null) {
                     if (!cacheBowSprites.ContainsKey(filename)) {
                         cacheBowSprites.Add(filename, sprite);
@@ -142,7 +153,7 @@ namespace CustomSols {
             return extensions.SelectMany(extension => Directory.GetFiles(directory, "*." + extension, SearchOption.TopDirectoryOnly)).ToArray();
         }
 
-        public static Sprite LoadSprite(string file, Vector2 customPivot = default, float customPixelPerUnit = 8.0f) {
+        public static Sprite LoadSprite(string file, Vector2 customPivot = default, float customPixelPerUnit = 8.0f, Vector4 border = default) {
             try {
                 if (!File.Exists(file)) {
                     ToastManager.Toast($"File does not exist: {file}");
@@ -159,7 +170,11 @@ namespace CustomSols {
                 Texture2D tex2D = new Texture2D(2, 2);
                 string filename = Path.GetFileNameWithoutExtension(file);
                 if (tex2D.LoadImage(data)) {
-                    Sprite sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelPerUnit);
+                    Sprite sprite = null;
+                    if (filename.StartsWith("Lv1光束"))
+                        sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelPerUnit,0,SpriteMeshType.FullRect, border);
+                    else
+                        sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelPerUnit);
                     sprite.name = filename;
                     return sprite;
                 } else {
