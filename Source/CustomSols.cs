@@ -135,28 +135,42 @@ public class CustomSols : BaseUnityPlugin {
 
             //尋影LV1~3 僅須執行一次
             {
-                ////尋影Lv1 箭矢 ChasingArrow_0 手上箭矢 + 角
+                //尋影Lv1 箭矢 ChasingArrow_0 手上箭矢 + 角
                 //if (GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /ChasingArrowLight") != null) {
                 //    //ToastManager.Toast(GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /Parent 刺/刺 (1)/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    //ToastManager.Toast(GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite.name);
+                //    //ChasingArrow_0
+                //    var spriteName = GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //    //ChasingArrow_2
+                //    spriteName = GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv1(Clone)/Circle Shooter/Arrow (1)/ChasingArrow /Parent 刺/刺 (1)/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
 
                 ////尋影Lv2 箭矢 手上箭矢 + 角
                 //if (GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight") != null) {
                 //    //ToastManager.Toast(GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺 (1)/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    //ToastManager.Toast(GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite.name);
+                //    //ChasingArrow_3
+                //    var spriteName = GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //    //ChasingArrow_2
+                //    spriteName = GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv2(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺 (1)/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
 
                 ////尋影Lv3 箭矢 手上箭矢 + 角
                 //if (GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight") != null) {
                 //    //ToastManager.Toast(GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (3)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺 (1)/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
+                //    //ChasingArrow_4
+                //    var spriteName = GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //    //ChasingArrow_1
+                //    spriteName = GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite.name;
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                //    GameObject.Find("Chasing Arrow Shooter 飛天御劍 lv3(Clone)/Circle Shooter/Arrow (2)/ChasingArrow /Parent 刺/刺 (1)/刺").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
                 //}
 
                 ////尋影Lv1 箭矢 ChasingArrow_0 因為有很多個物件同名 會很卡 僅須執行一次 那就沒關係
