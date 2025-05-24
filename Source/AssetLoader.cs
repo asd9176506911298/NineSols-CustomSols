@@ -17,12 +17,16 @@ namespace CustomSols {
         private static string uiChiBallFolder = assetFolder + "UIParryBall";
         private static string talismanBallFolder = assetFolder + "TalismanBall";
         private static string parryFolder = assetFolder + "Parry";
+        private static string swordFolder = assetFolder + "Sword";
+        private static string bowFolder = assetFolder + "Bow";
 
         public readonly static Dictionary<string, Sprite> cachePlayerSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheMenuLogoSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheUIChiBallSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheTalismanBallSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheParrySprites = new Dictionary<string, Sprite>();
+        public readonly static Dictionary<string, Sprite> cacheSwordSprites = new Dictionary<string, Sprite>();
+        public readonly static Dictionary<string, Sprite> cacheBowSprites = new Dictionary<string, Sprite>();
 
         public static void Init() {
             #if DEBUG
@@ -32,6 +36,8 @@ namespace CustomSols {
                 uiChiBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\UIParryBall";
                 talismanBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\TalismanBall";
                 parryFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Parry";
+                swordFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Sword";
+                bowFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Bow";
             #endif
 
             cachePlayerSprites.Clear();
@@ -39,6 +45,8 @@ namespace CustomSols {
             cacheUIChiBallSprites.Clear();
             cacheTalismanBallSprites.Clear();
             cacheParrySprites.Clear();
+            cacheSwordSprites.Clear();
+            cacheBowSprites.Clear();
 
             Vector2 playerPivot = new Vector2(0.5f, 0f);
             var spriteFiles = GetAllFilesWithExtensions(playerFolder, "png");
@@ -101,9 +109,33 @@ namespace CustomSols {
                 }
             }
 
-            //foreach (var x in cacheParrySprites) {
-            //    ToastManager.Toast(x.Key);
-            //}
+            var swordFiles = GetAllFilesWithExtensions(swordFolder, "png");
+            Vector2 swordPivot = new Vector2(0.5f, 0.5f);
+            foreach (var file in swordFiles) {
+                string filename = Path.GetFileNameWithoutExtension(file);
+                var sprite = LoadSprite(file, swordPivot, 8.0f);
+                if (sprite != null) {
+                    if (!cacheSwordSprites.ContainsKey(filename)) {
+                        cacheSwordSprites.Add(filename, sprite);
+                    }
+                }
+            }
+
+            var bowFiles = GetAllFilesWithExtensions(bowFolder, "png");
+            Vector2 bowPivot = new Vector2(0.5f, 0f);
+            foreach (var file in bowFiles) {
+                string filename = Path.GetFileNameWithoutExtension(file);
+                var sprite = LoadSprite(file, bowPivot, 2.0f);
+                if (sprite != null) {
+                    if (!cacheBowSprites.ContainsKey(filename)) {
+                        cacheBowSprites.Add(filename, sprite);
+                    }
+                }
+            }
+
+            foreach (var x in cacheSwordSprites) {
+                ToastManager.Toast(x.Key);
+            }
         }
 
         public static string[] GetAllFilesWithExtensions(string directory, params string[] extensions) {

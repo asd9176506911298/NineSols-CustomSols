@@ -318,51 +318,69 @@ public class CustomSols : BaseUnityPlugin {
 
         //Sword
         {
-            ////Attack A
-            //if (GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite") != null) {
-            //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
-            //    GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //}
+            if (!isEnablePlayer.Value) return;
+            //Attack A
+            if (GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite") != null) {
+                //ToastManager.Toast(GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+                var spriteName = GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name;
+                GameObject.Find("HoHoYee_AttackA_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+            }
 
-            ////Attack B
-            //if (GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite") != null) {
-            //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
-            //    GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //}
+            //Attack B
+            if (GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite") != null) {
+                //ToastManager.Toast(GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+                var spriteName = GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name;
+                GameObject.Find("HoHoYee_AttackB_PoolObject_Variant(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+            }
 
-            ////Attack C
-            //if (GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite") != null) {
-            //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
-            //    GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //}
+            //Attack C
+            if (GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite") != null) {
+                //ToastManager.Toast(GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+                var spriteName = GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name;
+                GameObject.Find("HoHoYee_AttackC ThirdAttack Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+            }
 
-            ////Attack C With Qi Balde Jade
-            //if (GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite") != null) {
-            //    //ToastManager.Toast(GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite").GetComponent<SpriteRenderer>().sprite.name);
-            //    GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //}
+            //Attack C With Qi Balde Jade Effect_劍氣玉0~4
+            if (GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite") != null) {
+                //ToastManager.Toast(GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+                var spriteName = GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite").GetComponent<SpriteRenderer>().sprite.name;
+                GameObject.Find("Yee 氣刃 chi blade(Clone)/Projectile FSM/FSM Animator/View/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+            }
 
-            ////Attack C With Qi Balde Jade Base
-            //if (GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite") != null) {
-            //    //ToastManager.Toast(GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
-            //    GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //}
+            //Attack C With Qi Balde Jade Base Effect_HoHoYee_AttackD2~8
+            if (GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite") != null) {
+                //ToastManager.Toast(GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name);
+                var spriteName = GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite.name;
+                GameObject.Find("HoHoYee_AttackC ThirdAttack 劍氣玉 Effect(Clone)/Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+            }
 
-            //// Release Charging Sword Cross Effect
-            //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite") != null) {
-            //    //ToastManager.Toast(GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name);
-            //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //    // Release Charge Sword Sprite
-            //    GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //}
+            //// Release Charging Sword Cross Effect EFFECT_HoHoYee_ChargingAttack0
+            if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite") != null) {
+                //ToastManager.Toast(GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name);
+                var spriteName = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name;
+                GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/Effect_Attack/ChargeAttack/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+                // Release Charge Sword Sprite // EFFECT_HoHoYee_ChargingAttack0
+                //spriteName = GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name;
+                //GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+                //ToastManager.Toast(GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name);
+            }
 
-            //// Release Charge Sword Sprite
-            //if (GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite") != null) {
-            //    //ToastManager.Toast(GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name);
-            //    GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //    // Jade Big Sword
-            //    GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-            //}
+            ////// Release Charge Sword Sprite
+            if (GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite") != null) {
+                //ToastManager.Toast(GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name);
+                var spriteName = GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name;
+                //ToastManager.Toast(spriteName);
+                GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+                // Jade Big Sword
+                //spriteName = GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name;
+                //GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+            }
+
+            // Jade Big Sword
+            if (GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite") != null){
+                var spriteName = GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite.name;
+                GameObject.Find("HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheSwordSprites[spriteName];
+            }
 
 
             ////Sword Charge 5 round
