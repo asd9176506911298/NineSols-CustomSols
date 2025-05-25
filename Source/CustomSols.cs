@@ -30,6 +30,7 @@ public class CustomSols : BaseUnityPlugin {
     private ConfigEntry<bool> isEnableUCAroundEffect = null!;
     private ConfigEntry<bool> isEnableBow = null!;
     private ConfigEntry<bool> isEnableSword = null!;
+    private ConfigEntry<bool> isEnableFoo = null!;
 
     private ConfigEntry<Color> UCChargingColor = null!;
     private ConfigEntry<Color> UCSuccessColor = null!;
@@ -57,6 +58,7 @@ public class CustomSols : BaseUnityPlugin {
         isEnableUCAroundEffect = Config.Bind("", "UCAroundEffect Sprite", true, "");
         isEnableBow = Config.Bind("", "Bow Sprite", true, "");
         isEnableSword = Config.Bind("", "Sword Sprite", true, "");
+        isEnableFoo = Config.Bind("", "Foo Sprite", true, "");
 
         UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
@@ -128,6 +130,8 @@ public class CustomSols : BaseUnityPlugin {
         if (isEnableSword.Value)
             Sword();
 
+        if (isEnableFoo.Value)
+            Foo();
         //// Bow
         {
             //// PPlayer Bow 僅須執行一次 Bow_0
@@ -446,26 +450,6 @@ public class CustomSols : BaseUnityPlugin {
             //}
         }
 
-        // Foo Attack 但是背景還有光 Effect_Foo4
-        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO") != null) {
-            //ToastManager.Toast(GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO").GetComponent<SpriteRenderer>().sprite.name);
-            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo4"];
-        }
-        //流派 一氣貫通 Effect_Foo3
-        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO") != null) {
-            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
-        }
-
-        //流派 行雲流水
-        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/行雲流水/Effect_行雲流水/FOO") != null) {
-            //ToastManager.Toast(GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO").GetComponent<SpriteRenderer>().sprite.pivot);
-            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/行雲流水/Effect_行雲流水/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
-        }
-
-        //流派 收放自如
-        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/收放自如/Effect_收放自如/FOO") != null) {
-            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/收放自如/Effect_收放自如/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
-        }
 
         //Eigong Sword 10
         //GameObject.Find("GameLevel/Room/Prefab/EventBinder/General Boss Fight FSM Object Variant/FSM Animator/LogicRoot/---Boss---/Boss_Yi Gung/MonsterCore/Animator(Proxy)/Animator/View/YiGung/Weapon/Sword/Sword Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["Sword10"];
@@ -719,6 +703,30 @@ public class CustomSols : BaseUnityPlugin {
         //Sword Center absorb
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit") != null) {
             GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+        }
+    }
+
+    private void Foo() {
+
+        // Foo Attack 但是背景還有光 Effect_Foo4
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO") != null) {
+            //ToastManager.Toast(GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO").GetComponent<SpriteRenderer>().sprite.name);
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo4"];
+        }
+        //流派 一氣貫通 Effect_Foo3
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO") != null) {
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
+        }
+
+        //流派 行雲流水
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/行雲流水/Effect_行雲流水/FOO") != null) {
+            //ToastManager.Toast(GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO").GetComponent<SpriteRenderer>().sprite.pivot);
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/行雲流水/Effect_行雲流水/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
+        }
+
+        //流派 收放自如
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/收放自如/Effect_收放自如/FOO") != null) {
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/收放自如/Effect_收放自如/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
         }
     }
 
