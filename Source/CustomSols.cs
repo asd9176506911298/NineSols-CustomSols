@@ -17,6 +17,7 @@ namespace CustomSols;
 [BepInDependency(NineSolsAPICore.PluginGUID)]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class CustomSols : BaseUnityPlugin {
+    public static CustomSols instance { get; private set; } = null!;
     private ConfigEntry<bool> isEnablePlayer = null!;
     private ConfigEntry<bool> isEnableMenuLogo = null!;
     private ConfigEntry<bool> isEnableUIChiBall = null!;
@@ -31,6 +32,7 @@ public class CustomSols : BaseUnityPlugin {
     private ConfigEntry<bool> isEnableBow = null!;
     private ConfigEntry<bool> isEnableSword = null!;
     private ConfigEntry<bool> isEnableFoo = null!;
+    public static ConfigEntry<bool> isUseExample = null!;
 
     private ConfigEntry<Color> UCChargingColor = null!;
     private ConfigEntry<Color> UCSuccessColor = null!;
@@ -41,6 +43,8 @@ public class CustomSols : BaseUnityPlugin {
     private void Awake() {
         Log.Init(Logger);
         RCGLifeCycle.DontDestroyForever(gameObject);
+
+        instance = this;
 
         // Load patches from any class annotated with @HarmonyPatch
         harmony = Harmony.CreateAndPatchAll(typeof(CustomSols).Assembly);
@@ -59,9 +63,14 @@ public class CustomSols : BaseUnityPlugin {
         isEnableBow = Config.Bind("", "Bow Sprite", true, "");
         isEnableSword = Config.Bind("", "Sword Sprite", true, "");
         isEnableFoo = Config.Bind("", "Foo Sprite", true, "");
+        isUseExample = Config.Bind("", "Use Example Sprite", true, "");
 
         UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
+
+        isUseExample.SettingChanged += (sender, args) => {
+            AssetLoader.Init();
+        };
 
         reloadShortcut = Config.Bind("Shortcut", "Reload Shortcut",
             new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "");

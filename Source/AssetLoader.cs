@@ -11,16 +11,16 @@ using UnityEngine.UIElements;
 
 namespace CustomSols {
     public class AssetLoader {
-        private static string assetFolder = Assembly.GetExecutingAssembly().Location + "Asset";
-        private static string playerFolder = assetFolder + "Player";
-        private static string menuFolder = assetFolder + "MenuLogo";
-        private static string uiChiBallFolder = assetFolder + "UIParryBall";
-        private static string talismanBallFolder = assetFolder + "TalismanBall";
-        private static string parryFolder = assetFolder + "Parry";
-        private static string swordFolder = assetFolder + "Sword";
-        private static string bowFolder = assetFolder + "Bow";
-        private static string fooFolder = assetFolder + "Foo";
-
+        private static string assetFolder = Path.Combine(Paths.ConfigPath, "Asset");
+        private static string playerFolder = Path.Combine(assetFolder, "Player");
+        private static string menuFolder = Path.Combine(assetFolder, "MenuLogo");
+        private static string uiChiBallFolder = Path.Combine(assetFolder, "UIParryBall");
+        private static string talismanBallFolder = Path.Combine(assetFolder, "TalismanBall");
+        private static string parryFolder = Path.Combine(assetFolder, "Parry");
+        private static string swordFolder = Path.Combine(assetFolder, "Sword");
+        private static string bowFolder = Path.Combine(assetFolder, "Bow");
+        private static string fooFolder = Path.Combine(assetFolder, "Foo");
+            
         public readonly static Dictionary<string, Sprite> cachePlayerSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheMenuLogoSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheUIChiBallSprites = new Dictionary<string, Sprite>();
@@ -31,7 +31,7 @@ namespace CustomSols {
         public readonly static Dictionary<string, Sprite> cacheFooSprites = new Dictionary<string, Sprite>();
 
         public static void Init() {
-            #if DEBUG
+#if DEBUG
                 assetFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset";
                 playerFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Player";
                 menuFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\MenuLogo";
@@ -41,7 +41,16 @@ namespace CustomSols {
                 swordFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Sword";
                 bowFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Bow";
                 fooFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Foo";
-        #endif
+#endif
+
+            playerFolder = Path.Combine(assetFolder, "Player", CustomSols.isUseExample.Value ? "example" : "");
+            menuFolder = Path.Combine(assetFolder, "MenuLogo", CustomSols.isUseExample.Value ? "example" : "");
+            uiChiBallFolder = Path.Combine(assetFolder, "UIParryBall", CustomSols.isUseExample.Value ? "example" : "");
+            talismanBallFolder = Path.Combine(assetFolder, "TalismanBall", CustomSols.isUseExample.Value ? "example" : "");
+            parryFolder = Path.Combine(assetFolder, "Parry", CustomSols.isUseExample.Value ? "example" : "");
+            swordFolder = Path.Combine(assetFolder, "Sword", CustomSols.isUseExample.Value ? "example" : "");
+            bowFolder = Path.Combine(assetFolder, "Bow", CustomSols.isUseExample.Value ? "example" : "");
+            fooFolder = Path.Combine(assetFolder, "Foo", CustomSols.isUseExample.Value ? "example" : "");
 
             cachePlayerSprites.Clear();
             cacheMenuLogoSprites.Clear();
@@ -158,16 +167,17 @@ namespace CustomSols {
                     }
                 }
             }
-            foreach (var x in cacheFooSprites) {
-                ToastManager.Toast(x.Key);
-            }
+
+            //foreach (var x in cacheFooSprites) {
+            //    ToastManager.Toast(x.Key);
+            //}
         }
 
         public static string[] GetAllFilesWithExtensions(string directory, params string[] extensions) {
             return extensions.SelectMany(extension => Directory.GetFiles(directory, "*." + extension, SearchOption.TopDirectoryOnly)).ToArray();
         }
 
-        public static Sprite LoadSprite(string file, Vector2 customPivot = default, float customPixelPerUnit = 8.0f, Vector4 border = default) {
+        public static Sprite LoadSprite(string file, Vector2 customPivot = default, float? customPixelPerUnit = null, Vector4 border = default) {
             try {
                 if (!File.Exists(file)) {
                     ToastManager.Toast($"File does not exist: {file}");
@@ -178,7 +188,7 @@ namespace CustomSols {
                 if (customPivot != null)
                     pivot = customPivot;
                 if (customPixelPerUnit != null)
-                    pixelPerUnit = customPixelPerUnit;
+                    pixelPerUnit = customPixelPerUnit.HasValue ? customPixelPerUnit.Value : 8.0f; ;
 
                 byte[] data = File.ReadAllBytes(file);
                 Texture2D tex2D = new Texture2D(2, 2);

@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "CustomSols"
 name = "CustomSols"
-versionNumber = "0.1.0"
+versionNumber = "1.0.0"
 description = "Nine Sols CustomSols"
 websiteUrl = "https://github.com/asd9176506911298/NineSols-CustomSols"
 containsNsfwContent = false
@@ -21,6 +21,10 @@ outdir = "./build"
 [[build.copy]]
 source = "build/dll"
 target = "."
+
+[[build.copy]]
+source = "./plugins"
+target = "./config"
 
 [publish]
 repository = "https://thunderstore.io"
