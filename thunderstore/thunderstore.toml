@@ -23,7 +23,7 @@ source = "build/dll"
 target = "."
 
 [[build.copy]]
-source = "./plugins"
+source = "./config"
 target = "./config"
 
 [publish]
