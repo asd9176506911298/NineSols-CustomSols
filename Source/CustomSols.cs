@@ -118,6 +118,8 @@ public class CustomSols : BaseUnityPlugin {
         if (isEnableTalismanBall.Value)
             TalismanBall();
 
+        //ToastManager.Toast(GameCore.Instance.currentCoreState);
+
         //// Bow
         //{
         //    // PPlayer Bow 僅須執行一次 Bow_0
@@ -579,6 +581,7 @@ public class CustomSols : BaseUnityPlugin {
             }
 
             if (x.name.StartsWith("Explosion Damage 爆破箭 閃電 lv")) {
+                ToastManager.Toast(x.name);
                 if (x.transform.Find("ATTACK/Core") != null) {
                     var spriteName = x.transform.Find("ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name;
                     x.transform.Find("ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
