@@ -200,77 +200,91 @@ public class CustomSols : BaseUnityPlugin {
 
             //爆破Lv1~3 僅須執行一次
             {
-                ////爆破Lv1 基座
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                ////爆破Lv1 基座 ExplodingArrow O_0
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name;
+                    //ToastManager.Toast(spriteName);
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv1 基座 Light
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                ////爆破Lv1 基座 Light ExplodingArrow
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                    //ToastManager.Toast(spriteName);
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv1 能量球
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv1 能量球 circle_mask
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv1(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv1 能量球 爆炸 circle_mask
-                //if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core") != null) {
-                //    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv1 能量球 爆炸 circle_mask
+                if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core") != null) {
+                    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("Explosion Damage 爆破箭 閃電 lv1(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv2 基座
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv2 基座 ExplodingArrow O_3
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv2 基座 Light
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv2 基座 Light ExplodingArrow O_3
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv2 能量球
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv2 能量球
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv2(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv2 能量球 爆炸 circle_mask
-                //if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core") != null) {
-                //    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv2 能量球 爆炸 circle_mask
+                if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core") != null) {
+                    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("Explosion Damage 爆破箭 閃電 lv2(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv3 基座
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv3 基座 ExplodingArrow O_2
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ExplodingArrow").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv3 基座 Light
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv3 基座 Light ExplodingArrow O_2
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/ExplodingArrow/ChasingArrowLight").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv3 能量球
-                //if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
-                //    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv3 能量球
+                if (GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core") != null) {
+                    //ToastManager.Toast(GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("ExplodingArrow Shooter 爆破發射器 Lv3(Clone)/Exploding Arrow/EnergyBall/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
 
-                ////爆破Lv3 能量球 爆炸 circle_mask
-                //if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core") != null) {
-                //    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
-                //    GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["imPerfect"];
-                //}
+                //爆破Lv3 能量球 爆炸 circle_mask
+                if (GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core") != null) {
+                    //ToastManager.Toast(GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name);
+                    var spriteName = GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite.name;
+                    GameObject.Find("Explosion Damage 爆破箭 閃電 lv3(Clone)/ATTACK/Core").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheBowSprites[spriteName];
+                }
             }
 
 
