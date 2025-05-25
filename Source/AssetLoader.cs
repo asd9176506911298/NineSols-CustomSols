@@ -19,6 +19,7 @@ namespace CustomSols {
         private static string parryFolder = assetFolder + "Parry";
         private static string swordFolder = assetFolder + "Sword";
         private static string bowFolder = assetFolder + "Bow";
+        private static string fooFolder = assetFolder + "Foo";
 
         public readonly static Dictionary<string, Sprite> cachePlayerSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheMenuLogoSprites = new Dictionary<string, Sprite>();
@@ -27,6 +28,7 @@ namespace CustomSols {
         public readonly static Dictionary<string, Sprite> cacheParrySprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheSwordSprites = new Dictionary<string, Sprite>();
         public readonly static Dictionary<string, Sprite> cacheBowSprites = new Dictionary<string, Sprite>();
+        public readonly static Dictionary<string, Sprite> cacheFooSprites = new Dictionary<string, Sprite>();
 
         public static void Init() {
             #if DEBUG
@@ -38,7 +40,8 @@ namespace CustomSols {
                 parryFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Parry";
                 swordFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Sword";
                 bowFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Bow";
-            #endif
+                fooFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Foo";
+        #endif
 
             cachePlayerSprites.Clear();
             cacheMenuLogoSprites.Clear();
@@ -144,7 +147,18 @@ namespace CustomSols {
                 }
             }
 
-            foreach (var x in cacheSwordSprites) {
+            var fooFiles = GetAllFilesWithExtensions(fooFolder, "png");
+            Vector2 fooPivot = new Vector2(0.5f, 0.5f);
+            foreach (var file in fooFiles) {
+                string filename = Path.GetFileNameWithoutExtension(file);
+                var sprite = LoadSprite(file, fooPivot, 8.0f);
+                if (sprite != null) {
+                    if (!cacheFooSprites.ContainsKey(filename)) {
+                        cacheFooSprites.Add(filename, sprite);
+                    }
+                }
+            }
+            foreach (var x in cacheFooSprites) {
                 ToastManager.Toast(x.Key);
             }
         }

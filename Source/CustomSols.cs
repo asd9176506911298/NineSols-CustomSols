@@ -446,6 +446,26 @@ public class CustomSols : BaseUnityPlugin {
             //}
         }
 
+        // Foo Attack 但是背景還有光 Effect_Foo4
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO") != null) {
+            //ToastManager.Toast(GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO").GetComponent<SpriteRenderer>().sprite.name);
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo4"];
+        }
+        //流派 一氣貫通 Effect_Foo3
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO") != null) {
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
+        }
+
+        //流派 行雲流水
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/行雲流水/Effect_行雲流水/FOO") != null) {
+            //ToastManager.Toast(GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO").GetComponent<SpriteRenderer>().sprite.pivot);
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/行雲流水/Effect_行雲流水/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
+        }
+
+        //流派 收放自如
+        if (GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/收放自如/Effect_收放自如/FOO") != null) {
+            GameObject.Find("FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/收放自如/Effect_收放自如/FOO").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheFooSprites["Effect_Foo3"];
+        }
 
         //Eigong Sword 10
         //GameObject.Find("GameLevel/Room/Prefab/EventBinder/General Boss Fight FSM Object Variant/FSM Animator/LogicRoot/---Boss---/Boss_Yi Gung/MonsterCore/Animator(Proxy)/Animator/View/YiGung/Weapon/Sword/Sword Sprite").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheParrySprites["Sword10"];
