@@ -93,6 +93,7 @@ public class CustomSols : BaseUnityPlugin {
         if (isEnableUCCharging.Value) UCCharging();
         if (isEnableTalismanBall.Value) TalismanBall();
         if (isEnableFoo.Value) Foo();
+        if (isEnableSword.Value) Sword();
         if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
             ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
     }
@@ -297,6 +298,17 @@ public class CustomSols : BaseUnityPlugin {
         var renderer = parent.transform.Find(childPath)?.GetComponent<SpriteRenderer>();
         if (renderer != null && renderer.sprite != null && AssetLoader.cacheBowSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
+        }
+    }
+
+    private void Sword() {
+        foreach (var path in swordSpritePaths) {
+            if (cachedSpriteRenderers.TryGetValue(path, out var renderer) &&
+                renderer != null &&
+                renderer.sprite != null &&
+                AssetLoader.cacheSwordSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+                renderer.sprite = sprite;
+            }
         }
     }
 
