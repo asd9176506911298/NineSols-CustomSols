@@ -5,7 +5,7 @@ schemaVersion = "0.0.1"
 namespace = "CustomSols"
 name = "CustomSols"
 versionNumber = "1.0.0"
-description = "Nine Sols CustomSols"
+description = "Custom Sprite"
 websiteUrl = "https://github.com/asd9176506911298/NineSols-CustomSols"
 containsNsfwContent = false
 
