@@ -289,17 +289,19 @@ public class CustomSols : BaseUnityPlugin {
                 UpdateBowSprite(go, "ATTACK/Core");
             } else if (go.name.StartsWith("Chasing Arrow Shooter 飛天御劍 lv")) {
                 for (int i = 1; i <= 2; i++) {
-                    UpdateBowSprite(go, $"Circle Shooter/Arrow ({i})/ChasingArrow/ChasingArrowLight");
-                    UpdateBowSprite(go, $"Circle Shooter/Arrow ({i})/ChasingArrow/Parent 刺/刺/刺");
-                    UpdateBowSprite(go, $"Circle Shooter/Arrow ({i})/ChasingArrow/Parent 刺/刺 (1)/刺");
+                    UpdateBowSprite(go, $"Circle Shooter/Arrow ({i})/ChasingArrow /ChasingArrowLight");
+                    UpdateBowSprite(go, $"Circle Shooter/Arrow ({i})/ChasingArrow /Parent 刺/刺/刺");
+                    UpdateBowSprite(go, $"Circle Shooter/Arrow ({i})/ChasingArrow /Parent 刺/刺 (1)/刺");
                 }
             }
         }
     }
 
     private void UpdateBowSprite(GameObject parent, string childPath) {
+        if (parent == null) return;
+
         var renderer = parent.transform.Find(childPath)?.GetComponent<SpriteRenderer>();
-        if (renderer != null && AssetLoader.cacheBowSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+        if (renderer != null && renderer.sprite != null && AssetLoader.cacheBowSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
         }
     }

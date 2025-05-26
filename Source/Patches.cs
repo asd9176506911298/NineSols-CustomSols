@@ -15,9 +15,9 @@ public class Patches {
 
         var arrow = __instance;
         var spritePaths = new[] {
-            "Projectile FSM/FSM Animator/View/ChasingArrow/ChasingArrowLight",
-            "Projectile FSM/FSM Animator/View/ChasingArrow/Parent 刺/刺/刺",
-            "Projectile FSM/FSM Animator/View/ChasingArrow/Parent 刺/刺 (1)/刺"
+            "Projectile FSM/FSM Animator/View/ChasingArrow /ChasingArrowLight",
+            "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺/刺",
+            "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺 (1)/刺"
         };
 
         foreach (var path in spritePaths) {
@@ -28,21 +28,5 @@ public class Patches {
         }
 
         return true;
-    }
-
-    [HarmonyPatch(typeof(SpriteRenderer), "sprite", MethodType.Setter)]
-    [HarmonyPostfix]
-    private static void SpriteRendererPatch(SpriteRenderer __instance, Sprite value) {
-        if (!CustomSols.instance.isEnableBow.Value && !CustomSols.instance.isEnableSword.Value) return;
-
-        var go = __instance.gameObject;
-        var path = CustomSols.GetGameObjectPath(go);
-        var spriteName = value.name;
-
-        if (CustomSols.instance.isEnableBow.Value && CustomSols.bowSpritePaths.Contains(path) && AssetLoader.cacheBowSprites.TryGetValue(spriteName, out var bowSprite)) {
-            __instance.sprite = bowSprite;
-        } else if (CustomSols.instance.isEnableSword.Value && CustomSols.swordSpritePaths.Contains(path) && AssetLoader.cacheSwordSprites.TryGetValue(spriteName, out var swordSprite)) {
-            __instance.sprite = swordSprite;
-        }
     }
 }
