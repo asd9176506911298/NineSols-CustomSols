@@ -264,12 +264,7 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void InitializeBowSprites() {
-        var bowPaths = new[] {
-            "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow",
-            "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A"
-        };
-
-        foreach (var path in bowPaths) {
+        foreach (var path in bowSpritePaths) {
             if (cachedSpriteRenderers.TryGetValue(path, out var renderer) &&
                 AssetLoader.cacheBowSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
                 renderer.sprite = sprite;
