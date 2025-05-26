@@ -4,7 +4,6 @@ using HarmonyLib;
 using NineSolsAPI;
 using NineSolsAPI.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,7 +17,7 @@ public class CustomSols : BaseUnityPlugin {
     public static CustomSols instance { get; private set; } = null!;
     private Harmony harmony = null!;
     private Dictionary<string, SpriteRenderer> cachedSpriteRenderers = new Dictionary<string, SpriteRenderer>();
-    private static bool isAssetsLoaded = false; // 新增標誌
+    private static bool isAssetsLoaded = false;
 
     public ConfigEntry<bool> isEnablePlayer = null!;
     public ConfigEntry<bool> isEnableMenuLogo = null!;
@@ -26,7 +25,7 @@ public class CustomSols : BaseUnityPlugin {
     public ConfigEntry<bool> isEnableTalismanBall = null!;
     public ConfigEntry<bool> isEnableDash = null!;
     public ConfigEntry<bool> isEnableAirJump = null!;
-    public ConfigEntry<bool> isEnableimPerfectParry = null!;
+    public ConfigEntry<bool> isEnableImPerfectParry = null!;
     public ConfigEntry<bool> isEnablePerfectParry = null!;
     public ConfigEntry<bool> isEnableUCSuccess = null!;
     public ConfigEntry<bool> isEnableUCCharging = null!;
@@ -43,7 +42,6 @@ public class CustomSols : BaseUnityPlugin {
     public static readonly HashSet<string> bowSpritePaths = new HashSet<string> {
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow",
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A",
-        // 其他弓箭相關路徑可在此添加
     };
 
     public static readonly HashSet<string> swordSpritePaths = new HashSet<string> {
@@ -67,18 +65,59 @@ public class CustomSols : BaseUnityPlugin {
         KeybindManager.Add(this, Reload, () => reloadShortcut.Value);
 
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        Logger.LogInfo($"isUseExample: {isUseExample.Value}");
     }
 
     private void Start() {
-        StartCoroutine(InitializeAssets());
+        InitializeAssets();
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private IEnumerator InitializeAssets() {
+    private void InitializeAssets() {
         isAssetsLoaded = false;
-        yield return AssetLoader.InitAsync();
+        AssetLoader.Init();
         isAssetsLoaded = true;
-        CacheSpriteRenderers(); // 確保緩存初始化
+        CacheSpriteRenderers();
+        if (isEnableMenuLogo.Value) ChangeMenuLogo(); // 立即應用 Logo
+    }
+
+    private void LateUpdate() {
+        if (!isAssetsLoaded) return;
+
+        if (isEnablePlayer.Value) PlayerSprite();
+        if (isEnablePerfectParry.Value) PerfectParry();
+        if (isEnableDash.Value) Dash();
+        if (isEnableAirJump.Value) AirJump();
+        if (isEnableUCAroundEffect.Value) UCAroundEffect();
+        if (isEnableUCSuccess.Value) UCSuccess();
+        if (isEnableUCCharging.Value) UCCharging();
+        if (isEnableTalismanBall.Value) TalismanBall();
+        if (isEnableFoo.Value) Foo();
+        if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
+            ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
+    }
+
+    private void ChangeMenuLogo() {
+        if (!isAssetsLoaded) {
+            ToastManager.Toast("Assets not loaded for MenuLogo");
+            return;
+        }
+        var logoObject = GameObject.Find("MenuLogic/MainMenuLogic/Providers/MenuUIPanel/Logo");
+        if (logoObject != null &&
+            logoObject.GetComponent<UnityEngine.UI.Image>() is { } image &&
+            AssetLoader.cacheMenuLogoSprites.TryGetValue("9sLOGO_1", out var sprite)) {
+            image.sprite = sprite;
+            ToastManager.Toast("MenuLogo changed successfully");
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        CacheSpriteRenderers();
+        if (isEnableMenuLogo.Value) ChangeMenuLogo();
+        if (isEnableUIChiBall.Value) ChangeUIChiBall();
+        if (isEnableImPerfectParry.Value) ImPerfectParry();
+        if (isEnableSword.Value) SwordOnce();
+        if (isEnableBow.Value) InitializeBowSprites();
     }
 
     private void SetupConfig() {
@@ -88,7 +127,7 @@ public class CustomSols : BaseUnityPlugin {
         isEnableTalismanBall = Config.Bind("", "EnableTalisman Ball Sprite", true, "");
         isEnableDash = Config.Bind("", "Dash Sprite", true, "");
         isEnableAirJump = Config.Bind("", "AirJump Sprite", true, "");
-        isEnableimPerfectParry = Config.Bind("", "imPerfectParry Sprite", true, "");
+        isEnableImPerfectParry = Config.Bind("", "imPerfectParry Sprite", true, "");
         isEnablePerfectParry = Config.Bind("", "PerfectParry Sprite", true, "");
         isEnableUCSuccess = Config.Bind("", "UCSuccess Sprite", true, "");
         isEnableUCCharging = Config.Bind("", "UCCharging Sprite", true, "");
@@ -102,32 +141,7 @@ public class CustomSols : BaseUnityPlugin {
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
         reloadShortcut = Config.Bind("Shortcut", "Reload Shortcut", new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "");
 
-        isUseExample.SettingChanged += (sender, args) => StartCoroutine(AssetLoader.InitAsync());
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        CacheSpriteRenderers();
-        if (isEnableMenuLogo.Value) ChangeMenuLogo();
-        if (isEnableUIChiBall.Value) ChangeUIChiBall();
-        if (isEnableimPerfectParry.Value) ImPerfectParry();
-        if (isEnableSword.Value) SwordOnce();
-        if (isEnableBow.Value) InitializeBowSprites();
-    }
-
-    private void LateUpdate() {
-        if (!isAssetsLoaded) return; // 如果資源尚未載入，跳過更新
-
-        if (isEnablePlayer.Value) PlayerSprite();
-        if (isEnablePerfectParry.Value) PerfectParry();
-        if (isEnableDash.Value) Dash();
-        if (isEnableAirJump.Value) AirJump();
-        if (isEnableUCAroundEffect.Value) UCAroundEffect();
-        if (isEnableUCSuccess.Value) UCSuccess();
-        if (isEnableUCCharging.Value) UCCharging();
-        if (isEnableTalismanBall.Value) TalismanBall();
-        if (isEnableFoo.Value) Foo();
-        if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
-            ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
+        isUseExample.SettingChanged += (sender, args) => InitializeAssets();
     }
 
     private void CacheSpriteRenderers() {
@@ -147,14 +161,6 @@ public class CustomSols : BaseUnityPlugin {
             path = current.name + "/" + path;
         }
         return path;
-    }
-
-    private void ChangeMenuLogo() {
-        if (cachedSpriteRenderers.TryGetValue("MenuLogic/MainMenuLogic/Providers/MenuUIPanel/Logo", out var renderer) &&
-            renderer.GetComponent<UnityEngine.UI.Image>() is { } image &&
-            AssetLoader.cacheMenuLogoSprites.TryGetValue("9sLOGO_1", out var sprite)) {
-            image.sprite = sprite;
-        }
     }
 
     private void ChangeUIChiBall() {
@@ -178,7 +184,9 @@ public class CustomSols : BaseUnityPlugin {
     private void ImPerfectParry() {
         foreach (var renderer in FindObjectsOfType<ParticleSystemRenderer>(true)) {
             if (renderer.transform.parent.name == "YeeParryEffect_Not Accurate(Clone)") {
-                renderer.materials[1].SetTexture("_MainTex", AssetLoader.cacheParrySprites["imPerfect"].texture);
+                if (AssetLoader.cacheParrySprites.TryGetValue("imPerfect", out var sprite)) {
+                    renderer.materials[1].SetTexture("_MainTex", sprite.texture);
+                }
             }
         }
     }
@@ -214,17 +222,25 @@ public class CustomSols : BaseUnityPlugin {
 
     private void UCSuccess() {
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging") is { } obj) {
-            var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
-            particleRenderer.materials[0].SetTexture("_MainTex", AssetLoader.cacheParrySprites["UCSuccess"].texture);
-            obj.GetComponent<ParticleSystem>().startColor = UCSuccessColor.Value;
-        }   
+            if (AssetLoader.cacheParrySprites.TryGetValue("UCSuccess", out var sprite)) {
+                var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
+                particleRenderer.materials[0].SetTexture("_MainTex", sprite.texture);
+                obj.GetComponent<ParticleSystem>().startColor = UCSuccessColor.Value;
+            } else {
+                ToastManager.Toast("UCSuccess sprite not found in cacheParrySprites");
+            }
+        }
     }
 
     private void UCCharging() {
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C") is { } obj) {
-            var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
-            particleRenderer.materials[0].SetTexture("_MainTex", AssetLoader.cacheParrySprites["UCCharging"].texture);
-            obj.GetComponent<ParticleSystem>().startColor = UCChargingColor.Value;
+            if (AssetLoader.cacheParrySprites.TryGetValue("UCCharging", out var sprite)) {
+                var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
+                particleRenderer.materials[0].SetTexture("_MainTex", sprite.texture);
+                obj.GetComponent<ParticleSystem>().startColor = UCChargingColor.Value;
+            } else {
+                ToastManager.Toast("UCCharging sprite not found in cacheParrySprites");
+            }
         }
     }
 
@@ -318,11 +334,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void Reload() {
-        StartCoroutine(AssetLoader.InitAsync());
-        CacheSpriteRenderers();
+        InitializeAssets();
         if (isEnableMenuLogo.Value) ChangeMenuLogo();
         if (isEnableUIChiBall.Value) ChangeUIChiBall();
-        if (isEnableimPerfectParry.Value) ImPerfectParry();
+        if (isEnableImPerfectParry.Value) ImPerfectParry();
         if (isEnableSword.Value) SwordOnce();
         if (isEnableBow.Value) InitializeBowSprites();
     }

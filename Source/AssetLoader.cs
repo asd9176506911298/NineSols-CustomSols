@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using System.Collections;
 
 namespace CustomSols;
 
@@ -29,7 +28,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheBowSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheFooSprites = new Dictionary<string, Sprite>();
 
-    public static IEnumerator InitAsync() {
+    public static void Init() {
 #if DEBUG
         assetFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset";
         playerFolder = Path.Combine(assetFolder, "Player");
@@ -51,22 +50,24 @@ public class AssetLoader {
         bowFolder = Path.Combine(assetFolder, "Bow", CustomSols.isUseExample.Value ? "example" : "");
         fooFolder = Path.Combine(assetFolder, "Foo", CustomSols.isUseExample.Value ? "example" : "");
 
-        yield return LoadSpritesAsync(playerFolder, cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f);
-        yield return LoadSpritesAsync(menuFolder, cacheMenuLogoSprites, new Vector2(0.5f, 0f), 8.0f);
-        yield return LoadSpritesAsync(uiChiBallFolder, cacheUIChiBallSprites, new Vector2(0.5f, 0.5f), 2.0f);
-        yield return LoadSpritesAsync(talismanBallFolder, cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f);
-        yield return LoadSpritesAsync(parryFolder, cacheParrySprites, new Vector2(0.5f, 0f), 8.0f, filename => filename.StartsWith("ParrySparkAccurate") ? (new Vector2(0.5f, 0.5f), Vector4.zero) : null);
-        yield return LoadSpritesAsync(swordFolder, cacheSwordSprites, new Vector2(0.5f, 0.5f), 8.0f);
-        yield return LoadSpritesAsync(bowFolder, cacheBowSprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
+        // 優先載入 MenuLogo
+        LoadSpritesSync(menuFolder, cacheMenuLogoSprites, new Vector2(0.5f, 0f), 8.0f);
+        // 其他資源
+        LoadSpritesSync(playerFolder, cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f);
+        LoadSpritesSync(uiChiBallFolder, cacheUIChiBallSprites, new Vector2(0.5f, 0.5f), 2.0f);
+        LoadSpritesSync(talismanBallFolder, cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f);
+        LoadSpritesSync(parryFolder, cacheParrySprites, new Vector2(0.5f, 0f), 8.0f, filename => filename.StartsWith("ParrySparkAccurate") ? (new Vector2(0.5f, 0.5f), Vector4.zero) : null);
+        LoadSpritesSync(swordFolder, cacheSwordSprites, new Vector2(0.5f, 0.5f), 8.0f);
+        LoadSpritesSync(bowFolder, cacheBowSprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
             if (filename.StartsWith("Lv1光束")) return (new Vector2(0f, 0.5f), new Vector4(212f, 0f, 212f, 0f));
             if (filename.StartsWith("Lv2光束")) return (new Vector2(0f, 0.5f), new Vector4(220f, 0f, 220f, 0f));
             if (filename.StartsWith("Lv3光束")) return (new Vector2(0f, 0.5f), new Vector4(240f, 0f, 205f, 0f));
             return null;
         });
-        yield return LoadSpritesAsync(fooFolder, cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f);
+        LoadSpritesSync(fooFolder, cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f);
     }
 
-    private static IEnumerator LoadSpritesAsync(string folder, Dictionary<string, Sprite> cache, Vector2 defaultPivot, float defaultPpu, Func<string, (Vector2 pivot, Vector4 border)?> pivotBorderSelector = null) {
+    private static void LoadSpritesSync(string folder, Dictionary<string, Sprite> cache, Vector2 defaultPivot, float defaultPpu, Func<string, (Vector2 pivot, Vector4 border)?> pivotBorderSelector = null) {
         cache.Clear();
         var files = GetAllFilesWithExtensions(folder, "png");
         foreach (var file in files) {
@@ -85,8 +86,10 @@ public class AssetLoader {
             var sprite = LoadSprite(file, pivot, defaultPpu, border);
             if (sprite != null && !cache.ContainsKey(filename)) {
                 cache.Add(filename, sprite);
+                //ToastManager.Toast($"Loaded sprite: {filename} from {file}");
+            } else if (sprite == null) {
+                ToastManager.Toast($"Failed to load sprite: {filename} from {file}");
             }
-            yield return null;
         }
     }
 
