@@ -107,7 +107,6 @@ public class CustomSols : BaseUnityPlugin {
             logoObject.GetComponent<UnityEngine.UI.Image>() is { } image &&
             AssetLoader.cacheMenuLogoSprites.TryGetValue("9sLOGO_1", out var sprite)) {
             image.sprite = sprite;
-            ToastManager.Toast("MenuLogo changed successfully");
         }
     }
 
