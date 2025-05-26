@@ -103,9 +103,9 @@ public class CustomSols : BaseUnityPlugin {
 
     private void ChangeMenuLogo() {
         if (!isAssetsLoaded) {
-            ToastManager.Toast("Assets not loaded for MenuLogo");
             return;
         }
+
         var logoObject = GameObject.Find("MenuLogic/MainMenuLogic/Providers/MenuUIPanel/Logo");
         if (logoObject != null &&
             logoObject.GetComponent<UnityEngine.UI.Image>() is { } image &&
@@ -232,8 +232,6 @@ public class CustomSols : BaseUnityPlugin {
                 var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
                 particleRenderer.materials[0].SetTexture("_MainTex", sprite.texture);
                 obj.GetComponent<ParticleSystem>().startColor = UCSuccessColor.Value;
-            } else {
-                ToastManager.Toast("UCSuccess sprite not found in cacheParrySprites");
             }
         }
     }
@@ -244,8 +242,6 @@ public class CustomSols : BaseUnityPlugin {
                 var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
                 particleRenderer.materials[0].SetTexture("_MainTex", sprite.texture);
                 obj.GetComponent<ParticleSystem>().startColor = UCChargingColor.Value;
-            } else {
-                ToastManager.Toast("UCCharging sprite not found in cacheParrySprites");
             }
         }
     }
