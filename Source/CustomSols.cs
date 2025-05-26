@@ -39,6 +39,9 @@ public class CustomSols : BaseUnityPlugin {
     private ConfigEntry<Color> UCSuccessColor = null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
 
+    public static bool arrowInit = false;
+    public static bool arrowInit2 = false;
+
     public static readonly HashSet<string> bowSpritePaths = new HashSet<string> {
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow",
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A",
@@ -292,7 +295,7 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
-    private void UpdateBowSprite(GameObject parent, string childPath) {
+    public static void UpdateBowSprite(GameObject parent, string childPath) {
         if (parent == null) return;
 
         var renderer = parent.transform.Find(childPath)?.GetComponent<SpriteRenderer>();
