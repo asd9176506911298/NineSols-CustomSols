@@ -121,6 +121,9 @@ public class CustomSols : BaseUnityPlugin {
         if (isEnableImPerfectParry.Value) ImPerfectParry();
         if (isEnableSword.Value) SwordOnce();
         if (isEnableBow.Value) InitializeBowSprites();
+
+        arrowInit = false;
+        arrowInit2 = false;
     }
 
     private void SetupConfig() {
