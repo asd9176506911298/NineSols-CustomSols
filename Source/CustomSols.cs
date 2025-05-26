@@ -33,6 +33,7 @@ public class CustomSols : BaseUnityPlugin {
     private ConfigEntry<bool> isEnableSword = null!;
     private ConfigEntry<bool> isEnableFoo = null!;
     public static ConfigEntry<bool> isUseExample = null!;
+    public ConfigEntry<bool> isToastPlayerSprite = null!;
 
     private ConfigEntry<Color> UCChargingColor = null!;
     private ConfigEntry<Color> UCSuccessColor = null!;
@@ -64,6 +65,7 @@ public class CustomSols : BaseUnityPlugin {
         isEnableSword = Config.Bind("", "Sword Sprite", true, "");
         isEnableFoo = Config.Bind("", "Foo Sprite", true, "");
         isUseExample = Config.Bind("", "Use Example Sprite", true, "");
+        isToastPlayerSprite = Config.Bind("", "Toast Player Sprite Name", false, "");
 
         UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
@@ -141,6 +143,12 @@ public class CustomSols : BaseUnityPlugin {
 
         if (isEnableFoo.Value)
             Foo();
+
+        if (isToastPlayerSprite.Value)
+            if (Player.i != null)
+                if (Player.i.PlayerSprite != null)
+                    ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
+
         //// Bow
         {
             //// PPlayer Bow 僅須執行一次 Bow_0
