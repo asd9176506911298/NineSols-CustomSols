@@ -20,6 +20,7 @@
 
 # Create Your Skin
 - Copy Paste Default Folder and Rename Folder into correspond Folder put edited image
+- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/ConfigManagerOption/Source/img/CreateSkinFolder.png?raw=true)
  
 # How to Custom Sprite
 - Change Image
