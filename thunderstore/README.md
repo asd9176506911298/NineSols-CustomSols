@@ -30,11 +30,17 @@
 
 # How to Custom Player Sprite
 - F1 Toast you want Sprite Name
-- https://drive.google.com/file/d/1gOE8Gh7pj-R1NJCjIXudex3jJym3u3RV/view?usp=sharing
-- Download Player Sprite
+- https://drive.google.com/file/d/1vS6sHwjBuPoQP7S4CbQ9-cBrJDvPate2/view?usp=sharing
+- Download Origin Sprite Sprite include Player Sprite
 - Put Changed Player Sprite into Player Folder
 - ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/ConfigManagerOption/Source/img/PlayerExample.png?raw=true)
 - Ctrl + H Reload
 
-# All Player Sprite
-- https://drive.google.com/file/d/1gOE8Gh7pj-R1NJCjIXudex3jJym3u3RV/view?usp=sharing
+# Origin Sprite
+- https://drive.google.com/file/d/1vS6sHwjBuPoQP7S4CbQ9-cBrJDvPate2/view?usp=sharing
+
+# If not found want sprite
+- use Asset Studio
+- https://github.com/asd9176506911298/StudioDev/releases/latest
+- ask in Modding Discord
+- https://discord.gg/NYT4vQpweS
