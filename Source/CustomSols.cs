@@ -160,7 +160,9 @@ public class CustomSols : BaseUnityPlugin {
         skins = Config.Bind<string?>("Skin List", "Select Skin", null, new ConfigDescription("", new AcceptableValueList<string?>(AssetLoader.GetAllDirectories(basePath).Select(Path.GetFileName).ToArray())));
         currSkinFolder = skins.Value ?? "Default";
         skins.SettingChanged += (sender, args) => {
+#if DEBUG
             ToastManager.Toast(skins.Value);
+#endif
             currSkinFolder = skins.Value;
             InitializeAssets();
         };
