@@ -18,6 +18,9 @@
 # Open Custom Sols Folder
 - F1 have a checkbox can open folder
 
+# Create Your Skin
+- Copy Paste Default Folder and Rename Folder into correspond Folder put edited image
+ 
 # How to Custom Sprite
 - Change Image
 - Put changed image to correspond Folder
