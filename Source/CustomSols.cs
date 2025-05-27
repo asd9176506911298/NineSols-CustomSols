@@ -1,13 +1,18 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using HarmonyLib;
+using I2.Loc;
 using NineSolsAPI;
 using NineSolsAPI.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace CustomSols;
 
@@ -343,13 +348,153 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    private void ModOption() {
+        var optionsButton = GameObject.Find("MainMenuButton_Option");
+
+        var modOptions = ObjectUtils.InstantiateAutoReference(optionsButton, optionsButton.transform.parent, false);
+        UnityEngine.Object.Destroy(modOptions.GetComponentInChildren<Localize>());
+        modOptions.GetComponentInChildren<TMP_Text>().text = "CustomSols";
+        modOptions.gameObject.transform.SetSiblingIndex(optionsButton.transform.GetSiblingIndex() + 1);
+        var modOptionButton = modOptions.GetComponentInChildren<UIControlButton>();
+        var providers = StartMenuLogic.Instance.gameObject.GetComponentInChildren<UICursorProvider>();
+
+        // 建立主面板
+        var obj = new GameObject("ModOptions Panel");
+        obj.transform.SetParent(providers.transform, false);
+
+        var rectTransform = obj.AddComponent<RectTransform>();
+        var uiControlGroup = obj.AddComponent<UIControlGroup>();
+        var rcgUiPanel = obj.AddComponent<RCGUIPanel>(); // 假設 RCGUIPanel 是自定義組件
+        obj.AddComponent<CanvasRenderer>();
+        obj.AddComponent<SelectableNavigationProvider>();
+        obj.AddComponent<Animator>();
+        AutoAttributeManager.AutoReference(obj);
+
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.offsetMin = Vector2.zero; // 確保面板填滿父物件
+        rectTransform.offsetMax = Vector2.zero;
+
+        rcgUiPanel.OnShowInit = new UnityEvent();
+        rcgUiPanel.OnHideInit = new UnityEvent();
+        rcgUiPanel.OnShowComplete = new UnityEvent();
+        rcgUiPanel.OnHideComplete = new UnityEvent();
+
+        // 建立 ScrollView
+        var scrollView = new GameObject("ScrollView");
+        var scrollViewTransform = scrollView.AddComponent<RectTransform>();
+        scrollViewTransform.SetParent(obj.transform, false);
+        scrollViewTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        scrollViewTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        scrollViewTransform.sizeDelta = new Vector2(600, 800); // ScrollView 大小
+        scrollViewTransform.anchoredPosition = Vector2.zero;
+        scrollView.AddComponent<CanvasRenderer>();
+        //scrollView.AddComponent<Image>(); // 可選，添加背景
+        var scrollRect = scrollView.AddComponent<ScrollRect>();
+        scrollRect.scrollSensitivity = 30f; // 設置滾輪靈敏度
+
+        // 建立 Viewport
+        var viewport = new GameObject("Viewport");
+        var viewportTransform = viewport.AddComponent<RectTransform>();
+        viewportTransform.SetParent(scrollViewTransform, false);
+        viewportTransform.anchorMin = Vector2.zero;
+        viewportTransform.anchorMax = Vector2.one;
+        viewportTransform.offsetMin = Vector2.zero;
+        viewportTransform.offsetMax = Vector2.zero;
+        viewport.AddComponent<CanvasRenderer>();
+        viewport.AddComponent<Image>(); // 可選，添加背景
+        viewport.AddComponent<Mask>().showMaskGraphic = false;
+
+        // 建立 Content
+        var content = new GameObject("Content");
+        var contentTransform = content.AddComponent<RectTransform>();
+        contentTransform.SetParent(viewportTransform, false);
+        contentTransform.anchorMin = new Vector2(0, 1); // 錨點設為頂部
+        contentTransform.anchorMax = new Vector2(1, 1);
+        contentTransform.pivot = new Vector2(0.5f, 1);
+        contentTransform.anchoredPosition = Vector2.zero;
+        contentTransform.sizeDelta = new Vector2(0, 0); // 寬度隨容器，高度動態計算
+        var layoutGroup = content.AddComponent<VerticalLayoutGroup>();
+        layoutGroup.spacing = 20;
+        layoutGroup.padding = new RectOffset(10, 10, 10, 10);
+        layoutGroup.childAlignment = TextAnchor.UpperCenter;
+        layoutGroup.childControlWidth = true;
+        layoutGroup.childForceExpandWidth = true;
+        content.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        // 設置 ScrollRect
+        scrollRect.viewport = viewportTransform;
+        scrollRect.content = contentTransform;
+        scrollRect.horizontal = false; // 僅允許垂直滾動
+        scrollRect.vertical = true;
+
+        // 添加 Scrollbar
+        var scrollbar = new GameObject("Scrollbar");
+        var scrollbarTransform = scrollbar.AddComponent<RectTransform>();
+        scrollbarTransform.SetParent(scrollViewTransform, false);
+        scrollbarTransform.anchorMin = new Vector2(1, 0);
+        scrollbarTransform.anchorMax = new Vector2(1, 1);
+        scrollbarTransform.sizeDelta = new Vector2(20, 0);
+        scrollbarTransform.anchoredPosition = Vector2.zero;
+        scrollbar.AddComponent<CanvasRenderer>();
+        //scrollbar.AddComponent<Image>(); // 可選，滾動條背景
+        var scrollbarComponent = scrollbar.AddComponent<Scrollbar>();
+        scrollRect.verticalScrollbar = scrollbarComponent;
+        scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
+        scrollRect.verticalScrollbarSpacing = -3;
+
+        // 標題
+        var title = new GameObject("Title");
+        var titleText = title.AddComponent<TextMeshProUGUI>();
+        titleText.text = "CustomSols";
+        titleText.alignment = TextAlignmentOptions.Center;
+        title.AddComponent<LayoutElement>().preferredHeight = 50;
+        title.transform.SetParent(contentTransform, false);
+
+        // 間距
+        var padding = new GameObject("Padding");
+        padding.AddComponent<CanvasRenderer>();
+        padding.AddComponent<RectTransform>();
+        padding.AddComponent<LayoutElement>().minHeight = 20;
+        padding.transform.SetParent(contentTransform, false);
+
+        // 添加按鈕
+        var buttonOrig = ObjectUtils.FindDisabledByName<Button>("Show HUD")!;
+        for (int i = 0; i < 20; i++) {
+            var c = ObjectUtils.InstantiateAutoReference(buttonOrig.gameObject, contentTransform);
+            c.name = $"Button_{i + 1}"; // Optional: for easier debugging
+            c.GetComponentInChildren<TMP_Text>().text = $"Button {i + 1}";
+            var button = c.GetComponent<Button>();
+            var flag = new FlagFieldEntryInt();
+            var intFlag = ScriptableObject.CreateInstance<GameFlagInt>();
+            intFlag.field = new FlagFieldInt();
+            flag.flagBase = intFlag;
+            flag.fieldName = "field";
+            c.GetComponent<MultipleOptionSelector>().entry = flag;
+
+            int buttonIndex = i + 1;
+            button.onClick.RemoveAllListeners(); // Clear existing listeners
+            button.onClick.AddListener(() => {
+                ToastManager.Toast($"Click Button {buttonIndex}");
+            });
+            c.AddComponent<LayoutElement>().preferredHeight = buttonOrig.GetComponent<RectTransform>().sizeDelta.y;
+        }
+
+        // 設置默認選中
+        uiControlGroup.defaultSelectable = content.GetComponentInChildren<Selectable>();
+        modOptionButton.clickToShowGroup = uiControlGroup;
+    }
+
     private void Reload() {
-        InitializeAssets();
-        if (isEnableMenuLogo.Value) ChangeMenuLogo();
-        if (isEnableUIChiBall.Value) ChangeUIChiBall();
-        if (isEnableImPerfectParry.Value) ImPerfectParry();
-        if (isEnableSword.Value) SwordOnce();
-        if (isEnableBow.Value) InitializeBowSprites();
+        ModOption();
+
+
+        //InitializeAssets();
+        //if (isEnableMenuLogo.Value) ChangeMenuLogo();
+        //if (isEnableUIChiBall.Value) ChangeUIChiBall();
+        //if (isEnableImPerfectParry.Value) ImPerfectParry();
+        //if (isEnableSword.Value) SwordOnce();
+        //if (isEnableBow.Value) InitializeBowSprites();
     }
 
     private void OnDestroy() {
