@@ -5,6 +5,7 @@ using NineSolsAPI;
 using NineSolsAPI.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,11 +34,15 @@ public class CustomSols : BaseUnityPlugin {
     public ConfigEntry<bool> isEnableBow = null!;
     public ConfigEntry<bool> isEnableSword = null!;
     public ConfigEntry<bool> isEnableFoo = null!;
-    public static ConfigEntry<bool> isUseExample = null!;
     public ConfigEntry<bool> isToastPlayerSprite = null!;
     private ConfigEntry<Color> UCChargingColor = null!;
     private ConfigEntry<Color> UCSuccessColor = null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
+
+    private ConfigEntry<string?> skins = null!;
+    public static string currSkinFolder = "";
+    private string basePath = "";
+
 
     public static bool arrowInit = false;
     public static bool arrowInit2 = false;
@@ -68,7 +73,6 @@ public class CustomSols : BaseUnityPlugin {
         KeybindManager.Add(this, Reload, () => reloadShortcut.Value);
 
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
-        Logger.LogInfo($"isUseExample: {isUseExample.Value}");
     }
 
     private void Start() {
@@ -134,20 +138,32 @@ public class CustomSols : BaseUnityPlugin {
         isEnableDash = Config.Bind("", "Dash Sprite", true, "");
         isEnableAirJump = Config.Bind("", "AirJump Sprite", true, "");
         isEnableImPerfectParry = Config.Bind("", "imPerfectParry Sprite", true, "");
-        isEnablePerfectParry = Config.Bind("", "PerfectParry Sprite", true, "");
+        isEnablePerfectParry = Config.Bind("", "PerfectParry Sprite", true, "");    
         isEnableUCSuccess = Config.Bind("", "UCSuccess Sprite", true, "");
         isEnableUCCharging = Config.Bind("", "UCCharging Sprite", true, "");
         isEnableUCAroundEffect = Config.Bind("", "UCAroundEffect Sprite", true, "");
         isEnableBow = Config.Bind("", "Bow Sprite", true, "");
         isEnableSword = Config.Bind("", "Sword Sprite", true, "");
         isEnableFoo = Config.Bind("", "Foo Sprite", true, "");
-        isUseExample = Config.Bind("", "Use Example Sprite", true, "");
         isToastPlayerSprite = Config.Bind("", "Toast Player Sprite Name", false, "");
         UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
         reloadShortcut = Config.Bind("Shortcut", "Reload Shortcut", new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "");
 
-        isUseExample.SettingChanged += (sender, args) => InitializeAssets();
+        basePath =
+#if DEBUG
+            @"E:\Games\Nine Sols1030\BepInEx\plugins\CustomSols\CustomSols";
+#else
+        Path.Combine(Paths.ConfigPath, "CustomSols");
+#endif
+
+        skins = Config.Bind<string?>("Skin List", "Select Skin", null, new ConfigDescription("", new AcceptableValueList<string?>(AssetLoader.GetAllDirectories(basePath).Select(Path.GetFileName).ToArray())));
+        currSkinFolder = skins.Value ?? "Default";
+        skins.SettingChanged += (sender, args) => {
+            ToastManager.Toast(skins.Value);
+            currSkinFolder = skins.Value;
+            InitializeAssets();
+        };
     }
 
     private void CacheSpriteRenderers() {
