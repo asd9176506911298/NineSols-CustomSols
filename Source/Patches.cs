@@ -12,14 +12,17 @@ public class Patches {
     [HarmonyPatch(typeof(RCGFSM.Projectiles.PlayerArrowProjectileFollower), "Update")]
     [HarmonyPrefix]
     private static bool HookArrow(RCGFSM.Projectiles.PlayerArrowProjectileFollower __instance) {
-        if (!CustomSols.instance.isEnableBow.Value) return true;
+        // 檢查 cacheBowSprites 是否為空
+        if (AssetLoader.cacheBowSprites == null || AssetLoader.cacheBowSprites.Count == 0) {
+            return true; // 如果為空，直接返回，跳過後續處理
+        }
 
         var arrow = __instance;
         var spritePaths = new[] {
-            "Projectile FSM/FSM Animator/View/ChasingArrow /ChasingArrowLight",
-            "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺/刺",
-            "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺 (1)/刺"
-        };
+        "Projectile FSM/FSM Animator/View/ChasingArrow /ChasingArrowLight",
+        "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺/刺",
+        "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺 (1)/刺"
+    };
 
         foreach (var path in spritePaths) {
             var renderer = arrow.transform.Find(path)?.GetComponent<SpriteRenderer>();

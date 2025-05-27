@@ -5,6 +5,7 @@ using NineSolsAPI;
 using NineSolsAPI.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -20,20 +21,7 @@ public class CustomSols : BaseUnityPlugin {
     private Dictionary<string, SpriteRenderer> cachedSpriteRenderers = new Dictionary<string, SpriteRenderer>();
     private static bool isAssetsLoaded = false;
 
-    public ConfigEntry<bool> isEnablePlayer = null!;
-    public ConfigEntry<bool> isEnableMenuLogo = null!;
-    public ConfigEntry<bool> isEnableUIChiBall = null!;
-    public ConfigEntry<bool> isEnableTalismanBall = null!;
-    public ConfigEntry<bool> isEnableDash = null!;
-    public ConfigEntry<bool> isEnableAirJump = null!;
-    public ConfigEntry<bool> isEnableImPerfectParry = null!;
-    public ConfigEntry<bool> isEnablePerfectParry = null!;
-    public ConfigEntry<bool> isEnableUCSuccess = null!;
-    public ConfigEntry<bool> isEnableUCCharging = null!;
-    public ConfigEntry<bool> isEnableUCAroundEffect = null!;
-    public ConfigEntry<bool> isEnableBow = null!;
-    public ConfigEntry<bool> isEnableSword = null!;
-    public ConfigEntry<bool> isEnableFoo = null!;
+    public ConfigEntry<bool> openFolder = null!;
     public ConfigEntry<bool> isToastPlayerSprite = null!;
     private ConfigEntry<Color> UCChargingColor = null!;
     private ConfigEntry<Color> UCSuccessColor = null!;
@@ -85,28 +73,33 @@ public class CustomSols : BaseUnityPlugin {
         AssetLoader.Init();
         isAssetsLoaded = true;
         CacheSpriteRenderers();
-        if (isEnableMenuLogo.Value) ChangeMenuLogo(); // 立即應用 Logo
+        ChangeMenuLogo(); // 立即應用 Logo
     }
 
     private void LateUpdate() {
         if (!isAssetsLoaded) return;
 
-        if (isEnablePlayer.Value) PlayerSprite();
-        if (isEnablePerfectParry.Value) PerfectParry();
-        if (isEnableDash.Value) Dash();
-        if (isEnableAirJump.Value) AirJump();
-        if (isEnableUCAroundEffect.Value) UCAroundEffect();
-        if (isEnableUCSuccess.Value) UCSuccess();
-        if (isEnableUCCharging.Value) UCCharging();
-        if (isEnableTalismanBall.Value) TalismanBall();
-        if (isEnableFoo.Value) Foo();
-        if (isEnableSword.Value) Sword();
+        PlayerSprite();
+        PerfectParry();
+        Dash();
+        AirJump();
+        UCAroundEffect();
+        UCSuccess();
+        UCCharging();
+        TalismanBall();
+        Foo();
+        Sword();
+
         if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
             ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
     }
 
     private void ChangeMenuLogo() {
         if (!isAssetsLoaded) {
+            return;
+        }
+
+        if (AssetLoader.cacheMenuLogoSprites == null || AssetLoader.cacheMenuLogoSprites.Count == 0) {
             return;
         }
 
@@ -120,31 +113,18 @@ public class CustomSols : BaseUnityPlugin {
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         CacheSpriteRenderers();
-        if (isEnableMenuLogo.Value) ChangeMenuLogo();
-        if (isEnableUIChiBall.Value) ChangeUIChiBall();
-        if (isEnableImPerfectParry.Value) ImPerfectParry();
-        if (isEnableSword.Value) SwordOnce();
-        if (isEnableBow.Value) InitializeBowSprites();
+        ChangeMenuLogo();
+        ChangeUIChiBall();
+        ImPerfectParry();
+        SwordOnce();
+        InitializeBowSprites();
 
         arrowInit = false;
         arrowInit2 = false;
     }
 
     private void SetupConfig() {
-        isEnablePlayer = Config.Bind("", "Player Sprite", true, "");
-        isEnableMenuLogo = Config.Bind("", "Menu Logo Sprite", true, "");
-        isEnableUIChiBall = Config.Bind("", "UI Chi Ball", true, "");
-        isEnableTalismanBall = Config.Bind("", "EnableTalisman Ball Sprite", true, "");
-        isEnableDash = Config.Bind("", "Dash Sprite", true, "");
-        isEnableAirJump = Config.Bind("", "AirJump Sprite", true, "");
-        isEnableImPerfectParry = Config.Bind("", "imPerfectParry Sprite", true, "");
-        isEnablePerfectParry = Config.Bind("", "PerfectParry Sprite", true, "");    
-        isEnableUCSuccess = Config.Bind("", "UCSuccess Sprite", true, "");
-        isEnableUCCharging = Config.Bind("", "UCCharging Sprite", true, "");
-        isEnableUCAroundEffect = Config.Bind("", "UCAroundEffect Sprite", true, "");
-        isEnableBow = Config.Bind("", "Bow Sprite", true, "");
-        isEnableSword = Config.Bind("", "Sword Sprite", true, "");
-        isEnableFoo = Config.Bind("", "Foo Sprite", true, "");
+        openFolder = Config.Bind("Folder", "Open CustomSols Folder", false, "");
         isToastPlayerSprite = Config.Bind("", "Toast Player Sprite Name", false, "");
         UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
@@ -165,6 +145,9 @@ public class CustomSols : BaseUnityPlugin {
 #endif
             currSkinFolder = skins.Value;
             InitializeAssets();
+        };
+        openFolder.SettingChanged += (sender, args) => {
+            Process.Start(basePath);
         };
     }
 
@@ -188,6 +171,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void ChangeUIChiBall() {
+        if (AssetLoader.cacheUIChiBallSprites == null || AssetLoader.cacheUIChiBallSprites.Count == 0) {
+            return;
+        }
+
         var paths = new[] {
             "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/ParryBalls/ParryPoint/BG/Rotate/Fill",
             "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/ParryBalls/ParryPoint (5)/BG/Rotate/Fill",
@@ -206,6 +193,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void ImPerfectParry() {
+        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
+            return;
+        }
+
         foreach (var renderer in FindObjectsOfType<ParticleSystemRenderer>(true)) {
             if (renderer.transform.parent.name == "YeeParryEffect_Not Accurate(Clone)") {
                 if (AssetLoader.cacheParrySprites.TryGetValue("imPerfect", out var sprite)) {
@@ -216,6 +207,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void PerfectParry() {
+        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
+            return;
+        }
+
         if (cachedSpriteRenderers.TryGetValue("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0", out var renderer) &&
             AssetLoader.cacheParrySprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
@@ -224,6 +219,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void Dash() {
+        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) {
+            return;
+        }
+
         if (cachedSpriteRenderers.TryGetValue("Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0", out var renderer) &&
             AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
@@ -231,6 +230,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void AirJump() {
+        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) {
+            return;
+        }
+
         if (cachedSpriteRenderers.TryGetValue("Effect_AirJump(Clone)/Effect_HoHoYee_AirJump0", out var renderer) &&
             AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
@@ -238,6 +241,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UCAroundEffect() {
+        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
+            return;
+        }
+
         if (cachedSpriteRenderers.TryGetValue("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/Effect_ParryCounterAttack0", out var renderer) &&
             AssetLoader.cacheParrySprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
@@ -245,6 +252,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UCSuccess() {
+        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
+            return;
+        }
+
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging") is { } obj) {
             if (AssetLoader.cacheParrySprites.TryGetValue("UCSuccess", out var sprite)) {
                 var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
@@ -255,6 +266,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UCCharging() {
+        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
+            return;
+        }
+
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C") is { } obj) {
             if (AssetLoader.cacheParrySprites.TryGetValue("UCCharging", out var sprite)) {
                 var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
@@ -265,6 +280,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void TalismanBall() {
+        if (AssetLoader.cacheTalismanBallSprites == null || AssetLoader.cacheTalismanBallSprites.Count == 0) {
+            return;
+        }
+
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo") is { activeSelf: true } foo) {
             for (int i = 1; i <= 5; i++) {
                 var ball = foo.transform.Find($"FooDots/D{i}/FooDot ({i})/JENG/Ball")?.GetComponent<SpriteRenderer>();
@@ -277,6 +296,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void PlayerSprite() {
+        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) {
+            return;
+        }
+
         if (Player.i?.PlayerSprite?.sprite != null &&
             AssetLoader.cachePlayerSprites.TryGetValue(Player.i.PlayerSprite.sprite.name, out var sprite)) {
             Player.i.PlayerSprite.sprite = sprite;
@@ -284,6 +307,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void InitializeBowSprites() {
+        if (AssetLoader.cacheBowSprites == null || AssetLoader.cacheBowSprites.Count == 0) {
+            return;
+        }
+
         foreach (var path in bowSpritePaths) {
             if (cachedSpriteRenderers.TryGetValue(path, out var renderer) &&
                 AssetLoader.cacheBowSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
@@ -322,6 +349,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void Sword() {
+        if (AssetLoader.cacheSwordSprites == null || AssetLoader.cacheSwordSprites.Count == 0) {
+            return;
+        }
+
         foreach (var path in swordSpritePaths) {
             if (cachedSpriteRenderers.TryGetValue(path, out var renderer) &&
                 renderer != null &&
@@ -333,6 +364,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void SwordOnce() {
+        if (AssetLoader.cacheSwordSprites == null || AssetLoader.cacheSwordSprites.Count == 0) {
+            return;
+        }
+
         var chargePaths = new[] { "F1", "F2", "F3", "F4", "F5" };
         foreach (var path in chargePaths) {
             if (GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}") != null) {
@@ -346,6 +381,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void Foo() {
+        if (AssetLoader.cacheFooSprites == null || AssetLoader.cacheFooSprites.Count == 0) {
+            return;
+        }
+
         var fooPaths = new Dictionary<string, string> {
             { "FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/Effect_Foo/FOO", "Effect_Foo4" },
             { "FooPrefab Deposit(Clone)/Foo Charm Deposit/Animator(StartShouldDisable)/流派/一氣貫通/Effect_一氣貫通/FOO", "Effect_Foo3" },
@@ -363,11 +402,11 @@ public class CustomSols : BaseUnityPlugin {
 
     private void Reload() {
         InitializeAssets();
-        if (isEnableMenuLogo.Value) ChangeMenuLogo();
-        if (isEnableUIChiBall.Value) ChangeUIChiBall();
-        if (isEnableImPerfectParry.Value) ImPerfectParry();
-        if (isEnableSword.Value) SwordOnce();
-        if (isEnableBow.Value) InitializeBowSprites();
+        ChangeMenuLogo();
+        ChangeUIChiBall();
+        ImPerfectParry();
+        SwordOnce();
+        InitializeBowSprites();
     }
 
     private void OnDestroy() {
