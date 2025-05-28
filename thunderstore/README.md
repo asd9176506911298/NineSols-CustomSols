@@ -39,6 +39,7 @@
 # How to replace Player All Sprite 
 - put your image into folder PlayerSpriteAllUseThis
 - and name 1 2 3 4 5....
+- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/PlayerAllSpriteUseThis/Source/img/AllUse.png?raw=true)
 
 # Origin Sprite
 - https://drive.google.com/file/d/1vS6sHwjBuPoQP7S4CbQ9-cBrJDvPate2/view?usp=sharing
