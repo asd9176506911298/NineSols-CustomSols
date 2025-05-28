@@ -78,8 +78,8 @@ public class AssetLoader {
             }
         }
 
-        foreach (var x in cacheOnlyOneSprites)
-            ToastManager.Toast(x.Key);
+        //foreach (var x in cacheOnlyOneSprites)
+        //    ToastManager.Toast(x.Key);
     }
 
     private static void LoadSpritesSync(string folder, Dictionary<string, Sprite> cache, Vector2 defaultPivot, float defaultPpu, Func<string, (Vector2 pivot, Vector4 border)?> pivotBorderSelector = null) {
