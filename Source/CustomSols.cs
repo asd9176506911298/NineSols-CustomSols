@@ -23,6 +23,7 @@ public class CustomSols : BaseUnityPlugin {
 
     public ConfigEntry<bool> openFolder = null!;
     public ConfigEntry<bool> isToastPlayerSprite = null!;
+    private ConfigEntry<float> spriteDelaySecond= null!;
     private ConfigEntry<Color> UCChargingColor = null!;
     private ConfigEntry<Color> UCSuccessColor = null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
@@ -31,6 +32,8 @@ public class CustomSols : BaseUnityPlugin {
     public static string currSkinFolder = "";
     private string basePath = "";
 
+    private int currentSpriteIndex = 1;
+    private float spriteChangeTimer;
 
     public static bool arrowInit = false;
     public static bool arrowInit2 = false;
@@ -126,6 +129,7 @@ public class CustomSols : BaseUnityPlugin {
     private void SetupConfig() {
         openFolder = Config.Bind("Folder", "Open CustomSols Folder", false, "");
         isToastPlayerSprite = Config.Bind("", "Toast Player Sprite Name", false, "");
+        spriteDelaySecond = Config.Bind("Sprite Delay Second", "PlayerSpriteAllUseThis Sprite Delay Second", 0.12f, "");
         UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
         reloadShortcut = Config.Bind("Shortcut", "Reload Shortcut", new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "");
@@ -296,13 +300,24 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void PlayerSprite() {
-        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) {
-            return;
-        }
+        if (AssetLoader.cacheOnlyOneSprites is { Count: > 0 } && Player.i?.PlayerSprite is not null) {
+            spriteChangeTimer += Time.deltaTime;
 
-        if (Player.i?.PlayerSprite?.sprite != null &&
-            AssetLoader.cachePlayerSprites.TryGetValue(Player.i.PlayerSprite.sprite.name, out var sprite)) {
-            Player.i.PlayerSprite.sprite = sprite;
+            if (AssetLoader.cacheOnlyOneSprites.TryGetValue(currentSpriteIndex.ToString(), out var sprite)) {
+                Player.i.PlayerSprite.sprite = sprite;
+
+                if (spriteChangeTimer >= spriteDelaySecond.Value) {
+                    currentSpriteIndex++;
+                    if (!AssetLoader.cacheOnlyOneSprites.ContainsKey(currentSpriteIndex.ToString())) {
+                        currentSpriteIndex = 1;
+                    }
+                    spriteChangeTimer = 0f;
+                }
+            }
+        } else if (AssetLoader.cachePlayerSprites is { Count: > 0 } && Player.i?.PlayerSprite?.sprite is not null) {
+            if (AssetLoader.cachePlayerSprites.TryGetValue(Player.i.PlayerSprite.sprite.name, out var sprite)) {
+                Player.i.PlayerSprite.sprite = sprite;
+            }
         }
     }
 

@@ -18,6 +18,7 @@ public class AssetLoader {
     private static string swordFolder;
     private static string bowFolder;
     private static string fooFolder;
+    private static string onlyOneFolder;
 
     public static readonly Dictionary<string, Sprite> cachePlayerSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheMenuLogoSprites = new Dictionary<string, Sprite>();
@@ -27,6 +28,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheSwordSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheBowSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheFooSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheOnlyOneSprites = new Dictionary<string, Sprite>();
 
     public static void Init() {
         // 設置根目錄，根據 DEBUG 模式選擇路徑
@@ -64,7 +66,8 @@ public class AssetLoader {
             if (filename.StartsWith("Lv3光束")) return (new Vector2(0f, 0.5f), new Vector4(240f, 0f, 205f, 0f));
             return null;
         }) },
-        { "Foo", (cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f, null) }
+        { "Foo", (cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
+        { "PlayerSpriteAllUseThis", (cacheOnlyOneSprites, new Vector2(0.5f, 0.0f), 8.0f, null) }
     };
 
         // 集中處理子目錄的檢查與載入
@@ -74,6 +77,9 @@ public class AssetLoader {
                 LoadSpritesSync(folderPath, cache, pivot, ppu, selector);
             }
         }
+
+        foreach (var x in cacheOnlyOneSprites)
+            ToastManager.Toast(x.Key);
     }
 
     private static void LoadSpritesSync(string folder, Dictionary<string, Sprite> cache, Vector2 defaultPivot, float defaultPpu, Func<string, (Vector2 pivot, Vector4 border)?> pivotBorderSelector = null) {
