@@ -426,8 +426,9 @@ public class CustomSols : BaseUnityPlugin {
         }
 
         string heartPath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/HUD_Heart/Heart";
-        if (cachedSpriteRenderers.TryGetValue(heartPath, out var renderer) && renderer.sprite != null) {
-            renderer.sprite = AssetLoader.cacheUISprites.GetValueOrDefault(renderer.sprite.name);
+        if (cachedSpriteRenderers.TryGetValue(heartPath, out var renderer) && renderer.sprite != null
+            && AssetLoader.cacheUISprites.TryGetValue(renderer.sprite.name, out var sprtie)) {
+            renderer.sprite = sprtie;
         }
     }
 
@@ -437,8 +438,9 @@ public class CustomSols : BaseUnityPlugin {
         }
 
         string arrowIconPath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/ItemSelection/CurrentItemPanel spr/ItemPic";
-        if (cachedSpriteRenderers.TryGetValue(arrowIconPath, out var renderer) && renderer.sprite != null) {
-            renderer.sprite = AssetLoader.cacheUISprites.GetValueOrDefault(renderer.sprite.name);
+        if (cachedSpriteRenderers.TryGetValue(arrowIconPath, out var renderer) && renderer.sprite != null
+            && AssetLoader.cacheUISprites.TryGetValue(renderer.sprite.name, out var sprtie)) {
+            renderer.sprite = sprtie;
         }
     }
 
@@ -454,8 +456,9 @@ public class CustomSols : BaseUnityPlugin {
         };
 
         foreach (var path in butterflyPaths) {
-            if (cachedSpriteRenderers.TryGetValue(path, out var renderer) && renderer.sprite != null) {
-                if (AssetLoader.cacheUISprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+            if (cachedSpriteRenderers.TryGetValue(path, out var renderer) && renderer.sprite != null && renderer.sprite != null) {
+                if (AssetLoader.cacheUISprites.TryGetValue(renderer.sprite.name, out var sprite) && renderer.sprite != null
+                    && AssetLoader.cacheUISprites.TryGetValue(renderer.sprite.name, out var sprtie)) {
                     renderer.sprite = sprite;
                 }
             }
