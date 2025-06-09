@@ -93,8 +93,13 @@ public class CustomSols : BaseUnityPlugin {
         Foo();
         Sword();
 
+        //UI
+        UpdateHeartSprite();
+        UpdateArrowIcon();
+        UpdateButterflySprite();
+
         if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
-            ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
+            ToastManager.Toast(Player.i.PlayerSprite.sprite.name);   
     }
 
     private void ChangeMenuLogo() {
@@ -175,7 +180,7 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void ChangeUIChiBall() {
-        if (AssetLoader.cacheUIChiBallSprites == null || AssetLoader.cacheUIChiBallSprites.Count == 0) {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
             return;
         }
 
@@ -187,7 +192,7 @@ public class CustomSols : BaseUnityPlugin {
             "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/ParryBalls/ParryPoint (8)/BG/Rotate/Fill"
         };
 
-        if (AssetLoader.cacheUIChiBallSprites.TryGetValue("ParryBalls", out var sprite)) {
+        if (AssetLoader.cacheUISprites.TryGetValue("ParryBalls", out var sprite)) {
             foreach (var path in paths) {
                 if (cachedSpriteRenderers.TryGetValue(path, out var renderer)) {
                     renderer.sprite = sprite;
@@ -414,6 +419,50 @@ public class CustomSols : BaseUnityPlugin {
             }
         }
     }
+
+    private void UpdateHeartSprite() {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+            return;
+        }
+
+        string heartPath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/HUD_Heart/Heart";
+        if (cachedSpriteRenderers.TryGetValue(heartPath, out var renderer) && renderer.sprite != null) {
+            renderer.sprite = AssetLoader.cacheUISprites.GetValueOrDefault(renderer.sprite.name);
+        }
+    }
+
+    private void UpdateArrowIcon() {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+            return;
+        }
+
+        string arrowIconPath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/ItemSelection/CurrentItemPanel spr/ItemPic";
+        if (cachedSpriteRenderers.TryGetValue(arrowIconPath, out var renderer) && renderer.sprite != null) {
+            renderer.sprite = AssetLoader.cacheUISprites.GetValueOrDefault(renderer.sprite.name);
+        }
+    }
+
+    private void UpdateButterflySprite() {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+            return;
+        }
+
+        var butterflyPaths = new[] {
+            "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/TESLA BUTTERFlY/Butterfly/Butterfly",
+            "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/TESLA BUTTERFlY/Butterfly/ButterflyIcon Color",
+            "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/TESLA BUTTERFlY/Butterfly/ButterflyIcon"
+        };
+
+        foreach (var path in butterflyPaths) {
+            if (cachedSpriteRenderers.TryGetValue(path, out var renderer) && renderer.sprite != null) {
+                if (AssetLoader.cacheUISprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+                    renderer.sprite = sprite;
+                }
+            }
+        }
+    }
+
+
 
     private void Reload() {
         InitializeAssets();
