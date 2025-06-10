@@ -77,6 +77,18 @@ public class CustomSols : BaseUnityPlugin {
         isAssetsLoaded = true;
         CacheSpriteRenderers();
         ChangeMenuLogo(); // 立即應用 Logo
+        ChangeUIChiBall();
+        ImPerfectParry();
+        SwordOnce();
+        InitializeBowSprites();
+        UpdateExpRing();
+        UpdateHpBar();
+        UpdatePotion();
+        UpdateLineA();
+        UpdateEightGua();
+        UpdateArrowLine();
+        UpdateRightLine();
+        UpdateArrowBullet();
     }
 
     private void LateUpdate() {
@@ -97,7 +109,6 @@ public class CustomSols : BaseUnityPlugin {
         UpdateHeartSprite();
         UpdateArrowIcon();
         UpdateButterflySprite();
-        UpdateExpRing();
 
         if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
             ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
