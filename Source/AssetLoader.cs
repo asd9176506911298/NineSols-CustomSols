@@ -64,7 +64,8 @@ public class AssetLoader {
             { "Foo", (cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
             { "PlayerSpriteAllUseThis", (cacheOnlyOneSprites, new Vector2(0.5f, 0.0f), 8.0f, null) },
             { "UI", (cacheUISprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
-                if (filename.StartsWith("LUP_LineA")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("ChiBallLeftLine")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("ButterflyRightLine")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.Equals("ArrowLineA")) return (new Vector2(0f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("Arrow")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 1.0f);
                 if (filename.StartsWith("ParryBalls")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);

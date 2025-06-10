@@ -551,7 +551,7 @@ public class CustomSols : BaseUnityPlugin {
     //Chi Ball Left Line
     private void UpdateLineA() {
         if(GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA") != null){
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["LUP_LineA"];
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["ChiBallLeftLine"];
         }
     }
 
@@ -572,9 +572,10 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    //Butterfly Right Line
     private void UpdateRightLine() {
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["LUP_LineA"];
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["ButterflyRightLine"];
         }
     }
 
