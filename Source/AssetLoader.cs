@@ -89,7 +89,6 @@ public class AssetLoader {
 
         var jsonFilePath = Path.Combine(assetFolder, "UI", "color.json");
         if (File.Exists(jsonFilePath)) {
-            ToastManager.Toast("111");
             // 讀取 JSON 檔案內容
             string jsonContent = File.ReadAllText(jsonFilePath);
 
@@ -101,12 +100,6 @@ public class AssetLoader {
             TrySetColor(ref internalHpColor, config.InternalHpColor);
             TrySetColor(ref expRingOuterColor, config.ExpRingOuterColor);
             TrySetColor(ref expRingInnerColor, config.ExpRingInnerColor);
-
-            // 輸出到 BepInEx 日誌以確認
-            ToastManager.Toast($"NormalHpColor: {normalHpColor}");
-            ToastManager.Toast($"InternalHpColor: {internalHpColor}");
-            ToastManager.Toast($"ExpRingOuterColor: {expRingOuterColor}");
-            ToastManager.Toast($"ExpRingInnerColor: {expRingInnerColor}");
         }
         //foreach (var x in cacheOnlyOneSprites)
         //    ToastManager.Toast(x.Key);
