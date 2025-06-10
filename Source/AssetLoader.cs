@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using Newtonsoft.Json;
 using NineSolsAPI;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,11 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheFooSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheOnlyOneSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheUISprites = new Dictionary<string, Sprite>();
+
+    public static Color? normalHpColor = null;
+    public static Color? internalHpColor = null;
+    public static Color? expRingOuterColor = null;
+    public static Color? expRingInnerColor = null;
 
     public static void Init() {
         // 設置根目錄，根據 DEBUG 模式選擇路徑
@@ -58,12 +64,16 @@ public class AssetLoader {
             { "Foo", (cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
             { "PlayerSpriteAllUseThis", (cacheOnlyOneSprites, new Vector2(0.5f, 0.0f), 8.0f, null) },
             { "UI", (cacheUISprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
+                if (filename.StartsWith("LUP_LineA")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.Equals("ArrowLineA")) return (new Vector2(0f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("Arrow")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 1.0f);
                 if (filename.StartsWith("ParryBalls")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("Line_V")) return (new Vector2(0.5f, 0.5f), new Vector4(9f,5f,9f,5f), 2.0f);
                 if (filename.StartsWith("CoreB_fill")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("Icon_Blood")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("Icon_BloodEmpty")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("CoreC")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("CoreD")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
             }) }
         };
@@ -76,6 +86,27 @@ public class AssetLoader {
             }
         }
 
+        var jsonFilePath = Path.Combine(assetFolder, "UI", "color.json");
+        if (File.Exists(jsonFilePath)) {
+            ToastManager.Toast("111");
+            // 讀取 JSON 檔案內容
+            string jsonContent = File.ReadAllText(jsonFilePath);
+
+            // 反序列化 JSON 到物件
+            ColorConfig config = JsonConvert.DeserializeObject<ColorConfig>(jsonContent);
+
+            // 將十六進制顏色字串轉換為 Unity Color
+            TrySetColor(ref normalHpColor, config.NormalHpColor);
+            TrySetColor(ref internalHpColor, config.InternalHpColor);
+            TrySetColor(ref expRingOuterColor, config.ExpRingOuterColor);
+            TrySetColor(ref expRingInnerColor, config.ExpRingInnerColor);
+
+            // 輸出到 BepInEx 日誌以確認
+            ToastManager.Toast($"NormalHpColor: {normalHpColor}");
+            ToastManager.Toast($"InternalHpColor: {internalHpColor}");
+            ToastManager.Toast($"ExpRingOuterColor: {expRingOuterColor}");
+            ToastManager.Toast($"ExpRingInnerColor: {expRingInnerColor}");
+        }
         //foreach (var x in cacheOnlyOneSprites)
         //    ToastManager.Toast(x.Key);
     }
@@ -157,4 +188,29 @@ public class AssetLoader {
             return null;
         }
     }
+
+    private static void TrySetColor(ref Color? field, string hexColor) {
+        var parsed = ParseColor(hexColor);
+        if (parsed.HasValue)
+            field = parsed.Value;
+    }
+
+    private static Color? ParseColor(string hexColor) {
+        if (string.IsNullOrWhiteSpace(hexColor) || hexColor == "#") {
+            return null;
+        }
+
+        if (ColorUtility.TryParseHtmlString(hexColor, out Color color)) {
+            return color;
+        } else {
+            return null;
+        }
+    }
+}
+
+public class ColorConfig {
+    public string NormalHpColor { get; set; }
+    public string InternalHpColor { get; set; }
+    public string ExpRingOuterColor { get; set; }
+    public string ExpRingInnerColor { get; set; }
 }

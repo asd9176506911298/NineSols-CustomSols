@@ -130,6 +130,10 @@ public class CustomSols : BaseUnityPlugin {
         UpdateExpRing();
         UpdateHpBar();
         UpdatePotion();
+        UpdateLineA();
+        UpdateEightGua();
+        UpdateArrowLine();
+        UpdateRightLine();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -475,13 +479,13 @@ public class CustomSols : BaseUnityPlugin {
         }
 
         string expRingOuter = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)";
-        if (cachedSpriteRenderers.TryGetValue(expRingOuter, out var renderer)) {
-            renderer.color = new Color(1f, 0.4634513f, 0.6132076f, 0.5f);
+        if (AssetLoader.expRingOuterColor.HasValue && cachedSpriteRenderers.TryGetValue(expRingOuter, out var renderer)) {
+            renderer.color = AssetLoader.expRingOuterColor.Value;
         }
 
         string expRingInner = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)/BarFill";
-        if (cachedSpriteRenderers.TryGetValue(expRingInner, out var renderer2)) {
-            renderer2.color = new Color(0.5f, 1f, 0.5f, 0.5f);
+        if (AssetLoader.expRingInnerColor.HasValue && cachedSpriteRenderers.TryGetValue(expRingInner, out var renderer2)) {
+            renderer2.color = AssetLoader.expRingInnerColor.Value;
         }
     }
 
@@ -491,13 +495,14 @@ public class CustomSols : BaseUnityPlugin {
         }
 
         string normalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health";
-        if (cachedSpriteRenderers.TryGetValue(normalHp, out var renderer)) {
-            renderer.color = new Color(0.75f, 0.5f, 0.75f, 1f);
+        if (AssetLoader.normalHpColor.HasValue && cachedSpriteRenderers.TryGetValue(normalHp, out var renderer)) {
+            renderer.color = AssetLoader.normalHpColor.Value;
         }
 
+
         string internalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth";
-        if (cachedSpriteRenderers.TryGetValue(internalHp, out var renderer2)) {
-            renderer2.color = new Color(0.1f, 0.1f, 0.8f, 1f);
+        if (AssetLoader.internalHpColor.HasValue && cachedSpriteRenderers.TryGetValue(internalHp, out var renderer2)) {
+            renderer2.color = AssetLoader.internalHpColor.Value;
         }
     }
 
@@ -543,6 +548,84 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    //Chi Ball Left Line
+    private void UpdateLineA() {
+        if(GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA") != null){
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["LUP_LineA"];
+        }
+    }
+
+    //八卦
+    private void UpdateEightGua() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["CoreC"];
+        }
+
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["CoreD"];
+        }
+    }
+
+    private void UpdateArrowLine() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["ArrowLineA"];
+        }
+    }
+
+    private void UpdateRightLine() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["LUP_LineA"];
+        }
+    }
+
+    private void UpdateArrowBullet() {
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["BlockOutline"];
+        }
+
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar") != null) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["Block"];
+        }
+
+        const string basePath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/";
+
+        Sprite RageBarFrameSprite = AssetLoader.cacheUISprites.TryGetValue("BlockOutline", out var RageBarFrame) ? RageBarFrame : null;
+        Sprite RageBarSprite = AssetLoader.cacheUISprites.TryGetValue("Block", out var RageBar) ? RageBar : null;
+
+        if (RageBarFrame == null && RageBar == null) {
+            return;
+        }
+
+
+        for (int i = 0; i <= 7; i++) {
+            // Construct path once per iteration
+            string RagePath = i == 0 ? $"{basePath}RagePart_spr" : $"{basePath}RagePart_spr ({i})";
+            string RageBarFramePath = $"{RagePath}/RageBar Frame";
+            string RageBarPath = $"{RagePath}/RageBar";
+
+            // Find parent GameObject and update its SpriteRenderer
+            GameObject BarFrameObj = GameObject.Find(RageBarFramePath);
+            if (BarFrameObj != null) {
+                SpriteRenderer parentRenderer = BarFrameObj.GetComponent<SpriteRenderer>();
+                if (parentRenderer != null) {
+                    parentRenderer.sprite = RageBarFrame;
+                }
+            } else {
+                continue;
+            }
+
+            // Find child GameObject and update its SpriteRenderer
+            GameObject RageBarObj = GameObject.Find(RageBarPath);
+            if (RageBarObj != null) {
+                SpriteRenderer childRenderer = RageBarObj.GetComponent<SpriteRenderer>();
+                if (childRenderer != null) {
+                    childRenderer.sprite = RageBar;
+                }
+            }
+        }
+
+    }
+
     private void Reload() {
         InitializeAssets();
         ChangeMenuLogo();
@@ -553,6 +636,11 @@ public class CustomSols : BaseUnityPlugin {
         UpdateExpRing();
         UpdateHpBar();
         UpdatePotion();
+        UpdateLineA();
+        UpdateEightGua();
+        UpdateArrowLine();
+        UpdateRightLine();
+        UpdateArrowBullet();
     }
 
     private void OnDestroy() {
