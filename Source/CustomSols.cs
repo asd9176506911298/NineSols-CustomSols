@@ -101,36 +101,6 @@ public class CustomSols : BaseUnityPlugin {
 
         if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
             ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
-
-        //////Exp Ring Outer
-        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)") != null) {
-        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)").GetComponent<SpriteRenderer>().color = new Color(1f, 0.4634513f, 0.6132076f, 0.5f);
-        //}
-
-        ////Exp Ring Inner
-        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)/BarFill") != null) {
-        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)/BarFill").GetComponent<SpriteRenderer>().color = new Color(0.5f, 1f, 0.5f, 0.5f);
-        //}
-
-        ////Normal HP
-        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health") != null) {
-        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health").GetComponent<SpriteRenderer>().color = new Color(0.75f, 0.5f, 0.75f, 1f);
-        //}
-
-        ////Internal HP
-        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth") != null) {
-        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth").GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 0.8f, 1f);
-        //}
-
-        ////Potion full
-        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (1)/GameObject") != null) {
-        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (1)/GameObject").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["Icon_Blood"];
-        //}
-
-        ////Potion Empty
-        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (2)") != null) {
-        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (2)").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["Icon_BloodEmpty"];
-        //}
     }
 
     private void ChangeMenuLogo() {
