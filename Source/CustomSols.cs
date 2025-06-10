@@ -134,6 +134,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateEightGua();
         UpdateArrowLine();
         UpdateRightLine();
+        UpdateArrowBullet();
 
         arrowInit = false;
         arrowInit2 = false;
