@@ -60,6 +60,10 @@ public class AssetLoader {
             { "UI", (cacheUISprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
                 if (filename.StartsWith("Arrow")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 1.0f);
                 if (filename.StartsWith("ParryBalls")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("Line_V")) return (new Vector2(0.5f, 0.5f), new Vector4(9f,5f,9f,5f), 2.0f);
+                if (filename.StartsWith("CoreB_fill")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("Icon_Blood")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("Icon_BloodEmpty")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
             }) }
         };
@@ -139,9 +143,9 @@ public class AssetLoader {
             var filename = Path.GetFileNameWithoutExtension(file);
 
             if (tex2D.LoadImage(data)) {
-                Sprite sprite = filename.StartsWith("Lv") && filename.Contains("光束")
+                Sprite sprite = (filename.StartsWith("Lv") && filename.Contains("光束")) || filename.Equals("Line_V")
                     ? Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelsPerUnit, 0, SpriteMeshType.FullRect, border)
-                    : Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelsPerUnit);
+                    : Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelsPerUnit, 0, SpriteMeshType.FullRect, border);
                 sprite.name = filename;
                 return sprite;
             }

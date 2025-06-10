@@ -97,9 +97,40 @@ public class CustomSols : BaseUnityPlugin {
         UpdateHeartSprite();
         UpdateArrowIcon();
         UpdateButterflySprite();
+        UpdateExpRing();
 
         if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
-            ToastManager.Toast(Player.i.PlayerSprite.sprite.name);   
+            ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
+
+        //////Exp Ring Outer
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)").GetComponent<SpriteRenderer>().color = new Color(1f, 0.4634513f, 0.6132076f, 0.5f);
+        //}
+
+        ////Exp Ring Inner
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)/BarFill") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)/BarFill").GetComponent<SpriteRenderer>().color = new Color(0.5f, 1f, 0.5f, 0.5f);
+        //}
+
+        ////Normal HP
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health").GetComponent<SpriteRenderer>().color = new Color(0.75f, 0.5f, 0.75f, 1f);
+        //}
+
+        ////Internal HP
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth").GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 0.8f, 1f);
+        //}
+
+        ////Potion full
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (1)/GameObject") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (1)/GameObject").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["Icon_Blood"];
+        //}
+
+        ////Potion Empty
+        //if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (2)") != null) {
+        //    GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/PotionIMG (2)").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["Icon_BloodEmpty"];
+        //}
     }
 
     private void ChangeMenuLogo() {
@@ -126,6 +157,9 @@ public class CustomSols : BaseUnityPlugin {
         ImPerfectParry();
         SwordOnce();
         InitializeBowSprites();
+        UpdateExpRing();
+        UpdateHpBar();
+        UpdatePotion();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -195,7 +229,7 @@ public class CustomSols : BaseUnityPlugin {
         if (AssetLoader.cacheUISprites.TryGetValue("ParryBalls", out var sprite)) {
             foreach (var path in paths) {
                 if (cachedSpriteRenderers.TryGetValue(path, out var renderer)) {
-                    renderer.sprite = sprite;
+                    renderer.sprite = sprite;   
                 }
             }
         }
@@ -465,7 +499,79 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    private void UpdateExpRing() {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+            return;
+        }
 
+        string expRingOuter = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)";
+        if (cachedSpriteRenderers.TryGetValue(expRingOuter, out var renderer)) {
+            renderer.color = new Color(1f, 0.4634513f, 0.6132076f, 0.5f);
+        }
+
+        string expRingInner = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)/BarFill";
+        if (cachedSpriteRenderers.TryGetValue(expRingInner, out var renderer2)) {
+            renderer2.color = new Color(0.5f, 1f, 0.5f, 0.5f);
+        }
+    }
+
+    private void UpdateHpBar() {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+            return;
+        }
+
+        string normalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health";
+        if (cachedSpriteRenderers.TryGetValue(normalHp, out var renderer)) {
+            renderer.color = new Color(0.75f, 0.5f, 0.75f, 1f);
+        }
+
+        string internalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth";
+        if (cachedSpriteRenderers.TryGetValue(internalHp, out var renderer2)) {
+            renderer2.color = new Color(0.1f, 0.1f, 0.8f, 1f);
+        }
+    }
+
+    private void UpdatePotion() {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+            return;
+        }
+
+        const string basePath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/Potion/";
+
+        // Cache sprites to avoid repeated dictionary lookups
+        Sprite bloodEmptySprite = AssetLoader.cacheUISprites.TryGetValue("Icon_BloodEmpty", out var emptySprite) ? emptySprite : null;
+        Sprite bloodSprite = AssetLoader.cacheUISprites.TryGetValue("Icon_Blood", out var sprite) ? sprite : null;
+
+        if (bloodEmptySprite == null && bloodSprite == null) {
+            return;
+        }
+
+        for (int i = 0; i <= 7; i++) {
+            // Construct path once per iteration
+            string potionPath = i == 0 ? $"{basePath}PotionIMG" : $"{basePath}PotionIMG ({i})";
+            string potionChildPath = $"{potionPath}/GameObject";
+
+            // Find parent GameObject and update its SpriteRenderer
+            GameObject potionParent = GameObject.Find(potionPath);
+            if (potionParent != null) {
+                SpriteRenderer parentRenderer = potionParent.GetComponent<SpriteRenderer>();
+                if (parentRenderer != null) {
+                    parentRenderer.sprite = bloodEmptySprite;
+                }
+            } else {
+                continue;
+            }
+
+            // Find child GameObject and update its SpriteRenderer
+            GameObject potionChild = GameObject.Find(potionChildPath);
+            if (potionChild != null) {
+                SpriteRenderer childRenderer = potionChild.GetComponent<SpriteRenderer>();
+                if (childRenderer != null) {
+                    childRenderer.sprite = bloodSprite;
+                }
+            }
+        }
+    }
 
     private void Reload() {
         InitializeAssets();
@@ -474,6 +580,9 @@ public class CustomSols : BaseUnityPlugin {
         ImPerfectParry();
         SwordOnce();
         InitializeBowSprites();
+        UpdateExpRing();
+        UpdateHpBar();
+        UpdatePotion();
     }
 
     private void OnDestroy() {
