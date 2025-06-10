@@ -41,6 +41,18 @@
 - and name 1 2 3 4 5....
 - ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/PlayerAllSpriteUseThis/Source/img/AllUse.png?raw=true)
 
+# Change UI Color
+if you don't want change color use "NormalHpColor": "#"
+Hex is RGBA FF926EFF Red 255, Green 146, Blue 110, Alpha 255
+```
+{
+  "NormalHpColor": "#FF926EFF",
+  "InternalHpColor": "#F6FF86FF",
+  "ExpRingOuterColor": "#BDE4FFFF",
+  "ExpRingInnerColor": "#FF75AEFF"
+}
+```
+
 # Notice
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
