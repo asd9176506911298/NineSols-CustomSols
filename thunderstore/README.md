@@ -58,7 +58,7 @@ Hex is RGBA FF926EFF Red 255, Green 146, Blue 110, Alpha 255
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
 # Origin Sprite
-- https://drive.google.com/file/d/1vS6sHwjBuPoQP7S4CbQ9-cBrJDvPate2/view?usp=sharing
+- https://drive.google.com/file/d/189d8C39wxJQcuDAlIm2XtYOn8IYZHr0M/view?usp=sharing
 
 # If not found want sprite
 - use Asset Studio
