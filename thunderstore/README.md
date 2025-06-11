@@ -43,8 +43,8 @@
 - ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/PlayerAllSpriteUseThis/Source/img/AllUse.png?raw=true)
 
 # Change UI Color
-if you don't want change color use "NormalHpColor": "#"
-Hex is RGBA FF926EFF Red 255, Green 146, Blue 110, Alpha 255
+if you don't want change color use "NormalHpColor": "#"  
+"NormalHpColor": "#FF926EFF" Hex is RGBA Red 255, Green 146, Blue 110, Alpha 255
 ```
 {
   "NormalHpColor": "#FF926EFF",
