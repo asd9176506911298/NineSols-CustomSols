@@ -65,6 +65,10 @@ default is -15.0, 0.0, 0.0
 }
 ```
 
+# Arrow not work problem
+- reload will work
+- cause when you apply skin object haven't created
+
 # Mod UnNeed Sprite
 - When Mod Update some UnNeed Sprite  Sprite Still inside folder
 - If you want latest clean folder
