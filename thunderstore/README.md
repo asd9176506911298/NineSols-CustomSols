@@ -54,6 +54,17 @@ if you don't want change color use "NormalHpColor": "#"
 }
 ```
 
+# Normal Arrow Light Adjust Position
+
+default is -15.0, 0.0, 0.0
+```
+{
+  "NormalArrowLv1": [-15.0, 0.0, 0.0],
+  "NormalArrowLv2": [-15.0, 0.0, 0.0],
+  "NormalArrowLv3": [-15.0, 0.0, 0.0]
+}
+```
+
 # Notice
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
