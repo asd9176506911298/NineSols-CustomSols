@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using Battlehub.RTHandles;
+using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using NineSolsAPI;
@@ -417,13 +418,15 @@ public class CustomSols : BaseUnityPlugin {
 
         var chargePaths = new[] { "F1", "F2", "F3", "F4", "F5" };
         foreach (var path in chargePaths) {
-            if (GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}") != null) {
-                GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheSwordSprites["FooSmokeGlow"].texture);
+            if (GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}") != null &&
+                AssetLoader.cacheSwordSprites.TryGetValue("FooSmokeGlow", out var sprite)) {
+                GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", sprite.texture);
             }
         }
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", AssetLoader.cacheSwordSprites["bubbletrail"].texture);
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit") != null &&
+            AssetLoader.cacheSwordSprites.TryGetValue("bubbletrail", out var sprite2)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", sprite2.texture);
         }
     }
 
@@ -569,42 +572,49 @@ public class CustomSols : BaseUnityPlugin {
 
     //Chi Ball Left Line
     private void UpdateLineA() {
-        if(GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA") != null){
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["ChiBallLeftLine"];
+        if(GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA") != null &&
+            AssetLoader.cacheUISprites.TryGetValue("ChiBallLeftLine", out var sprite)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA").GetComponent<SpriteRenderer>().sprite = sprite;
         }
     }
 
     //八卦
     private void UpdateEightGua() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["CoreC"];
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC") != null &&
+            AssetLoader.cacheUISprites.TryGetValue("CoreC", out var sprite)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC").GetComponent<SpriteRenderer>().sprite = sprite;
         }
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["CoreD"];
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD") != null &&
+            AssetLoader.cacheUISprites.TryGetValue("CoreD", out var sprite2)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD").GetComponent<SpriteRenderer>().sprite = sprite2;
         }
     }
 
     private void UpdateArrowLine() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["ArrowLineA"];
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)") != null &&
+            AssetLoader.cacheUISprites.TryGetValue("ArrowLineA", out var sprite)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)").GetComponent<SpriteRenderer>().sprite = sprite;
         }
     }
 
     //Butterfly Right Line
     private void UpdateRightLine() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["ButterflyRightLine"];
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA") != null &&
+            AssetLoader.cacheUISprites.TryGetValue("ButterflyRightLine", out var sprite)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA").GetComponent<SpriteRenderer>().sprite = sprite;
         }
     }
 
     private void UpdateArrowBullet() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["BlockOutline"];
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame") != null &&
+            AssetLoader.cacheUISprites.TryGetValue("BlockOutline", out var sprite)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame").GetComponent<SpriteRenderer>().sprite = sprite;
         }
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar") != null) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar").GetComponent<SpriteRenderer>().sprite = AssetLoader.cacheUISprites["Block"];
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar") != null &&
+            AssetLoader.cacheUISprites.TryGetValue("Block", out var sprite2)) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar").GetComponent<SpriteRenderer>().sprite = sprite2;
         }
 
         const string basePath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/";
