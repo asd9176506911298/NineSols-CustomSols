@@ -65,6 +65,11 @@ default is -15.0, 0.0, 0.0
 }
 ```
 
+# Mod UnNeed Sprite
+- When Mod Update some UnNeed Sprite  Sprite Still inside folder
+- If you want latest clean folder
+- remove `BepInEx\config\CustomSols` this folder ReInstall will get latest clean folder
+
 # Notice
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 

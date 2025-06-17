@@ -63,6 +63,8 @@ public class AssetLoader {
                 if (filename.StartsWith("Lv1光束")) return (new Vector2(0f, 0.5f), new Vector4(212f, 0f, 212f, 0f), null);
                 if (filename.StartsWith("Lv2光束")) return (new Vector2(0f, 0.5f), new Vector4(220f, 0f, 220f, 0f), null);
                 if (filename.StartsWith("Lv3光束")) return (new Vector2(0f, 0.5f), new Vector4(240f, 0f, 205f, 0f), null);
+                if (filename.Equals("circle_mask")) return (new Vector2(0.5f, 0.5f), new Vector4(240f, 0f, 205f, 0f), 100.0f);
+                if (filename.Equals("ExplosionCenter")) return (new Vector2(0.5f, 0.5f), new Vector4(240f, 0f, 205f, 0f), 100.0f);
                 return null;
             }) },
             { "Foo", (cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },

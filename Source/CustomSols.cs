@@ -376,7 +376,11 @@ public class CustomSols : BaseUnityPlugin {
                 UpdateBowSprite(go, "Exploding Arrow/ExplodingArrow/ChasingArrowLight");
                 UpdateBowSprite(go, "Exploding Arrow/EnergyBall/Core");
             } else if (go.name.StartsWith("Explosion Damage 爆破箭 閃電 lv")) {
-                UpdateBowSprite(go, "ATTACK/Core");
+                //UpdateBowSprite(go, "ATTACK/Core");
+                var renderer = go.transform.Find("ATTACK/Core")?.GetComponent<SpriteRenderer>();
+                if (renderer != null && renderer.sprite != null && AssetLoader.cacheBowSprites.TryGetValue("ExplosionCenter", out var sprite)) {
+                    renderer.sprite = sprite;
+                }
             } else if (go.name.StartsWith("Chasing Arrow Shooter 飛天御劍 lv")) {
                 for (int i = 1; i <= 2; i++) {
                     UpdateBowSprite(go, $"Circle Shooter/Arrow ({i})/ChasingArrow /ChasingArrowLight");
