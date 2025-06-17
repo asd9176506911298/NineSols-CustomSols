@@ -27,6 +27,10 @@ public class AssetLoader {
     public static Color? expRingOuterColor = null;
     public static Color? expRingInnerColor = null;
 
+    public static Vector3? NormalArrowLv1Pos = null;
+    public static Vector3? NormalArrowLv2Pos = null;
+    public static Vector3? NormalArrowLv3Pos = null;
+
     public static void Init() {
         // 設置根目錄，根據 DEBUG 模式選擇路徑
         string basePath =
@@ -100,6 +104,20 @@ public class AssetLoader {
             TrySetColor(ref internalHpColor, config.InternalHpColor);
             TrySetColor(ref expRingOuterColor, config.ExpRingOuterColor);
             TrySetColor(ref expRingInnerColor, config.ExpRingInnerColor);
+        }
+
+        var bowJsonFilePath = Path.Combine(assetFolder, "Bow", "bow.json");
+        if (File.Exists(bowJsonFilePath)) {
+            try {
+                string jsonContent = File.ReadAllText(bowJsonFilePath);
+                BowConfig config = JsonConvert.DeserializeObject<BowConfig>(jsonContent);
+
+                TrySetVector3(ref NormalArrowLv1Pos, config.NormalArrowLv1);
+                TrySetVector3(ref NormalArrowLv2Pos, config.NormalArrowLv2);
+                TrySetVector3(ref NormalArrowLv3Pos, config.NormalArrowLv3);
+            } catch (Exception ex) {
+                ToastManager.Toast($"Failed to load bow.json: {ex.Message}");
+            }
         }
         //foreach (var x in cacheOnlyOneSprites)
         //    ToastManager.Toast(x.Key);
@@ -183,6 +201,14 @@ public class AssetLoader {
         }
     }
 
+    private static void TrySetVector3(ref Vector3? field, float[] vectorArray) {
+        if (vectorArray != null && vectorArray.Length == 3) {
+            field = new Vector3(vectorArray[0], vectorArray[1], vectorArray[2]);
+        } else {
+            ToastManager.Toast($"Invalid Vector3 data: {JsonConvert.SerializeObject(vectorArray)}");
+        }
+    }
+
     private static void TrySetColor(ref Color? field, string hexColor) {
         var parsed = ParseColor(hexColor);
         if (parsed.HasValue)
@@ -207,4 +233,10 @@ public class ColorConfig {
     public string InternalHpColor { get; set; }
     public string ExpRingOuterColor { get; set; }
     public string ExpRingInnerColor { get; set; }
+}
+
+public class BowConfig {
+    public float[] NormalArrowLv1 { get; set; }
+    public float[] NormalArrowLv2 { get; set; }
+    public float[] NormalArrowLv3 { get; set; }
 }

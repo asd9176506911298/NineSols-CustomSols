@@ -360,6 +360,13 @@ public class CustomSols : BaseUnityPlugin {
 
         foreach (var go in FindObjectsOfType<GameObject>(true)) {
             if (go.name.StartsWith("NormalArrow Shoot 穿雲 Lv")) {
+                if(go.name.StartsWith("NormalArrow Shoot 穿雲 Lv1"))
+                    go.transform.Find("光束").localPosition = AssetLoader.NormalArrowLv1Pos.Value;
+                if (go.name.StartsWith("NormalArrow Shoot 穿雲 Lv2"))
+                    go.transform.Find("光束").localPosition = AssetLoader.NormalArrowLv2Pos.Value;
+                if (go.name.StartsWith("NormalArrow Shoot 穿雲 Lv3"))
+                    go.transform.Find("光束").localPosition = AssetLoader.NormalArrowLv3Pos.Value;
+
                 UpdateBowSprite(go, "光束");
                 UpdateBowSprite(go, "NormalArrow");
                 UpdateBowSprite(go, "NormalArrow/ChasingArrowLight");
