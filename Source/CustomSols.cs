@@ -105,6 +105,7 @@ public class CustomSols : BaseUnityPlugin {
         TalismanBall();
         Foo();
         Sword();
+        YingZhao();
 
         //UI
         UpdateHeartSprite();
@@ -147,6 +148,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowLine();
         UpdateRightLine();
         UpdateArrowBullet();
+        YingZhaoOnce();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -454,6 +456,45 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    private void YingZhaoOnce() {
+        if (cachedSpriteRenderers.TryGetValue("A2_S5_ BossHorseman_GameLevel/Room/StealthGameMonster_SpearHorseMan/MonsterCore/Animator(Proxy)/Animator/SpearHorseMan/DDS/SpearHorseMan_HorseBodyD/SpearHorseMan_HorseBody_A", out var renderer3) &&
+           AssetLoader.cacheYingZhaoSprites.TryGetValue(renderer3.sprite.name, out var sprite3)) {
+            renderer3.sprite = sprite3;
+        }
+
+        if (cachedSpriteRenderers.TryGetValue("A2_S5_ BossHorseman_GameLevel/Room/StealthGameMonster_SpearHorseMan/MonsterCore/Animator(Proxy)/Animator/SpearHorseMan/DDS/SpearHorseMan_HorseBodyD/SpearHorseMan_HorseBody_A/bone_1/bone_2/SpearHorseMan_HorseBody_B", out var renderer4) &&
+
+           AssetLoader.cacheYingZhaoSprites.TryGetValue(renderer4.sprite.name, out var sprite4)) {
+            renderer4.sprite = sprite4;
+        }
+    }
+
+    private void YingZhao() {
+        
+        if (AssetLoader.cacheYingZhaoSprites == null || AssetLoader.cacheYingZhaoSprites.Count == 0) {
+            return;
+        }
+
+        //ToastManager.Toast(GameObject.Find("A2_S5_ BossHorseman_GameLevel/Room/StealthGameMonster_SpearHorseMan/MonsterCore/Animator(Proxy)/Animator/SpearHorseMan/DDS/Body_Attack_D (F)").GetComponent<SpriteRenderer>().sprite.name);
+        if (cachedSpriteRenderers.TryGetValue("A2_S5_ BossHorseman_GameLevel/Room/StealthGameMonster_SpearHorseMan/MonsterCore/Animator(Proxy)/Animator/SpearHorseMan/DDS/Body_Attack_D (F)", out var renderer) &&
+
+           AssetLoader.cacheYingZhaoSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+                renderer.sprite = sprite;
+        }
+
+        if (cachedSpriteRenderers.TryGetValue("A2_S5_ BossHorseman_GameLevel/Room/StealthGameMonster_SpearHorseMan/MonsterCore/Animator(Proxy)/Animator/SpearHorseMan/DDS/SpearHorseMan_HorseBodyD", out var renderer2) &&
+
+           AssetLoader.cacheYingZhaoSprites.TryGetValue(renderer2.sprite.name, out var sprite2)) {
+            renderer2.sprite = sprite2;
+        }
+
+        if (cachedSpriteRenderers.TryGetValue("A2_S5_ BossHorseman_GameLevel/Room/StealthGameMonster_SpearHorseMan/MonsterCore/Animator(Proxy)/Animator/SpearHorseMan/DDS/EFFECT/SlashA", out var renderer3) &&
+
+           AssetLoader.cacheYingZhaoSprites.TryGetValue(renderer3.sprite.name, out var sprite3)) {
+            renderer3.sprite = sprite3;
+        }
+    }
+
     private void UpdateHeartSprite() {
         if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
             return;
@@ -675,6 +716,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowLine();
         UpdateRightLine();
         UpdateArrowBullet();
+        YingZhaoOnce();
     }
 
     private void OnDestroy() {

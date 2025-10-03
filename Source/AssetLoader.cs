@@ -21,6 +21,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheFooSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheOnlyOneSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheUISprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheYingZhaoSprites = new Dictionary<string, Sprite>();
 
     public static Color? normalHpColor = null;
     public static Color? internalHpColor = null;
@@ -82,7 +83,8 @@ public class AssetLoader {
                 if (filename.StartsWith("CoreC")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("CoreD")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
-            }) }
+            }) },
+            { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) }
         };
 
         // 集中處理子目錄的檢查與載入
