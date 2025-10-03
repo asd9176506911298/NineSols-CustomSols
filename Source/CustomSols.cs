@@ -90,6 +90,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowLine();
         UpdateRightLine();
         UpdateArrowBullet();
+        YingZhaoOnce();
     }
 
     private void LateUpdate() {
