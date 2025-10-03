@@ -11,6 +11,7 @@
 - Air Dash
 - Dash
 - Menu Logo
+- YingZhao
 
 # Preview
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/Optimized/Source/img/CustomSolsPreview.png?raw=true)
@@ -79,6 +80,8 @@ default is -15.0, 0.0, 0.0
 
 # Origin Sprite
 - https://drive.google.com/file/d/189d8C39wxJQcuDAlIm2XtYOn8IYZHr0M/view?usp=sharing
+- YingZhao
+- https://drive.google.com/file/d/1ruhRussKrtjLR8uJol32EkoVr34S_AOI
 
 # If not found want sprite
 - use Asset Studio
