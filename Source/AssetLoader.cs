@@ -27,12 +27,22 @@ public class AssetLoader {
     public static Color? internalHpColor = null;
     public static Color? expRingOuterColor = null;
     public static Color? expRingInnerColor = null;
+    public static Color? RageBarColor = null;
+    public static Color? RageBarFrameColor = null;
+    public static Color? ArrowLineBColor = null;
+    public static Color? ArrowGlowColor = null;
+    public static Color? ChiBallLeftLineColor = null;
+    public static Color? ButterflyRightLineColor = null;
+    public static Color? CoreCColor = null;
+    public static Color? CoreDColor = null;
 
     public static Vector3? NormalArrowLv1Pos = null;
     public static Vector3? NormalArrowLv2Pos = null;
     public static Vector3? NormalArrowLv3Pos = null;
 
     public static void Init() {
+        ColorFieldNull();
+
         // 設置根目錄，根據 DEBUG 模式選擇路徑
         string basePath =
 #if DEBUG
@@ -108,6 +118,14 @@ public class AssetLoader {
             TrySetColor(ref internalHpColor, config.InternalHpColor);
             TrySetColor(ref expRingOuterColor, config.ExpRingOuterColor);
             TrySetColor(ref expRingInnerColor, config.ExpRingInnerColor);
+            TrySetColor(ref RageBarColor, config.RageBarColor);
+            TrySetColor(ref RageBarFrameColor, config.RageBarFrameColor);
+            TrySetColor(ref ArrowLineBColor, config.ArrowLineBColor);
+            TrySetColor(ref ArrowGlowColor, config.ArrowGlowColor);
+            TrySetColor(ref ChiBallLeftLineColor, config.ChiBallLeftLineColor);
+            TrySetColor(ref ButterflyRightLineColor, config.ButterflyRightLineColor);
+            TrySetColor(ref CoreCColor, config.CoreCColor);
+            TrySetColor(ref CoreDColor, config.CoreDColor);
         }
 
         var bowJsonFilePath = Path.Combine(assetFolder, "Bow", "bow.json");
@@ -230,6 +248,21 @@ public class AssetLoader {
             return null;
         }
     }
+
+    private static void ColorFieldNull() {
+        normalHpColor = null;
+        internalHpColor = null;
+        expRingOuterColor = null;
+        expRingInnerColor = null;
+        RageBarColor = null;
+        RageBarFrameColor = null;
+        ArrowLineBColor = null;
+        ArrowGlowColor = null;
+        ChiBallLeftLineColor = null;
+        ButterflyRightLineColor = null;
+        CoreCColor = null;
+        CoreDColor = null;
+    }
 }
 
 public class ColorConfig {
@@ -237,6 +270,14 @@ public class ColorConfig {
     public string InternalHpColor { get; set; }
     public string ExpRingOuterColor { get; set; }
     public string ExpRingInnerColor { get; set; }
+    public string RageBarColor { get; set; }
+    public string RageBarFrameColor { get; set; }
+    public string ArrowLineBColor { get; set; }
+    public string ArrowGlowColor { get; set; }
+    public string ChiBallLeftLineColor { get; set; }
+    public string ButterflyRightLineColor { get; set; }
+    public string CoreCColor { get; set; }
+    public string CoreDColor { get; set; }
 }
 
 public class BowConfig {
