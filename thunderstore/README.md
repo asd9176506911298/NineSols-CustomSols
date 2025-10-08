@@ -48,10 +48,18 @@ if you don't want change color use "NormalHpColor": "#"
 "NormalHpColor": "#FF926EFF" Hex is RGBA Red 255, Green 146, Blue 110, Alpha 255
 ```
 {
-  "NormalHpColor": "#FF926EFF",
-  "InternalHpColor": "#F6FF86FF",
-  "ExpRingOuterColor": "#BDE4FFFF",
-  "ExpRingInnerColor": "#FF75AEFF"
+  "NormalHpColor": "#",
+  "InternalHpColor": "#",
+  "ExpRingOuterColor": "#",
+  "ExpRingInnerColor": "#",
+  "RageBarColor": "#",
+  "RageBarFrameColor": "#",
+  "ArrowLineBColor": "#",
+  "ArrowGlowColor": "#",
+  "ChiBallLeftLineColor": "#",
+  "ButterflyRightLineColor": "#",
+  "CoreCColor": "#",
+  "CoreDColor": "#"
 }
 ```
 
