@@ -66,7 +66,10 @@ public class AssetLoader {
         var folders = new Dictionary<string, (Dictionary<string, Sprite> cache, Vector2 pivot, float ppu, Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> selector)>
         {
             { "MenuLogo", (cacheMenuLogoSprites, new Vector2(0.5f, 0f), 8.0f, null) },
-            { "Player", (cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f, null) },
+            { "Player", (cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f, filename => {
+                if (filename.StartsWith("SavePointPowerToYee")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
+                return null;
+            }) },
             { "TalismanBall", (cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f, null) },
             { "Parry", (cacheParrySprites, new Vector2(0.5f, 0f), 8.0f, filename => filename.StartsWith("ParrySparkAccurate") ? (new Vector2(0.5f, 0.5f), Vector4.zero, null) : null) },
             { "Sword", (cacheSwordSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },

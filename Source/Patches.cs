@@ -67,4 +67,14 @@ public class Patches {
             CustomSols.CurrentDummyRenderer = null;
         }
     }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(_2dxFX_Twist), "OnEnable")]
+    private static void CatchRootDummy(_2dxFX_Twist __instance) {
+        var dummyRootRenderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
+        if (dummyRootRenderer) 
+        {
+            CustomSols.CurrentRootDummyRenderer = dummyRootRenderer;
+        }
+    }
 }

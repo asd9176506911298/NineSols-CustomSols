@@ -44,6 +44,7 @@ public class CustomSols : BaseUnityPlugin {
     private static string playerDummySpriteName = "";
 
     public static SpriteRenderer? CurrentDummyRenderer = null;
+    public static SpriteRenderer? CurrentRootDummyRenderer = null;
 
     private ParticleSystemRenderer? _cachedUCSuccess;
     private ParticleSystemRenderer? _cachedUCCharging;
@@ -406,6 +407,9 @@ public class CustomSols : BaseUnityPlugin {
             }
             if (CurrentDummyRenderer is { sprite: var s } && AssetLoader.cachePlayerSprites.TryGetValue(s.name, out var cachedSprite)) {
                 CurrentDummyRenderer.sprite = cachedSprite;
+            }
+            if (CurrentRootDummyRenderer is { sprite: var s2 } && AssetLoader.cachePlayerSprites.TryGetValue(s2.name, out var cachedSprite2)) {
+                CurrentRootDummyRenderer.sprite = cachedSprite2;
             }
         }
     }
