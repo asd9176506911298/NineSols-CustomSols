@@ -87,7 +87,7 @@ default is -15.0, 0.0, 0.0
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
 # Origin Sprite
-- https://drive.google.com/file/d/1kxeK8ot2H2Kp9wuaGpEX0vyTNt6ZRiCI/view?usp=sharing
+- https://drive.google.com/file/d/1vyYBA_Z7iDHMoBY94f5nGG4QtbAXS2XC/view?usp=sharing
 - YingZhao
 - https://drive.google.com/file/d/1ruhRussKrtjLR8uJol32EkoVr34S_AOI
 
