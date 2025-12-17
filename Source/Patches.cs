@@ -77,4 +77,13 @@ public class Patches {
             CustomSols.CurrentRootDummyRenderer = dummyRootRenderer;
         }
     }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(_2_Art._2_Character.HoHoYee.DummyPlayer.ScaleFollowByPlayerFacing), "OnEnable")]
+    private static void CatchElevatorDummy(_2_Art._2_Character.HoHoYee.DummyPlayer.ScaleFollowByPlayerFacing __instance) {
+        var dummyElevatorRenderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
+        if (dummyElevatorRenderer) {
+            CustomSols.CurrentElevatorDummyRenderer = dummyElevatorRenderer;
+        }
+    }
 }

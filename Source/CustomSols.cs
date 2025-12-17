@@ -45,6 +45,7 @@ public class CustomSols : BaseUnityPlugin {
 
     public static SpriteRenderer? CurrentDummyRenderer = null;
     public static SpriteRenderer? CurrentRootDummyRenderer = null;
+    public static SpriteRenderer? CurrentElevatorDummyRenderer = null;
 
     private ParticleSystemRenderer? _cachedUCSuccess;
     private ParticleSystemRenderer? _cachedUCCharging;
@@ -387,29 +388,52 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void PlayerSprite() {
-        if (AssetLoader.cacheOnlyOneSprites is { Count: > 0 } && Player.i?.PlayerSprite is not null) {
+        // 1. 檢查 Cache 是否存在
+        var cacheOnly = AssetLoader.cacheOnlyOneSprites;
+        var cachePlayer = AssetLoader.cachePlayerSprites;
+
+        if (cacheOnly is { Count: > 0 } && Player.i?.PlayerSprite is not null) {
             spriteChangeTimer += Time.deltaTime;
 
-            if (AssetLoader.cacheOnlyOneSprites.TryGetValue(currentSpriteIndex.ToString(), out var sprite)) {
+            if (cacheOnly.TryGetValue(currentSpriteIndex.ToString(), out var sprite)) {
                 Player.i.PlayerSprite.sprite = sprite;
 
                 if (spriteChangeTimer >= spriteDelaySecond.Value) {
                     currentSpriteIndex++;
-                    if (!AssetLoader.cacheOnlyOneSprites.ContainsKey(currentSpriteIndex.ToString())) {
+                    if (!cacheOnly.ContainsKey(currentSpriteIndex.ToString())) {
                         currentSpriteIndex = 1;
                     }
                     spriteChangeTimer = 0f;
                 }
             }
-        } else if (AssetLoader.cachePlayerSprites is { Count: > 0 } && Player.i?.PlayerSprite?.sprite is not null) {
-            if (AssetLoader.cachePlayerSprites.TryGetValue(Player.i.PlayerSprite.sprite.name, out var sprite)) {
+        } else if (cachePlayer is { Count: > 0 } && Player.i?.PlayerSprite?.sprite is not null) {
+            // 安全獲取玩家當前 Sprite 名稱
+            string currentName = Player.i.PlayerSprite.sprite.name;
+            if (cachePlayer.TryGetValue(currentName, out var sprite)) {
                 Player.i.PlayerSprite.sprite = sprite;
             }
-            if (CurrentDummyRenderer is { sprite: var s } && AssetLoader.cachePlayerSprites.TryGetValue(s.name, out var cachedSprite)) {
-                CurrentDummyRenderer.sprite = cachedSprite;
+
+            // --- 修正重點：使用 s?.name 並檢查 null ---
+
+            // Dummy 渲染器處理
+            if (CurrentDummyRenderer != null && CurrentDummyRenderer.sprite != null) {
+                if (cachePlayer.TryGetValue(CurrentDummyRenderer.sprite.name, out var cachedSprite)) {
+                    CurrentDummyRenderer.sprite = cachedSprite;
+                }
             }
-            if (CurrentRootDummyRenderer is { sprite: var s2 } && AssetLoader.cachePlayerSprites.TryGetValue(s2.name, out var cachedSprite2)) {
-                CurrentRootDummyRenderer.sprite = cachedSprite2;
+
+            // RootDummy 渲染器處理
+            if (CurrentRootDummyRenderer != null && CurrentRootDummyRenderer.sprite != null) {
+                if (cachePlayer.TryGetValue(CurrentRootDummyRenderer.sprite.name, out var cachedSprite2)) {
+                    CurrentRootDummyRenderer.sprite = cachedSprite2;
+                }
+            }
+
+            // ElevatorDummy 渲染器處理
+            if (CurrentElevatorDummyRenderer != null && CurrentElevatorDummyRenderer.sprite != null) {
+                if (cachePlayer.TryGetValue(CurrentElevatorDummyRenderer.sprite.name, out var cachedSprite3)) {
+                    CurrentElevatorDummyRenderer.sprite = cachedSprite3;
+                }
             }
         }
     }
