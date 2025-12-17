@@ -53,4 +53,18 @@ public class Patches {
             CustomSols.arrowInit2 = true;
         }
     }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(Player), nameof(Player.SetPlayerView))]
+    private static void CatchCutsceneDummy(bool active) {
+        if (active == false) {
+            if (Player.i == null || Player.i.replacePlayer == null) return;
+
+            var dummyRenderer = Player.i.replacePlayer.transform.parent.GetComponentInChildren<SpriteRenderer>(true);
+            if (dummyRenderer)
+                CustomSols.CurrentDummyRenderer = dummyRenderer;
+        } else {
+            CustomSols.CurrentDummyRenderer = null;
+        }
+    }
 }

@@ -39,6 +39,8 @@ public class CustomSols : BaseUnityPlugin {
     public static bool arrowInit = false;
     public static bool arrowInit2 = false;
 
+    public static SpriteRenderer? CurrentDummyRenderer = null;
+
     public static readonly HashSet<string> bowSpritePaths = new HashSet<string> {
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow",
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A",
@@ -347,6 +349,9 @@ public class CustomSols : BaseUnityPlugin {
         } else if (AssetLoader.cachePlayerSprites is { Count: > 0 } && Player.i?.PlayerSprite?.sprite is not null) {
             if (AssetLoader.cachePlayerSprites.TryGetValue(Player.i.PlayerSprite.sprite.name, out var sprite)) {
                 Player.i.PlayerSprite.sprite = sprite;
+            }
+            if (CurrentDummyRenderer is { sprite: var s } && AssetLoader.cachePlayerSprites.TryGetValue(s.name, out var cachedSprite)) {
+                CurrentDummyRenderer.sprite = cachedSprite;
             }
         }
     }
