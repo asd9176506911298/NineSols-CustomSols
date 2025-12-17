@@ -43,9 +43,10 @@ public class CustomSols : BaseUnityPlugin {
     private static string playerSpriteName = "";
     private static string playerDummySpriteName = "";
 
+
     public static SpriteRenderer? CurrentDummyRenderer = null;
-    public static SpriteRenderer? CurrentRootDummyRenderer = null;
-    public static SpriteRenderer? CurrentElevatorDummyRenderer = null;
+
+    public static List<SpriteRenderer> DummyRenderers = new List<SpriteRenderer>();
 
     private ParticleSystemRenderer? _cachedUCSuccess;
     private ParticleSystemRenderer? _cachedUCCharging;
@@ -415,24 +416,16 @@ public class CustomSols : BaseUnityPlugin {
 
             // --- 修正重點：使用 s?.name 並檢查 null ---
 
-            // Dummy 渲染器處理
-            if (CurrentDummyRenderer != null && CurrentDummyRenderer.sprite != null) {
-                if (cachePlayer.TryGetValue(CurrentDummyRenderer.sprite.name, out var cachedSprite)) {
-                    CurrentDummyRenderer.sprite = cachedSprite;
-                }
-            }
+            // 遍歷 List 中所有的渲染器
+            // 使用 RemoveAll 清理掉已經被銷毀 (null) 的渲染器，避免報錯
+            CustomSols.DummyRenderers.RemoveAll(r => r == null);
 
-            // RootDummy 渲染器處理
-            if (CurrentRootDummyRenderer != null && CurrentRootDummyRenderer.sprite != null) {
-                if (cachePlayer.TryGetValue(CurrentRootDummyRenderer.sprite.name, out var cachedSprite2)) {
-                    CurrentRootDummyRenderer.sprite = cachedSprite2;
-                }
-            }
-
-            // ElevatorDummy 渲染器處理
-            if (CurrentElevatorDummyRenderer != null && CurrentElevatorDummyRenderer.sprite != null) {
-                if (cachePlayer.TryGetValue(CurrentElevatorDummyRenderer.sprite.name, out var cachedSprite3)) {
-                    CurrentElevatorDummyRenderer.sprite = cachedSprite3;
+            foreach (var renderer in CustomSols.DummyRenderers) {
+                if (renderer.sprite != null) {
+                    // 根據目前的 Sprite 名稱從快取中找尋對應的新 Sprite
+                    if (cachePlayer.TryGetValue(renderer.sprite.name, out var cachedSprite)) {
+                        renderer.sprite = cachedSprite;
+                    }
                 }
             }
         }

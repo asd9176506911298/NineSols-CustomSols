@@ -57,33 +57,68 @@ public class Patches {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(Player), nameof(Player.SetPlayerView))]
     private static void CatchCutsceneDummy(bool active) {
-        if (active == false) {
+        if (active == false) { // 進入劇情模式
             if (Player.i == null || Player.i.replacePlayer == null) return;
 
             var dummyRenderer = Player.i.replacePlayer.transform.parent.GetComponentInChildren<SpriteRenderer>(true);
-            if (dummyRenderer)
+            if (dummyRenderer) {
+                // 1. 放入 List (給統一替換邏輯用)
+                if (!CustomSols.DummyRenderers.Contains(dummyRenderer)) {
+                    CustomSols.DummyRenderers.Add(dummyRenderer);
+                }
+                // 2. 賦值給特定變數 (給 Toast 功能用)
                 CustomSols.CurrentDummyRenderer = dummyRenderer;
+            }
         } else {
+            // 離開劇情模式時，清理特定引用
             CustomSols.CurrentDummyRenderer = null;
         }
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(_2dxFX_Twist), "OnEnable")]
-    private static void CatchRootDummy(_2dxFX_Twist __instance) {
-        var dummyRootRenderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
-        if (dummyRootRenderer) 
-        {
-            CustomSols.CurrentRootDummyRenderer = dummyRootRenderer;
+    // 輔助方法：確保不重複添加且非空
+    private static void AddToDummyList(SpriteRenderer renderer) {
+        if (renderer != null && !CustomSols.DummyRenderers.Contains(renderer)) {
+            CustomSols.DummyRenderers.Add(renderer);
         }
     }
 
+    // 1. RootDummy Patch
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(_2dxFX_Twist), "OnEnable")]
+    private static void CatchRootDummy(_2dxFX_Twist __instance) {
+        var renderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
+        AddToDummyList(renderer);
+    }
+
+    // 2. ElevatorDummy Patch
     [HarmonyPostfix]
     [HarmonyPatch(typeof(_2_Art._2_Character.HoHoYee.DummyPlayer.ScaleFollowByPlayerFacing), "OnEnable")]
     private static void CatchElevatorDummy(_2_Art._2_Character.HoHoYee.DummyPlayer.ScaleFollowByPlayerFacing __instance) {
-        var dummyElevatorRenderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
-        if (dummyElevatorRenderer) {
-            CustomSols.CurrentElevatorDummyRenderer = dummyElevatorRenderer;
+        var renderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
+        AddToDummyList(renderer);
+    }
+
+    // 3. LevelUpDummy Patch
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(_2dxFX_NewTeleportation2), "OnEnable")]
+    private static void CatchLevelUpDummy(_2dxFX_NewTeleportation2 __instance) {
+        var renderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
+        AddToDummyList(renderer);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(_2dxFX_GoldFX), "OnEnable")]
+    private static void CatchHealDummy(_2dxFX_GoldFX __instance) {
+        // 取得父物件下所有的 SpriteRenderer (包含隱藏的)
+        var renderers = __instance.transform.parent.GetComponentsInChildren<SpriteRenderer>(true);
+
+        if (renderers != null && renderers.Length > 0) {
+            foreach (var r in renderers) {
+                // 防止重複加入同一個渲染器
+                if (!CustomSols.DummyRenderers.Contains(r)) {
+                    CustomSols.DummyRenderers.Add(r);
+                }
+            }
         }
     }
 }
