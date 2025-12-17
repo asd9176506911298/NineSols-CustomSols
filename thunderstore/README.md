@@ -43,7 +43,7 @@
 - and name 1 2 3 4 5....
 - ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/PlayerAllSpriteUseThis/Source/img/AllUse.png?raw=true)
 
-# Change UI Color
+# Change UI Color and Arrow Light Adjust Position
 if you don't want change color use "NormalHpColor": "#"  
 "NormalHpColor": "#FF926EFF" Hex is RGBA Red 255, Green 146, Blue 110, Alpha 255
 ```
@@ -59,7 +59,10 @@ if you don't want change color use "NormalHpColor": "#"
   "ChiBallLeftLineColor": "#",
   "ButterflyRightLineColor": "#",
   "CoreCColor": "#",
-  "CoreDColor": "#"
+  "CoreDColor": "#",
+  "NormalArrowLv1": [-15.0, 0.0, 0.0],
+  "NormalArrowLv2": [-15.0, 0.0, 0.0],
+  "NormalArrowLv3": [-15.0, 0.0, 0.0]
 }
 ```
 
