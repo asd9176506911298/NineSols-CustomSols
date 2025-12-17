@@ -24,6 +24,7 @@ public class CustomSols : BaseUnityPlugin {
 
     public ConfigEntry<bool> openFolder = null!;
     public ConfigEntry<bool> isToastPlayerSprite = null!;
+    public ConfigEntry<bool> isToastPlayerDummySprite = null!;
     private ConfigEntry<float> spriteDelaySecond= null!;
     private ConfigEntry<Color> UCChargingColor = null!;
     private ConfigEntry<Color> UCSuccessColor = null!;
@@ -39,7 +40,15 @@ public class CustomSols : BaseUnityPlugin {
     public static bool arrowInit = false;
     public static bool arrowInit2 = false;
 
+    private static string playerSpriteName = "";
+    private static string playerDummySpriteName = "";
+
     public static SpriteRenderer? CurrentDummyRenderer = null;
+
+    private ParticleSystemRenderer? _cachedUCSuccess;
+    private ParticleSystemRenderer? _cachedUCCharging;
+    private List<SpriteRenderer> _cachedTalismanBalls = new List<SpriteRenderer>();
+    private bool _talismanSearched = false;
 
     public static readonly HashSet<string> bowSpritePaths = new HashSet<string> {
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow",
@@ -116,8 +125,31 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowColor();
         UpdateButterflySprite();
 
-        if (isToastPlayerSprite.Value && Player.i?.PlayerSprite != null)
-            ToastManager.Toast(Player.i.PlayerSprite.sprite.name);
+        // 玩家部分
+        if (isToastPlayerSprite.Value) {
+            var s = Player.i?.PlayerSprite?.sprite;
+            if (s != null) CheckAndToast(s, ref playerSpriteName);
+        }
+
+        // Dummy 部分
+        if (isToastPlayerDummySprite.Value) {
+            var s = CurrentDummyRenderer?.sprite;
+            if (s != null) CheckAndToast(s, ref playerDummySpriteName, "Dummy: ");
+        }
+    }
+
+    private void CheckAndToast(Sprite sprite, ref string cachedName, string prefix = "") {
+        // 1. 安全檢查：如果 sprite 為空則不執行
+        if (sprite == null) return;
+
+        // 2. 獲取名稱（避免重複存取 .name 屬性）
+        string currentName = sprite.name;
+
+        // 3. 只有在名稱真正改變時才執行邏輯
+        if (cachedName != currentName) {
+            cachedName = currentName;
+            ToastManager.Toast($"{prefix}{currentName}");
+        }
     }
 
     private void ChangeMenuLogo() {
@@ -138,6 +170,11 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        _cachedUCSuccess = null;
+        _cachedUCCharging = null;
+        _cachedTalismanBalls.Clear();
+        _talismanSearched = false;
+
         CacheSpriteRenderers();
         ChangeMenuLogo();
         ChangeUIChiBall();
@@ -161,6 +198,7 @@ public class CustomSols : BaseUnityPlugin {
     private void SetupConfig() {
         openFolder = Config.Bind("Folder", "Open CustomSols Folder", false, "");
         isToastPlayerSprite = Config.Bind("", "Toast Player Sprite Name", false, "");
+        isToastPlayerDummySprite = Config.Bind("", "Toast Player Dummy Sprite Name", false, "");
         spriteDelaySecond = Config.Bind("Sprite Delay Second", "PlayerSpriteAllUseThis Sprite Delay Second", 0.12f, "");
         UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
@@ -288,45 +326,61 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UCSuccess() {
-        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
-            return;
-        }
+        if (AssetLoader.cacheParrySprites == null) return;
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging") is { } obj) {
-            if (AssetLoader.cacheParrySprites.TryGetValue("UCSuccess", out var sprite)) {
-                var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
-                particleRenderer.materials[0].SetTexture("_MainTex", sprite.texture);
+        // 如果變數是空的，才去找一次
+        if (_cachedUCSuccess == null) {
+            var obj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging");
+            if (obj != null) {
+                _cachedUCSuccess = obj.GetComponent<ParticleSystemRenderer>();
                 obj.GetComponent<ParticleSystem>().startColor = UCSuccessColor.Value;
             }
+        }
+
+        // 之後直接用變數
+        if (_cachedUCSuccess != null && AssetLoader.cacheParrySprites.TryGetValue("UCSuccess", out var sprite)) {
+            _cachedUCSuccess.materials[0].SetTexture("_MainTex", sprite.texture);
         }
     }
 
     private void UCCharging() {
-        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
-            return;
-        }
+        if (AssetLoader.cacheParrySprites == null) return;
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C") is { } obj) {
-            if (AssetLoader.cacheParrySprites.TryGetValue("UCCharging", out var sprite)) {
-                var particleRenderer = obj.GetComponent<ParticleSystemRenderer>();
-                particleRenderer.materials[0].SetTexture("_MainTex", sprite.texture);
+        // 如果變數是空的，才去找一次
+        if (_cachedUCCharging == null) {
+            var obj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C");
+            if (obj != null) {
+                _cachedUCCharging = obj.GetComponent<ParticleSystemRenderer>();
                 obj.GetComponent<ParticleSystem>().startColor = UCChargingColor.Value;
             }
+        }
+
+        // 之後直接用變數
+        if (_cachedUCCharging != null && AssetLoader.cacheParrySprites.TryGetValue("UCCharging", out var sprite)) {
+            _cachedUCCharging.materials[0].SetTexture("_MainTex", sprite.texture);
         }
     }
 
     private void TalismanBall() {
-        if (AssetLoader.cacheTalismanBallSprites == null || AssetLoader.cacheTalismanBallSprites.Count == 0) {
-            return;
+        if (AssetLoader.cacheTalismanBallSprites == null) return;
+
+        // 只找一次並存到 List 裡
+        if (!_talismanSearched) {
+            var foo = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo");
+            if (foo != null && foo.activeSelf) {
+                for (int i = 1; i <= 5; i++) {
+                    var ball = foo.transform.Find($"FooDots/D{i}/FooDot ({i})/JENG/Ball")?.GetComponent<SpriteRenderer>();
+                    if (ball != null) _cachedTalismanBalls.Add(ball);
+                }
+                _talismanSearched = true;
+            }
         }
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo") is { activeSelf: true } foo) {
-            for (int i = 1; i <= 5; i++) {
-                var ball = foo.transform.Find($"FooDots/D{i}/FooDot ({i})/JENG/Ball")?.GetComponent<SpriteRenderer>();
-                if (ball != null && !string.IsNullOrEmpty(ball.sprite.name) &&
-                    AssetLoader.cacheTalismanBallSprites.TryGetValue(ball.sprite.name, out var sprite)) {
-                    ball.sprite = sprite;
-                }
+        // 之後迴圈只跑已經找到的 List
+        foreach (var ball in _cachedTalismanBalls) {
+            if (ball != null && ball.sprite != null &&
+                AssetLoader.cacheTalismanBallSprites.TryGetValue(ball.sprite.name, out var sprite)) {
+                ball.sprite = sprite;
             }
         }
     }
@@ -668,101 +722,78 @@ public class CustomSols : BaseUnityPlugin {
 
     //Chi Ball Left Line
     private void UpdateLineA() {
-        if(GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA") != null &&
-            AssetLoader.cacheUISprites.TryGetValue("ChiBallLeftLine", out var sprite)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA").GetComponent<SpriteRenderer>().sprite = sprite;
+        string path = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA";
+
+        if (cachedSpriteRenderers.TryGetValue(path, out var renderer)) {
+            if (AssetLoader.cacheUISprites.TryGetValue("ChiBallLeftLine", out var sprite))
+                renderer.sprite = sprite;
+
             if (AssetLoader.ChiBallLeftLineColor != null)
-                GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/ParryCharge/LineA").GetComponent<SpriteRenderer>().color = AssetLoader.ChiBallLeftLineColor.Value;
+                renderer.color = AssetLoader.ChiBallLeftLineColor.Value;
         }
     }
 
     //八卦
     private void UpdateEightGua() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC") != null &&
-            AssetLoader.cacheUISprites.TryGetValue("CoreC", out var sprite)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC").GetComponent<SpriteRenderer>().sprite = sprite;
-            if (AssetLoader.CoreCColor != null)
-                GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC").GetComponent<SpriteRenderer>().color = AssetLoader.CoreCColor.Value;
+        string pathC = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC";
+        if (cachedSpriteRenderers.TryGetValue(pathC, out var rendererC)) {
+            if (AssetLoader.cacheUISprites.TryGetValue("CoreC", out var sprite)) rendererC.sprite = sprite;
+            if (AssetLoader.CoreCColor != null) rendererC.color = AssetLoader.CoreCColor.Value;
         }
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD") != null &&
-            AssetLoader.cacheUISprites.TryGetValue("CoreD", out var sprite2)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD").GetComponent<SpriteRenderer>().sprite = sprite2;
-            if (AssetLoader.CoreDColor != null)
-                GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD").GetComponent<SpriteRenderer>().color = AssetLoader.CoreDColor.Value;
+        string pathD = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD";
+        if (cachedSpriteRenderers.TryGetValue(pathD, out var rendererD)) {
+            if (AssetLoader.cacheUISprites.TryGetValue("CoreD", out var sprite2)) rendererD.sprite = sprite2;
+            if (AssetLoader.CoreDColor != null) rendererD.color = AssetLoader.CoreDColor.Value;
         }
     }
 
     private void UpdateArrowLine() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)") != null &&
-            AssetLoader.cacheUISprites.TryGetValue("ArrowLineA", out var sprite)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)").GetComponent<SpriteRenderer>().sprite = sprite;
-            if (AssetLoader.ArrowLineBColor != null)
-                GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)").GetComponent<SpriteRenderer>().color = AssetLoader.ArrowLineBColor.Value;
+        string path = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)";
+        if (cachedSpriteRenderers.TryGetValue(path, out var renderer)) {
+            if (AssetLoader.cacheUISprites.TryGetValue("ArrowLineA", out var sprite)) renderer.sprite = sprite;
+            if (AssetLoader.ArrowLineBColor != null) renderer.color = AssetLoader.ArrowLineBColor.Value;
         }
     }
 
     //Butterfly Right Line
     private void UpdateRightLine() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA") != null &&
-            AssetLoader.cacheUISprites.TryGetValue("ButterflyRightLine", out var sprite)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA").GetComponent<SpriteRenderer>().sprite = sprite;
-            if (AssetLoader.ButterflyRightLineColor != null)
-                GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA").GetComponent<SpriteRenderer>().color = AssetLoader.ButterflyRightLineColor.Value;
+        string path = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA";
+        if (cachedSpriteRenderers.TryGetValue(path, out var renderer)) {
+            if (AssetLoader.cacheUISprites.TryGetValue("ButterflyRightLine", out var sprite)) renderer.sprite = sprite;
+            if (AssetLoader.ButterflyRightLineColor != null) renderer.color = AssetLoader.ButterflyRightLineColor.Value;
         }
     }
 
     private void UpdateArrowBullet() {
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame") != null &&
-            AssetLoader.cacheUISprites.TryGetValue("BlockOutline", out var sprite)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar Frame").GetComponent<SpriteRenderer>().sprite = sprite;
-        }
+        // 取得 Sprite 資源
+        Sprite RageBarFrameSprite = AssetLoader.cacheUISprites.TryGetValue("BlockOutline", out var f) ? f : null;
+        Sprite RageBarSprite = AssetLoader.cacheUISprites.TryGetValue("Block", out var b) ? b : null;
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar") != null &&
-            AssetLoader.cacheUISprites.TryGetValue("Block", out var sprite2)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/RagePart_spr/RageBar").GetComponent<SpriteRenderer>().sprite = sprite2;
-        }
+        // 如果找不到圖就不做了，省效能
+        if (RageBarFrameSprite == null && RageBarSprite == null) return;
 
+        // 定義基本路徑
         const string basePath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/slots/";
 
-        Sprite RageBarFrameSprite = AssetLoader.cacheUISprites.TryGetValue("BlockOutline", out var RageBarFrame) ? RageBarFrame : null;
-        Sprite RageBarSprite = AssetLoader.cacheUISprites.TryGetValue("Block", out var RageBar) ? RageBar : null;
-
-        if (RageBarFrame == null && RageBar == null) {
-            return;
-        }
-
-
         for (int i = 0; i <= 7; i++) {
-            // Construct path once per iteration
+            // 拼湊路徑字串
             string RagePath = i == 0 ? $"{basePath}RagePart_spr" : $"{basePath}RagePart_spr ({i})";
             string RageBarFramePath = $"{RagePath}/RageBar Frame";
             string RageBarPath = $"{RagePath}/RageBar";
 
-            // Find parent GameObject and update its SpriteRenderer
-            GameObject BarFrameObj = GameObject.Find(RageBarFramePath);
-            if (BarFrameObj != null) {
-                SpriteRenderer parentRenderer = BarFrameObj.GetComponent<SpriteRenderer>();
-                if (parentRenderer != null) {
-                    parentRenderer.sprite = RageBarFrame;
-                }
-            } else {
-                continue;
-            }
-
-            // Find child GameObject and update its SpriteRenderer
-            GameObject RageBarObj = GameObject.Find(RageBarPath);
-            if (RageBarObj != null) {
-                SpriteRenderer childRenderer = RageBarObj.GetComponent<SpriteRenderer>();
-                if (childRenderer != null) {
-                    childRenderer.sprite = RageBar;
-                }
-            }
+            // 直接從字典拿，不要 Find
+            if (cachedSpriteRenderers.TryGetValue(RageBarFramePath, out var r1)) r1.sprite = RageBarFrameSprite;
+            if (cachedSpriteRenderers.TryGetValue(RageBarPath, out var r2)) r2.sprite = RageBarSprite;
         }
-
     }
 
     private void Reload() {
+        _cachedUCSuccess = null;
+        _cachedUCCharging = null;
+        _cachedTalismanBalls.Clear();
+        _talismanSearched = false;
+
         InitializeAssets();
         ChangeMenuLogo();
         ChangeUIChiBall();

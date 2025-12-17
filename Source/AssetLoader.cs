@@ -4,8 +4,8 @@ using NineSolsAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CustomSols;
 
@@ -43,19 +43,18 @@ public class AssetLoader {
     public static void Init() {
         ColorFieldNull();
 
-        // 設置根目錄，根據 DEBUG 模式選擇路徑
         string basePath =
 #if DEBUG
             @"E:\Games\Nine Sols1030\BepInEx\plugins\CustomSols\CustomSols";
 #else
-        Path.Combine(Paths.ConfigPath, "CustomSols");
+            Path.Combine(Paths.ConfigPath, "CustomSols");
 #endif
         assetFolder = Path.Combine(basePath, CustomSols.currSkinFolder ?? "Default");
+
 #if DEBUG
-        ToastManager.Toast($"Load Directory：{assetFolder}"); // 顯示實際使用的 skin 目錄
+        ToastManager.Toast($"Load Directory：{assetFolder}");
 #endif
 
-        // 檢查 skin 目錄是否存在
         if (!Directory.Exists(assetFolder)) {
 #if DEBUG
             ToastManager.Toast($"Error：Directory Not Exist：{assetFolder}");
@@ -63,6 +62,7 @@ public class AssetLoader {
             return;
         }
 
+        // 這裡是你定義的規則表，完全保留
         var folders = new Dictionary<string, (Dictionary<string, Sprite> cache, Vector2 pivot, float ppu, Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> selector)>
         {
             { "MenuLogo", (cacheMenuLogoSprites, new Vector2(0.5f, 0f), 8.0f, null) },
@@ -97,35 +97,42 @@ public class AssetLoader {
             { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) }
         };
 
-        // 集中處理子目錄的檢查與載入
         foreach (var (folderName, (cache, pivot, ppu, selector)) in folders) {
             string folderPath = Path.Combine(assetFolder, folderName);
             if (Directory.Exists(folderPath)) {
                 LoadSpritesSync(folderPath, cache, pivot, ppu, selector);
+            } else {
+                // 目錄不存在時，只清除 List，不銷毀 Texture
+                cache.Clear();
             }
         }
 
+        LoadConfigs();
+    }
+
+    private static void LoadConfigs() {
         var jsonFilePath = Path.Combine(assetFolder, "UI", "color.json");
         if (File.Exists(jsonFilePath)) {
-            // 讀取 JSON 檔案內容
-            string jsonContent = File.ReadAllText(jsonFilePath);
-
-            // 反序列化 JSON 到物件
-            ColorConfig config = JsonConvert.DeserializeObject<ColorConfig>(jsonContent);
-
-            // 將十六進制顏色字串轉換為 Unity Color
-            TrySetColor(ref normalHpColor, config.NormalHpColor);
-            TrySetColor(ref internalHpColor, config.InternalHpColor);
-            TrySetColor(ref expRingOuterColor, config.ExpRingOuterColor);
-            TrySetColor(ref expRingInnerColor, config.ExpRingInnerColor);
-            TrySetColor(ref RageBarColor, config.RageBarColor);
-            TrySetColor(ref RageBarFrameColor, config.RageBarFrameColor);
-            TrySetColor(ref ArrowLineBColor, config.ArrowLineBColor);
-            TrySetColor(ref ArrowGlowColor, config.ArrowGlowColor);
-            TrySetColor(ref ChiBallLeftLineColor, config.ChiBallLeftLineColor);
-            TrySetColor(ref ButterflyRightLineColor, config.ButterflyRightLineColor);
-            TrySetColor(ref CoreCColor, config.CoreCColor);
-            TrySetColor(ref CoreDColor, config.CoreDColor);
+            try {
+                string jsonContent = File.ReadAllText(jsonFilePath);
+                ColorConfig config = JsonConvert.DeserializeObject<ColorConfig>(jsonContent);
+                if (config != null) {
+                    TrySetColor(ref normalHpColor, config.NormalHpColor);
+                    TrySetColor(ref internalHpColor, config.InternalHpColor);
+                    TrySetColor(ref expRingOuterColor, config.ExpRingOuterColor);
+                    TrySetColor(ref expRingInnerColor, config.ExpRingInnerColor);
+                    TrySetColor(ref RageBarColor, config.RageBarColor);
+                    TrySetColor(ref RageBarFrameColor, config.RageBarFrameColor);
+                    TrySetColor(ref ArrowLineBColor, config.ArrowLineBColor);
+                    TrySetColor(ref ArrowGlowColor, config.ArrowGlowColor);
+                    TrySetColor(ref ChiBallLeftLineColor, config.ChiBallLeftLineColor);
+                    TrySetColor(ref ButterflyRightLineColor, config.ButterflyRightLineColor);
+                    TrySetColor(ref CoreCColor, config.CoreCColor);
+                    TrySetColor(ref CoreDColor, config.CoreDColor);
+                }
+            } catch (Exception ex) {
+                ToastManager.Toast($"Color Config Error: {ex.Message}");
+            }
         }
 
         var bowJsonFilePath = Path.Combine(assetFolder, "Bow", "bow.json");
@@ -133,16 +140,15 @@ public class AssetLoader {
             try {
                 string jsonContent = File.ReadAllText(bowJsonFilePath);
                 BowConfig config = JsonConvert.DeserializeObject<BowConfig>(jsonContent);
-
-                TrySetVector3(ref NormalArrowLv1Pos, config.NormalArrowLv1);
-                TrySetVector3(ref NormalArrowLv2Pos, config.NormalArrowLv2);
-                TrySetVector3(ref NormalArrowLv3Pos, config.NormalArrowLv3);
+                if (config != null) {
+                    TrySetVector3(ref NormalArrowLv1Pos, config.NormalArrowLv1);
+                    TrySetVector3(ref NormalArrowLv2Pos, config.NormalArrowLv2);
+                    TrySetVector3(ref NormalArrowLv3Pos, config.NormalArrowLv3);
+                }
             } catch (Exception ex) {
-                ToastManager.Toast($"Failed to load bow.json: {ex.Message}");
+                ToastManager.Toast($"Bow Config Error: {ex.Message}");
             }
         }
-        //foreach (var x in cacheOnlyOneSprites)
-        //    ToastManager.Toast(x.Key);
     }
 
     private static void LoadSpritesSync(
@@ -151,8 +157,15 @@ public class AssetLoader {
         Vector2 defaultPivot,
         float defaultPpu,
         Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> pivotBorderSelector = null) {
+
+        // 修正重點：只清除引用，不要 Destroy Texture
         cache.Clear();
-        var files = GetAllFilesWithExtensions(folder, "png");
+
+        string[] files;
+        try {
+            files = Directory.GetFiles(folder, "*.png", SearchOption.TopDirectoryOnly);
+        } catch { return; }
+
         foreach (var file in files) {
             var filename = Path.GetFileNameWithoutExtension(file);
             var pivot = defaultPivot;
@@ -169,83 +182,58 @@ public class AssetLoader {
             }
 
             var sprite = LoadSprite(file, pivot, ppu, border);
-            if (sprite != null && !cache.ContainsKey(filename)) {
-                cache.Add(filename, sprite);
-                //ToastManager.Toast($"Loaded sprite: {filename} from {file}");
-            } else if (sprite == null) {
-                ToastManager.Toast($"Failed to load sprite: {filename} from {file}");
+            if (sprite != null) {
+                cache[filename] = sprite;
             }
-        }
-    }
-
-    public static string[] GetAllFilesWithExtensions(string directory, params string[] extensions) {
-        try {
-            return extensions.SelectMany(ext => Directory.GetFiles(directory, "*." + ext, SearchOption.TopDirectoryOnly)).ToArray();
-        } catch (Exception ex) {
-            ToastManager.Toast($"Failed to access directory {directory}: {ex.Message}");
-            return Array.Empty<string>();
         }
     }
 
     public static string[] GetAllDirectories(string directory) {
         try {
             return Directory.GetDirectories(directory, "*", SearchOption.TopDirectoryOnly);
-        } catch (Exception ex) {
-            ToastManager.Toast($"Failed to access directory {directory}: {ex.Message}");
+        } catch {
             return Array.Empty<string>();
         }
     }
 
     public static Sprite LoadSprite(string file, Vector2 pivot, float pixelsPerUnit, Vector4 border = default) {
         try {
-            if (!File.Exists(file)) {
-                ToastManager.Toast($"File does not exist: {file}");
-                return null;
-            }
-
             var data = File.ReadAllBytes(file);
-            var tex2D = new Texture2D(2, 2);
-            var filename = Path.GetFileNameWithoutExtension(file);
+
+            // 保持優化：TextureFormat.RGBA32 和 mipChain: false
+            // 這會顯著減少記憶體佔用，且不會造成崩潰
+            var tex2D = new Texture2D(2, 2, TextureFormat.RGBA32, false);
 
             if (tex2D.LoadImage(data)) {
-                Sprite sprite = (filename.StartsWith("Lv") && filename.Contains("光束")) || filename.Equals("Line_V")
-                    ? Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelsPerUnit, 0, SpriteMeshType.FullRect, border)
-                    : Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelsPerUnit, 0, SpriteMeshType.FullRect, border);
+                // 保持優化：使用 Clamp 防止圖片邊緣溢出雜色
+                tex2D.wrapMode = TextureWrapMode.Clamp;
+
+                var filename = Path.GetFileNameWithoutExtension(file);
+
+                Sprite sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelsPerUnit, 0, SpriteMeshType.FullRect, border);
                 sprite.name = filename;
                 return sprite;
             }
 
-            ToastManager.Toast($"Failed to load sprite: {file}");
+            // 如果讀取失敗才銷毀這個空殼
+            Object.Destroy(tex2D);
             return null;
         } catch (Exception ex) {
-            ToastManager.Toast($"Exception loading {file}: {ex.Message}");
+            ToastManager.Toast($"Error loading {Path.GetFileName(file)}: {ex.Message}");
             return null;
         }
     }
 
+    // Helper 方法
     private static void TrySetVector3(ref Vector3? field, float[] vectorArray) {
         if (vectorArray != null && vectorArray.Length == 3) {
             field = new Vector3(vectorArray[0], vectorArray[1], vectorArray[2]);
-        } else {
-            ToastManager.Toast($"Invalid Vector3 data: {JsonConvert.SerializeObject(vectorArray)}");
         }
     }
 
     private static void TrySetColor(ref Color? field, string hexColor) {
-        var parsed = ParseColor(hexColor);
-        if (parsed.HasValue)
-            field = parsed.Value;
-    }
-
-    private static Color? ParseColor(string hexColor) {
-        if (string.IsNullOrWhiteSpace(hexColor) || hexColor == "#") {
-            return null;
-        }
-
-        if (ColorUtility.TryParseHtmlString(hexColor, out Color color)) {
-            return color;
-        } else {
-            return null;
+        if (!string.IsNullOrWhiteSpace(hexColor) && hexColor != "#" && ColorUtility.TryParseHtmlString(hexColor, out Color color)) {
+            field = color;
         }
     }
 
@@ -263,25 +251,4 @@ public class AssetLoader {
         CoreCColor = null;
         CoreDColor = null;
     }
-}
-
-public class ColorConfig {
-    public string NormalHpColor { get; set; }
-    public string InternalHpColor { get; set; }
-    public string ExpRingOuterColor { get; set; }
-    public string ExpRingInnerColor { get; set; }
-    public string RageBarColor { get; set; }
-    public string RageBarFrameColor { get; set; }
-    public string ArrowLineBColor { get; set; }
-    public string ArrowGlowColor { get; set; }
-    public string ChiBallLeftLineColor { get; set; }
-    public string ButterflyRightLineColor { get; set; }
-    public string CoreCColor { get; set; }
-    public string CoreDColor { get; set; }
-}
-
-public class BowConfig {
-    public float[] NormalArrowLv1 { get; set; }
-    public float[] NormalArrowLv2 { get; set; }
-    public float[] NormalArrowLv3 { get; set; }
 }
