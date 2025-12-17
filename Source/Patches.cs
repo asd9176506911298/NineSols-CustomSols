@@ -1,56 +1,90 @@
 ﻿using HarmonyLib;
-using NineSolsAPI;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
+using RCGFSM.Projectiles;
 using System;
+using UnityEngine;
+using UnityEngine.UI;
+using CustomSols.Core;
 
 namespace CustomSols;
 
 [HarmonyPatch]
-public class Patches {
-    [HarmonyPatch(typeof(RCGFSM.Projectiles.PlayerArrowProjectileFollower), "Update")]
+public static class Patches {
     [HarmonyPrefix]
-    private static bool HookArrow(RCGFSM.Projectiles.PlayerArrowProjectileFollower __instance) {
-        // 檢查 cacheBowSprites 是否為空
-        if (AssetLoader.cacheBowSprites == null || AssetLoader.cacheBowSprites.Count == 0) {
-            return true; // 如果為空，直接返回，跳過後續處理
-        }
+    [HarmonyPatch(typeof(PlayerArrowProjectileFollower), "Update")]
+    private static bool HookArrow(PlayerArrowProjectileFollower __instance) 
+    {
+        if (AssetLoader.IsDefaultSkin) return true;
 
-        var arrow = __instance;
-        var spritePaths = new[] {
-        "Projectile FSM/FSM Animator/View/ChasingArrow /ChasingArrowLight",
-        "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺/刺",
-        "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺 (1)/刺"
-    };
+        string[] paths = 
+        {
+            "Projectile FSM/FSM Animator/View/ChasingArrow /ChasingArrowLight",
+            "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺/刺",
+            "Projectile FSM/FSM Animator/View/ChasingArrow /Parent 刺/刺 (1)/刺"
+        };
 
-        foreach (var path in spritePaths) {
-            var renderer = arrow.transform.Find(path)?.GetComponent<SpriteRenderer>();
-            if (renderer != null && AssetLoader.cacheBowSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
-                renderer.sprite = sprite;
-            }
-        }
-
+        foreach (string p in paths) 
+            SpriteManager.UpdateObjectSprite(__instance.gameObject, p);
+        
         return true;
     }
 
-    [HarmonyPatch(typeof(PoolManager), "Borrow",
-    new Type[] { typeof(PoolObject), typeof(Vector3), typeof(Quaternion), typeof(Transform), typeof(Action<PoolObject>) })]
     [HarmonyPostfix]
-    public static void Postfix(ref PoolObject __result, PoolObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, Action<PoolObject> handler = null) {
-        if (CustomSols.arrowInit && CustomSols.arrowInit2) return;
+    [HarmonyPatch(typeof(PoolManager), "Borrow",
+    [
+        typeof(PoolObject),
+        typeof(Vector3),
+        typeof(Quaternion),
+        typeof(Transform),
+        typeof(Action<PoolObject>)
+    ])]
+    private static void PostfixBorrow(ref PoolObject __result, ref PoolObject prefab) 
+    {
+        if (AssetLoader.IsDefaultSkin || !__result) return;
 
-        if (prefab.name == "ExplodingArrow Shooter 爆破發射器 Lv3") {
-            var obj = __result.gameObject;
-            CustomSols.UpdateBowSprite(obj, "Exploding Arrow/ExplodingArrow/ExplodingArrow");
-            CustomSols.UpdateBowSprite(obj, "Exploding Arrow/ExplodingArrow/ChasingArrowLight");
-            CustomSols.UpdateBowSprite(obj, "Exploding Arrow/EnergyBall/Core");
-            CustomSols.arrowInit = true;
-        }
+        string prefabName = prefab.name;
+        GameObject go = __result.gameObject;
 
-        if (prefab.name == "Explosion Damage 爆破箭 閃電 lv3") {
-            CustomSols.UpdateBowSprite(__result.gameObject, "ATTACK/Core");
-            CustomSols.arrowInit2 = true;
+        SpriteManager.TryApplySwordSprite(go, prefabName);
+        SpriteManager.TryApplyArrowSprites(go, prefabName);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PoolObject), nameof(PoolObject.OnReturnToPool))]
+    private static void ClearSwordReplacements(ref PoolObject __instance) 
+    {
+        SpriteManager.ClearSwordReplacements(__instance.GetInstanceID());
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(Player), nameof(Player.SetPlayerView))]
+    private static void CatchCutsceneDummy(bool active) 
+    {
+        if (active == false) 
+        {
+            if (Player.i == null || Player.i.replacePlayer == null) return;
+
+            var dummyRenderer = Player.i.replacePlayer.transform.parent.GetComponentInChildren<SpriteRenderer>(true);
+            if (dummyRenderer)
+                Core.CustomSols.CurrentDummyRenderer = dummyRenderer;
+        } 
+        else 
+        {
+            Core.CustomSols.CurrentDummyRenderer = null;
         }
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(SpriteRenderer), nameof(SpriteRenderer.sprite), MethodType.Setter)]
+    private static void OnSetSpriteRenderer(SpriteRenderer __instance, ref Sprite value) 
+    {
+        if (value == null || AssetLoader.IsDefaultSkin) return;
+        SpriteManager.ProcessSpriteSet(__instance.GetInstanceID(), ref value);
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(Image), nameof(Image.sprite), MethodType.Setter)]
+    private static void OnSetImageSprite(Image __instance, ref Sprite value) {
+        if (value == null || AssetLoader.IsDefaultSkin) return;
+        SpriteManager.ProcessSpriteSet(__instance.GetInstanceID(), ref value);
     }
 }
