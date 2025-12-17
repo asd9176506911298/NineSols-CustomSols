@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using HarmonyLib;
 using NineSolsAPI;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +17,8 @@ public class CustomSols : BaseUnityPlugin
     private ConfigEntry<string> selectedSkin = null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
     private AcceptableValueList<string> skinList = null!;
+    private ConfigEntry<bool> openFolder = null!;
+
 
     public static SpriteRenderer? CurrentDummyRenderer = null;
 
@@ -43,6 +46,8 @@ public class CustomSols : BaseUnityPlugin
         skinList = new AcceptableValueList<string>(AssetLoader.AvailableSkins.ToArray());
         selectedSkin = Config.Bind("General", "Selected Skin", "Default", new ConfigDescription("Choose your skin.", skinList));
         reloadShortcut = Config.Bind("General", "Reload Shortcut", new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "Reload skins.");
+        openFolder = Config.Bind("Folder", "Open CustomSols Folder", false, "");
+
 
         selectedSkin.SettingChanged += (s, e) => ReloadSkin(selectedSkin.Value);
         KeybindManager.Add(this, () => 
@@ -52,6 +57,10 @@ public class CustomSols : BaseUnityPlugin
             ReloadSkin(selectedSkin.Value);
             ToastManager.Toast("Skins Reloaded");
         }, reloadShortcut);
+
+        openFolder.SettingChanged += (sender, args) => {
+            Process.Start(AssetLoader.RootPath);
+        };
     }
 
     public void LateUpdate() 

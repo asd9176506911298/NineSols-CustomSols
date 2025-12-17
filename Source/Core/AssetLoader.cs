@@ -8,7 +8,7 @@ using UnityEngine;
 namespace CustomSols.Core;
 
 public static class AssetLoader {
-    private static readonly string RootPath = Path.Combine(Paths.ConfigPath, "CustomSols");
+    public static readonly string RootPath = Path.Combine(Paths.ConfigPath, "CustomSols");
     private static readonly Dictionary<string, Texture2D> TextureCache = new();
 
     public static bool IsDefaultSkin { get; private set; } = true;
@@ -73,6 +73,12 @@ public static class AssetLoader {
                 string jsonText = File.ReadAllText(jsonPath);
                 CurrentColors = JsonConvert.DeserializeObject<ColorConfig>(jsonText);
                 CurrentBowSettings = JsonConvert.DeserializeObject<BowConfig>(jsonText);
+            } else { // Old Version
+                string colorJson = File.ReadAllText(Path.Combine(skinPath, "UI", "color.json"));
+                CurrentColors = JsonConvert.DeserializeObject<ColorConfig>(colorJson);
+
+                string bowJson = File.ReadAllText(Path.Combine(skinPath, "Bow", "bow.json"));
+                CurrentBowSettings = JsonConvert.DeserializeObject<BowConfig>(bowJson);
             }
         } 
         catch (Exception ex) 

@@ -1,4 +1,4 @@
-# Nine Sols Custom Sols
+﻿# Nine Sols Custom Sols
 
 # Custom Sprite
 - Player
@@ -99,3 +99,6 @@ default is -15.0, 0.0, 0.0
 - https://github.com/asd9176506911298/StudioDev/releases/latest
 - ask in Modding Discord
 - https://discord.gg/NYT4vQpweS
+
+# Credits
+- Gregório (michelinidev) Refactor CustomSols and Fix Problem
