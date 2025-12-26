@@ -4,14 +4,15 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "CustomSols"
 name = "CustomSols"
-versionNumber = "0.1.0"
-description = "Nine Sols CustomSols"
+versionNumber = "1.1.7"
+description = "Custom Sprite"
 websiteUrl = "https://github.com/asd9176506911298/NineSols-CustomSols"
 containsNsfwContent = false
 
 [package.dependencies]
 "BepInEx-BepInExPack" = "5.4.2100"
 "ninesolsmodding-NineSolsAPI" = "1.2.3"
+"ninesolsmodding-BepinExConfigurationManager" = "18.3.1"
 
 [build]
 icon = "./icon.png"
@@ -21,6 +22,10 @@ outdir = "./build"
 [[build.copy]]
 source = "build/dll"
 target = "."
+
+[[build.copy]]
+source = "./config"
+target = "./config"
 
 [publish]
 repository = "https://thunderstore.io"

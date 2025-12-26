@@ -1,130 +1,267 @@
 ﻿using BepInEx;
+using Newtonsoft.Json;
 using NineSolsAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
-using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
-namespace CustomSols {
-    public class AssetLoader {
-        private static string assetFolder = Assembly.GetExecutingAssembly().Location + "Asset";
-        private static string playerFolder = assetFolder + "Player";
-        private static string menuFolder = assetFolder + "MenuLogo";
-        private static string uiChiBallFolder = assetFolder + "UIParryBall";
-        private static string talismanBallFolder = assetFolder + "TalismanBall";
+namespace CustomSols;
 
-        public readonly static Dictionary<string, Sprite> cachePlayerSprites = new Dictionary<string, Sprite>();
-        public readonly static Dictionary<string, Sprite> cacheMenuLogoSprites = new Dictionary<string, Sprite>();
-        public readonly static Dictionary<string, Sprite> cacheUIChiBallSprites = new Dictionary<string, Sprite>();
-        public readonly static Dictionary<string, Sprite> cacheTalismanBallSprites = new Dictionary<string, Sprite>();
+public class AssetLoader {
+    private static string assetFolder;
 
-        public static void Init() {
-            #if DEBUG
-                assetFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset";
-                playerFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\Player";
-                menuFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\MenuLogo";
-                uiChiBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\UIParryBall";
-                talismanBallFolder = "E:\\Games\\Nine Sols1030\\BepInEx\\plugins\\CustomSols\\Asset\\TalismanBall";
-            #endif
+    public static readonly Dictionary<string, Sprite> cachePlayerSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheMenuLogoSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheTalismanBallSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheParrySprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheSwordSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheBowSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheFooSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheOnlyOneSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheUISprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheYingZhaoSprites = new Dictionary<string, Sprite>();
 
-            cachePlayerSprites.Clear();
-            cacheMenuLogoSprites.Clear();
-            cacheUIChiBallSprites.Clear();
-            cacheTalismanBallSprites.Clear();
+    public static Color? normalHpColor = null;
+    public static Color? internalHpColor = null;
+    public static Color? expRingOuterColor = null;
+    public static Color? expRingInnerColor = null;
+    public static Color? RageBarColor = null;
+    public static Color? RageBarFrameColor = null;
+    public static Color? ArrowLineBColor = null;
+    public static Color? ArrowGlowColor = null;
+    public static Color? ChiBallLeftLineColor = null;
+    public static Color? ButterflyRightLineColor = null;
+    public static Color? CoreCColor = null;
+    public static Color? CoreDColor = null;
+    public static Color? UCChargingColor = null;
+    public static Color? UCSuccessColor = null;
+    public static Color? AirParryColor = null;
+    public static Color? UCParryColor = null;
+    public static Color? DashColor = null;
 
-            Vector2 playerPivot = new Vector2(0.5f, 0f);
-            var spriteFiles = GetAllFilesWithExtensions(playerFolder, "png");
-            foreach (var file in spriteFiles) {
-                var sprite = LoadSprite(file, playerPivot, 8.0f);
-                if(sprite != null) {
-                    string filename = Path.GetRelativePath(playerFolder, file);
-                    filename = Path.ChangeExtension(filename, null);
-                    if (!cachePlayerSprites.ContainsKey(filename)) {
-                        cachePlayerSprites.Add(filename, sprite);
-                    }
-                }
-            }
+    public static Vector3? NormalArrowLv1Pos = null;
+    public static Vector3? NormalArrowLv2Pos = null;
+    public static Vector3? NormalArrowLv3Pos = null;
 
-            var menuLogoFiles = GetAllFilesWithExtensions(menuFolder, "png");
-            foreach (var file in menuLogoFiles) {
-                var sprite = LoadSprite(file, new Vector2(0.5f, 0f), 8.0f);
-                if (sprite != null) {
-                    string filename = Path.GetRelativePath(menuFolder, file);
-                    filename = Path.ChangeExtension(filename, null);
-                    if (!cacheMenuLogoSprites.ContainsKey(filename)) {
-                        cacheMenuLogoSprites.Add(filename, sprite);
-                    }
-                }
-            }
+    public static void Init() {
+        ColorFieldNull();
 
-            var uIParryBallFiles = GetAllFilesWithExtensions(uiChiBallFolder, "png");
-            Vector2 uiParryBallPivot = new Vector2(0.5f, 0.5f);
-            foreach (var file in uIParryBallFiles) {
-                var sprite = LoadSprite(file, uiParryBallPivot, 2.0f);
-                if (sprite != null) {
-                    string filename = Path.GetRelativePath(uiChiBallFolder, file);
-                    filename = Path.ChangeExtension(filename, null);
-                    if (!cacheUIChiBallSprites.ContainsKey(filename)) {
-                        cacheUIChiBallSprites.Add(filename, sprite);
-                    }
-                }
-            }
+        string basePath =
+#if DEBUG
+            @"E:\Games\Nine Sols1030\BepInEx\plugins\CustomSols\CustomSols";
+#else
+            Path.Combine(Paths.ConfigPath, "CustomSols");
+#endif
+        assetFolder = Path.Combine(basePath, CustomSols.currSkinFolder ?? "Default");
 
-            var talismanBallFiles = GetAllFilesWithExtensions(talismanBallFolder, "png");
-            Vector2 talismanBallPivot = new Vector2(0.18f, -1.2f);
-            foreach (var file in talismanBallFiles) {
-                var sprite = LoadSprite(file, talismanBallPivot, 8.0f);
-                if (sprite != null) {
-                    string filename = Path.GetRelativePath(talismanBallFolder, file);
-                    filename = Path.ChangeExtension(filename, null);
-                    if (!cacheTalismanBallSprites.ContainsKey(filename)) {
-                        cacheTalismanBallSprites.Add(filename, sprite);
-                    }
-                }
-            }
+#if DEBUG
+        ToastManager.Toast($"Load Directory：{assetFolder}");
+#endif
 
-            //foreach (var x in cacheMenuLogoSprites) {
-            //    ToastManager.Toast(x.Key);    
-            //}
+        if (!Directory.Exists(assetFolder)) {
+#if DEBUG
+            ToastManager.Toast($"Error：Directory Not Exist：{assetFolder}");
+#endif
+            return;
         }
 
-        public static string[] GetAllFilesWithExtensions(string directory, params string[] extensions) {
-            return extensions.SelectMany(extension => Directory.GetFiles(directory, "*." + extension, SearchOption.AllDirectories)).ToArray();
-        }
-
-        public static Sprite LoadSprite(string file, Vector2 customPivot = default, float customPixelPerUnit = 8.0f) {
-            try {
-                if (!File.Exists(file)) {
-                    ToastManager.Toast($"File does not exist: {file}");
-                    return null;
-                }
-                Vector2 pivot = new Vector2(0.5f, 0f);
-                float pixelPerUnit = 8.0f;
-                if (customPivot != null)
-                    pivot = customPivot;
-                if (customPixelPerUnit != null)
-                    pixelPerUnit = customPixelPerUnit;
-
-                byte[] data = File.ReadAllBytes(file);
-                Texture2D tex2D = new Texture2D(2, 2);
-                string filename = Path.GetRelativePath(talismanBallFolder, file);
-                filename = Path.ChangeExtension(filename, null);
-                if (tex2D.LoadImage(data)) {
-                    Sprite sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelPerUnit);
-                    sprite.name = filename;
-                    return sprite;
-                } else {
-                    ToastManager.Toast($"Failed to load sprite: {file}");
-                    return null;
-                }
-            } catch (Exception ex) {
-                ToastManager.Toast($"Expection: {file}: {ex.Message}");
+        // 這裡是你定義的規則表，完全保留
+        var folders = new Dictionary<string, (Dictionary<string, Sprite> cache, Vector2 pivot, float ppu, Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> selector)>
+        {
+            { "MenuLogo", (cacheMenuLogoSprites, new Vector2(0.5f, 0f), 8.0f, null) },
+            { "Player", (cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f, filename => {
+                if (filename.StartsWith("SavePointPowerToYee")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
+                if (filename.StartsWith("Effect_HoHoYee_Parry_Sky")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 return null;
+            }) },
+            { "TalismanBall", (cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f, null) },
+            { "Parry", (cacheParrySprites, new Vector2(0.5f, 0f), 8.0f, filename => filename.StartsWith("ParrySparkAccurate") ? (new Vector2(0.5f, 0.5f), Vector4.zero, null) : null) },
+            { "Sword", (cacheSwordSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
+            { "Bow", (cacheBowSprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
+                if (filename.StartsWith("Lv1光束")) return (new Vector2(0f, 0.5f), new Vector4(212f, 0f, 212f, 0f), null);
+                if (filename.StartsWith("Lv2光束")) return (new Vector2(0f, 0.5f), new Vector4(220f, 0f, 220f, 0f), null);
+                if (filename.StartsWith("Lv3光束")) return (new Vector2(0f, 0.5f), new Vector4(240f, 0f, 205f, 0f), null);
+                if (filename.Equals("circle_mask")) return (new Vector2(0.5f, 0.5f), new Vector4(240f, 0f, 205f, 0f), 100.0f);
+                if (filename.Equals("ExplosionCenter")) return (new Vector2(0.5f, 0.5f), new Vector4(240f, 0f, 205f, 0f), 100.0f);
+                return null;
+            }) },
+            { "Foo", (cacheFooSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
+            { "PlayerSpriteAllUseThis", (cacheOnlyOneSprites, new Vector2(0.5f, 0.0f), 8.0f, null) },
+            { "UI", (cacheUISprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
+                if (filename.StartsWith("ChiBallLeftLine")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("ButterflyRightLine")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.Equals("ArrowLineA")) return (new Vector2(0f, 0.5f), new Vector4(94f, 0f, 125f, 0f), 2.0f);
+                if (filename.StartsWith("Arrow")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 1.0f);
+                if (filename.StartsWith("ParryBalls")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("Line_V")) return (new Vector2(0.5f, 0.5f), new Vector4(9f,5f,9f,5f), 2.0f);
+                if (filename.StartsWith("CoreB_fill")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("Icon_Blood")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("Icon_BloodEmpty")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("CoreC")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("CoreD")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
+            }) },
+            { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) }
+        };
+
+        foreach (var (folderName, (cache, pivot, ppu, selector)) in folders) {
+            string folderPath = Path.Combine(assetFolder, folderName);
+            if (Directory.Exists(folderPath)) {
+                LoadSpritesSync(folderPath, cache, pivot, ppu, selector);
+            } else {
+                // 目錄不存在時，只清除 List，不銷毀 Texture
+                cache.Clear();
             }
         }
+
+        LoadConfigs();
+    }
+
+    private static void LoadConfigs() {
+        // 設定單一 JSON 檔案路徑
+        var jsonFilePath = Path.Combine(assetFolder, "skinConfig.json");
+
+        if (!File.Exists(jsonFilePath)) return;
+
+        try {
+            string jsonContent = File.ReadAllText(jsonFilePath);
+            MainConfig mainConfig = JsonConvert.DeserializeObject<MainConfig>(jsonContent);
+
+            if (mainConfig != null) {
+                // 1. 處理顏色 (Colors)
+                var c = mainConfig.Colors;
+                TrySetColor(ref normalHpColor, c.NormalHpColor);
+                TrySetColor(ref internalHpColor, c.InternalHpColor);
+                TrySetColor(ref expRingOuterColor, c.ExpRingOuterColor);
+                TrySetColor(ref expRingInnerColor, c.ExpRingInnerColor);
+                TrySetColor(ref RageBarColor, c.RageBarColor);
+                TrySetColor(ref RageBarFrameColor, c.RageBarFrameColor);
+                TrySetColor(ref ArrowLineBColor, c.ArrowLineBColor);
+                TrySetColor(ref ArrowGlowColor, c.ArrowGlowColor);
+                TrySetColor(ref ChiBallLeftLineColor, c.ChiBallLeftLineColor);
+                TrySetColor(ref ButterflyRightLineColor, c.ButterflyRightLineColor);
+                TrySetColor(ref CoreCColor, c.CoreCColor);
+                TrySetColor(ref CoreDColor, c.CoreDColor);
+
+                // 2. 處理格擋 (Parry)
+                var p = mainConfig.Parry;
+                TrySetColor(ref UCChargingColor, p.UCChargingColor);
+                TrySetColor(ref UCSuccessColor, p.UCSuccessColor);
+                TrySetColor(ref AirParryColor, p.AirParryColor);
+                TrySetColor(ref UCParryColor, p.UCParryColor);
+                TrySetColor(ref DashColor, p.DashColor);
+
+                // 3. 處理弓箭座標 (Bow)
+                var b = mainConfig.Bow;
+                TrySetVector3(ref NormalArrowLv1Pos, b.NormalArrowLv1);
+                TrySetVector3(ref NormalArrowLv2Pos, b.NormalArrowLv2);
+                TrySetVector3(ref NormalArrowLv3Pos, b.NormalArrowLv3);
+            }
+        } catch (Exception ex) {
+            ToastManager.Toast($"Config Load Error: {ex.Message}");
+        }
+    }
+
+    private static void LoadSpritesSync(
+        string folder,
+        Dictionary<string, Sprite> cache,
+        Vector2 defaultPivot,
+        float defaultPpu,
+        Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> pivotBorderSelector = null) {
+
+        // 修正重點：只清除引用，不要 Destroy Texture
+        cache.Clear();
+
+        string[] files;
+        try {
+            files = Directory.GetFiles(folder, "*.png", SearchOption.TopDirectoryOnly);
+        } catch { return; }
+
+        foreach (var file in files) {
+            var filename = Path.GetFileNameWithoutExtension(file);
+            var pivot = defaultPivot;
+            Vector4 border = default;
+            float ppu = defaultPpu;
+
+            if (pivotBorderSelector != null) {
+                var result = pivotBorderSelector(filename);
+                if (result.HasValue) {
+                    pivot = result.Value.pivot;
+                    border = result.Value.border;
+                    ppu = result.Value.ppu ?? defaultPpu;
+                }
+            }
+
+            var sprite = LoadSprite(file, pivot, ppu, border);
+            if (sprite != null) {
+                cache[filename] = sprite;
+            }
+        }
+    }
+
+    public static string[] GetAllDirectories(string directory) {
+        try {
+            return Directory.GetDirectories(directory, "*", SearchOption.TopDirectoryOnly);
+        } catch {
+            return Array.Empty<string>();
+        }
+    }
+
+    public static Sprite LoadSprite(string file, Vector2 pivot, float pixelsPerUnit, Vector4 border = default) {
+        try {
+            var data = File.ReadAllBytes(file);
+
+            // 保持優化：TextureFormat.RGBA32 和 mipChain: false
+            // 這會顯著減少記憶體佔用，且不會造成崩潰
+            var tex2D = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+
+            if (tex2D.LoadImage(data)) {
+                // 保持優化：使用 Clamp 防止圖片邊緣溢出雜色
+                tex2D.wrapMode = TextureWrapMode.Clamp;
+
+                var filename = Path.GetFileNameWithoutExtension(file);
+
+                Sprite sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), pivot, pixelsPerUnit, 0, SpriteMeshType.FullRect, border);
+                sprite.name = filename;
+                return sprite;
+            }
+
+            // 如果讀取失敗才銷毀這個空殼
+            Object.Destroy(tex2D);
+            return null;
+        } catch (Exception ex) {
+            ToastManager.Toast($"Error loading {Path.GetFileName(file)}: {ex.Message}");
+            return null;
+        }
+    }
+
+    // Helper 方法
+    private static void TrySetVector3(ref Vector3? field, float[] vectorArray) {
+        if (vectorArray != null && vectorArray.Length == 3) {
+            field = new Vector3(vectorArray[0], vectorArray[1], vectorArray[2]);
+        }
+    }
+
+    private static void TrySetColor(ref Color? field, string hexColor) {
+        if (!string.IsNullOrWhiteSpace(hexColor) && hexColor != "#" && ColorUtility.TryParseHtmlString(hexColor, out Color color)) {
+            field = color;
+        }
+    }
+
+    private static void ColorFieldNull() {
+        normalHpColor = null;
+        internalHpColor = null;
+        expRingOuterColor = null;
+        expRingInnerColor = null;
+        RageBarColor = null;
+        RageBarFrameColor = null;
+        ArrowLineBColor = null;
+        ArrowGlowColor = null;
+        ChiBallLeftLineColor = null;
+        ButterflyRightLineColor = null;
+        CoreCColor = null;
+        CoreDColor = null;
     }
 }
