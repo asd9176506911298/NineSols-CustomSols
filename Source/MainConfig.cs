@@ -24,8 +24,10 @@
     }
 
     public class ParryConfig {
-        public string UCChargingColor { get; set; } = string.Empty;
-        public string UCSuccessColor { get; set; } = string.Empty;
+        public string UCCharging1Color { get; set; } = string.Empty;
+        public string UCCharging2Color { get; set; } = string.Empty;
+        public string UCSuccess1Color { get; set; } = string.Empty;
+        public string UCSuccess2Color { get; set; } = string.Empty;
         public string AirParryColor { get; set; } = string.Empty;
         public string UCParryColor { get; set; } = string.Empty;
         public string DashColor { get; set; } = string.Empty;

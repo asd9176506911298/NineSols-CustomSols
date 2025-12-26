@@ -63,8 +63,10 @@ if you don't want change color use "NormalHpColor": "#"
     "CoreDColor": "#"
   },
   "Parry": {
-    "UCChargingColor": "#",
-    "UCSuccessColor": "#",
+    "UCCharging1Color": "#",
+    "UCCharging2Color": "#",
+    "UCSuccess1Color": "#",
+    "UCSuccess2Color": "#",
     "AirParryColor": "#",
     "UCParryColor": "#",
     "DashColor": "#"

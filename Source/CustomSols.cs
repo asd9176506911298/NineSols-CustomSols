@@ -41,6 +41,9 @@ public class CustomSols : BaseUnityPlugin {
     private static string playerSpriteName = "";
     private static string playerDummySpriteName = "";
 
+    // 預先快取屬性 ID，提升效能
+    private static readonly int TintColorID = Shader.PropertyToID("_TintColor");
+    private static readonly int MainTexID = Shader.PropertyToID("_MainTex");
 
     public static SpriteRenderer? CurrentDummyRenderer = null;
 
@@ -365,48 +368,69 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UCSuccess() {
-        if (AssetLoader.cacheParrySprites == null) return;
-
-        // 如果變數是空的，才去找一次
-        if (_cachedUCSuccess == null) {
-            var obj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging");
-            if (obj != null) {
-                _cachedUCSuccess = obj.GetComponent<ParticleSystemRenderer>();
-                if(AssetLoader.UCSuccessColor.HasValue)
-                    obj.GetComponent<ParticleSystem>().startColor = AssetLoader.UCSuccessColor.Value;
-            }
-        }
-
-        // 之後直接用變數
-        if (_cachedUCSuccess != null && AssetLoader.cacheParrySprites.TryGetValue("UCSuccess", out var sprite)) {
-            _cachedUCSuccess.materials[0].SetTexture("_MainTex", sprite.texture);
-        }
-
-        if (_cachedUCSuccess != null && AssetLoader.cacheParrySprites.TryGetValue("UCSuccess2", out var sprite2)) {
-            _cachedUCSuccess.materials[1].SetTexture("_MainTex", sprite2.texture);
-        }
+        UpdateParticleEffect(
+            "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging",
+            ref _cachedUCSuccess,
+            AssetLoader.UCSuccess1Color,
+            AssetLoader.UCSuccess2Color,
+            "UCSuccess",
+            "UCSuccess2"
+        );
     }
 
     private void UCCharging() {
+        UpdateParticleEffect(
+            "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C",
+            ref _cachedUCCharging,
+            AssetLoader.UCCharging1Color,
+            AssetLoader.UCCharging2Color,
+            "UCCharging",
+            "UCCharging2"
+        );
+    }
+
+    private void UpdateParticleEffect(string path, ref ParticleSystemRenderer cachedRenderer, Color? color1, Color? color2, string spriteKey1, string spriteKey2) {
         if (AssetLoader.cacheParrySprites == null) return;
 
-        // 如果變數是空的，才去找一次
-        if (_cachedUCCharging == null) {
-            var obj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C");
-            if (obj != null) {
-                _cachedUCCharging = obj.GetComponent<ParticleSystemRenderer>();
-                if(AssetLoader.UCChargingColor.HasValue)
-                    obj.GetComponent<ParticleSystem>().startColor = AssetLoader.UCChargingColor.Value;
+        // 1. 初始化與快取尋找
+        if (cachedRenderer == null) {
+            var obj = GameObject.Find(path);
+            if (obj == null) return;
+
+            cachedRenderer = obj.GetComponent<ParticleSystemRenderer>();
+            var ps = obj.GetComponent<ParticleSystem>();
+
+            // 設定第一個顏色 (Particle Main 模組)
+            if (color1.HasValue && ps != null) {
+                var main = ps.main;
+                main.startColor = color1.Value;
+            }
+
+            // 設定材質顏色 (注意：這裡會產生 Material Instance)
+            if (color2.HasValue && cachedRenderer.sharedMaterials.Length > 1) {
+                // 使用 materials[i] 會建立 Instance，我們只在必要時做一次
+                cachedRenderer.materials[1].SetColor(TintColorID, color2.Value);
             }
         }
 
-        // 之後直接用變數
-        if (_cachedUCCharging != null && AssetLoader.cacheParrySprites.TryGetValue("UCCharging", out var sprite)) {
-            _cachedUCCharging.materials[0].SetTexture("_MainTex", sprite.texture);
-        }
+        // 2. 更新貼圖 (使用共用邏輯減少 GC)
+        if (cachedRenderer != null) {
+            // 一次性取得所有材質，避免反覆呼叫 .materials 產生副本
+            Material[] currentMaterials = cachedRenderer.materials;
+            bool changed = false;
 
-        if (_cachedUCCharging != null && AssetLoader.cacheParrySprites.TryGetValue("UCCharging2", out var sprite2)) {
-            _cachedUCCharging.materials[1].SetTexture("_MainTex", sprite2.texture);
+            if (AssetLoader.cacheParrySprites.TryGetValue(spriteKey1, out var s1)) {
+                currentMaterials[0].SetTexture(MainTexID, s1.texture);
+                changed = true;
+            }
+
+            if (currentMaterials.Length > 1 && AssetLoader.cacheParrySprites.TryGetValue(spriteKey2, out var s2)) {
+                currentMaterials[1].SetTexture(MainTexID, s2.texture);
+                changed = true;
+            }
+
+            // 如果有變動，可以選擇不寫回，因為 currentMaterials[i] 已經是指向實例
+            // 但為了確保引用正確，通常操作完畢後不需額外動作，除非是全新的陣列
         }
     }
 

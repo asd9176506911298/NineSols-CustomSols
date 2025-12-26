@@ -35,8 +35,10 @@ public class AssetLoader {
     public static Color? ButterflyRightLineColor = null;
     public static Color? CoreCColor = null;
     public static Color? CoreDColor = null;
-    public static Color? UCChargingColor = null;
-    public static Color? UCSuccessColor = null;
+    public static Color? UCCharging1Color = null;
+    public static Color? UCCharging2Color = null;
+    public static Color? UCSuccess1Color = null;
+    public static Color? UCSuccess2Color = null;
     public static Color? AirParryColor = null;
     public static Color? UCParryColor = null;
     public static Color? DashColor = null;
@@ -147,8 +149,10 @@ public class AssetLoader {
 
                 // 2. 處理格擋 (Parry)
                 var p = mainConfig.Parry;
-                TrySetColor(ref UCChargingColor, p.UCChargingColor);
-                TrySetColor(ref UCSuccessColor, p.UCSuccessColor);
+                TrySetColor(ref UCCharging1Color, p.UCCharging1Color);
+                TrySetColor(ref UCCharging2Color, p.UCCharging2Color);
+                TrySetColor(ref UCSuccess1Color, p.UCSuccess1Color);
+                TrySetColor(ref UCSuccess2Color, p.UCSuccess2Color);
                 TrySetColor(ref AirParryColor, p.AirParryColor);
                 TrySetColor(ref UCParryColor, p.UCParryColor);
                 TrySetColor(ref DashColor, p.DashColor);
