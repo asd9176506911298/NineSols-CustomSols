@@ -26,8 +26,6 @@ public class CustomSols : BaseUnityPlugin {
     public ConfigEntry<bool> isToastPlayerSprite = null!;
     public ConfigEntry<bool> isToastPlayerDummySprite = null!;
     private ConfigEntry<float> spriteDelaySecond= null!;
-    private ConfigEntry<Color> UCChargingColor = null!;
-    private ConfigEntry<Color> UCSuccessColor = null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
 
     private ConfigEntry<string?> skins = null!;
@@ -89,6 +87,7 @@ public class CustomSols : BaseUnityPlugin {
     private void InitializeAssets() {
         isAssetsLoaded = false;
         AssetLoader.Init();
+        if (currSkinFolder == "Default") return;
         isAssetsLoaded = true;
         CacheSpriteRenderers();
         ChangeMenuLogo(); // 立即應用 Logo
@@ -105,12 +104,15 @@ public class CustomSols : BaseUnityPlugin {
         UpdateRightLine();
         UpdateArrowBullet();
         YingZhaoOnce();
+        AirParryColor();
     }
 
     private void LateUpdate() {
         if (!isAssetsLoaded) return;
 
         PlayerSprite();
+        AirParry();
+        UCParryColor();
         PerfectParry();
         Dash();
         AirJump();
@@ -193,6 +195,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateRightLine();
         UpdateArrowBullet();
         YingZhaoOnce();
+        AirParryColor();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -203,8 +206,8 @@ public class CustomSols : BaseUnityPlugin {
         isToastPlayerSprite = Config.Bind("", "Toast Player Sprite Name", false, "");
         isToastPlayerDummySprite = Config.Bind("", "Toast Player Dummy Sprite Name", false, "");
         spriteDelaySecond = Config.Bind("Sprite Delay Second", "PlayerSpriteAllUseThis Sprite Delay Second", 0.12f, "");
-        UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
-        UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
+        //UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
+        //UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
         reloadShortcut = Config.Bind("Shortcut", "Reload Shortcut", new KeyboardShortcut(KeyCode.H, KeyCode.LeftControl), "");
 
         basePath =
@@ -233,7 +236,14 @@ public class CustomSols : BaseUnityPlugin {
         var renderers = FindObjectsOfType<SpriteRenderer>(true);
         foreach (var renderer in renderers) {
             var path = GetGameObjectPath(renderer.gameObject);
-            cachedSpriteRenderers[path] = renderer;
+
+            // 如果這個路徑已經有東西了（重複了）
+            if (cachedSpriteRenderers.ContainsKey(path)) {
+                // 存成另一個 Key，例如 "路徑_2"
+                cachedSpriteRenderers[path + "_2"] = renderer;
+            } else {
+                cachedSpriteRenderers[path] = renderer;
+            }
         }
     }
 
@@ -295,14 +305,40 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
-    private void Dash() {
+    private void AirParry() {
         if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) {
             return;
         }
 
-        if (cachedSpriteRenderers.TryGetValue("Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0", out var renderer) &&
+        if (cachedSpriteRenderers.TryGetValue("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/AbilityChecker/Ability 識破/Effect_TAICHIParry_Air/Effect_JumpFeet", out var renderer) &&
             AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
+        }
+    }
+
+    private void Dash() {
+        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) return;
+
+        string path = "Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0";
+
+        // 處理第一個
+        if (cachedSpriteRenderers.TryGetValue(path, out var renderer1)) {
+            ApplyToRenderer(renderer1);
+        }
+
+        // 處理第二個 (如果有的話)
+        if (cachedSpriteRenderers.TryGetValue(path + "_2", out var renderer2)) {
+            ApplyToRenderer(renderer2);
+        }
+    }
+
+    // 寫個小方法避免重寫兩次邏輯
+    private void ApplyToRenderer(SpriteRenderer renderer) {
+        if (AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+            renderer.sprite = sprite;
+        }
+        if (AssetLoader.DashColor.HasValue) {
+            renderer.color = AssetLoader.DashColor.Value;
         }
     }
 
@@ -336,13 +372,18 @@ public class CustomSols : BaseUnityPlugin {
             var obj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging");
             if (obj != null) {
                 _cachedUCSuccess = obj.GetComponent<ParticleSystemRenderer>();
-                obj.GetComponent<ParticleSystem>().startColor = UCSuccessColor.Value;
+                if(AssetLoader.UCSuccessColor.HasValue)
+                    obj.GetComponent<ParticleSystem>().startColor = AssetLoader.UCSuccessColor.Value;
             }
         }
 
         // 之後直接用變數
         if (_cachedUCSuccess != null && AssetLoader.cacheParrySprites.TryGetValue("UCSuccess", out var sprite)) {
             _cachedUCSuccess.materials[0].SetTexture("_MainTex", sprite.texture);
+        }
+
+        if (_cachedUCSuccess != null && AssetLoader.cacheParrySprites.TryGetValue("UCSuccess2", out var sprite2)) {
+            _cachedUCSuccess.materials[1].SetTexture("_MainTex", sprite2.texture);
         }
     }
 
@@ -354,13 +395,18 @@ public class CustomSols : BaseUnityPlugin {
             var obj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/P_Charging C");
             if (obj != null) {
                 _cachedUCCharging = obj.GetComponent<ParticleSystemRenderer>();
-                obj.GetComponent<ParticleSystem>().startColor = UCChargingColor.Value;
+                if(AssetLoader.UCChargingColor.HasValue)
+                    obj.GetComponent<ParticleSystem>().startColor = AssetLoader.UCChargingColor.Value;
             }
         }
 
         // 之後直接用變數
         if (_cachedUCCharging != null && AssetLoader.cacheParrySprites.TryGetValue("UCCharging", out var sprite)) {
             _cachedUCCharging.materials[0].SetTexture("_MainTex", sprite.texture);
+        }
+
+        if (_cachedUCCharging != null && AssetLoader.cacheParrySprites.TryGetValue("UCCharging2", out var sprite2)) {
+            _cachedUCCharging.materials[1].SetTexture("_MainTex", sprite2.texture);
         }
     }
 
@@ -607,7 +653,7 @@ public class CustomSols : BaseUnityPlugin {
         }
    
         if (cachedSpriteRenderers.TryGetValue("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/ItemSelection/CurrentItemPanel spr/Glow", out var renderer3)) {
-            if(AssetLoader.ArrowGlowColor != null)
+            if(AssetLoader.ArrowGlowColor.HasValue)
                 renderer3.color = AssetLoader.ArrowGlowColor.Value;
         }
 
@@ -629,13 +675,13 @@ public class CustomSols : BaseUnityPlugin {
             //ToastManager.Toast(AssetLoader.RageBarFrameColor.Value);
             // RageBarFrame
             if (cachedSpriteRenderers.TryGetValue(RageBarFramePath, out var renderer)) {
-                if (AssetLoader.RageBarFrameColor != null)
+                if (AssetLoader.RageBarFrameColor.HasValue)
                     renderer.color = AssetLoader.RageBarFrameColor.Value;
             }
 
             // RageBar
             if (cachedSpriteRenderers.TryGetValue(RageBarPath, out var renderer2)) {
-                if (AssetLoader.RageBarColor != null)
+                if (AssetLoader.RageBarColor.HasValue)
                     renderer2.color = AssetLoader.RageBarColor.Value;
             }
         }
@@ -663,38 +709,38 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UpdateExpRing() {
-        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+        if (AssetLoader.cacheUISprites == null) {
             return;
         }
 
         string expRingOuter = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)";
         if (AssetLoader.expRingOuterColor.HasValue && cachedSpriteRenderers.TryGetValue(expRingOuter, out var renderer)) {
-            if (AssetLoader.expRingOuterColor != null)
+            if (AssetLoader.expRingOuterColor.HasValue)
                 renderer.color = AssetLoader.expRingOuterColor.Value;
         }
 
         string expRingInner = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreB(ExpUILogic)/BarFill";
         if (AssetLoader.expRingInnerColor.HasValue && cachedSpriteRenderers.TryGetValue(expRingInner, out var renderer2)) {
-            if (AssetLoader.expRingInnerColor != null)
+            if (AssetLoader.expRingInnerColor.HasValue)
                 renderer2.color = AssetLoader.expRingInnerColor.Value;
         }
     }
 
     private void UpdateHpBar() {
-        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+        if (AssetLoader.cacheUISprites == null) {
             return;
         }
 
         string normalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health";
         if (AssetLoader.normalHpColor.HasValue && cachedSpriteRenderers.TryGetValue(normalHp, out var renderer)) {
-            if (AssetLoader.normalHpColor != null)
+            if (AssetLoader.normalHpColor.HasValue)
                 renderer.color = AssetLoader.normalHpColor.Value;
         }
 
 
         string internalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth";
         if (AssetLoader.internalHpColor.HasValue && cachedSpriteRenderers.TryGetValue(internalHp, out var renderer2)) {
-            if (AssetLoader.internalHpColor != null)
+            if (AssetLoader.internalHpColor.HasValue)
                 renderer2.color = AssetLoader.internalHpColor.Value;
         }
     }
@@ -749,7 +795,7 @@ public class CustomSols : BaseUnityPlugin {
             if (AssetLoader.cacheUISprites.TryGetValue("ChiBallLeftLine", out var sprite))
                 renderer.sprite = sprite;
 
-            if (AssetLoader.ChiBallLeftLineColor != null)
+            if (AssetLoader.ChiBallLeftLineColor.HasValue)
                 renderer.color = AssetLoader.ChiBallLeftLineColor.Value;
         }
     }
@@ -759,13 +805,13 @@ public class CustomSols : BaseUnityPlugin {
         string pathC = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreC";
         if (cachedSpriteRenderers.TryGetValue(pathC, out var rendererC)) {
             if (AssetLoader.cacheUISprites.TryGetValue("CoreC", out var sprite)) rendererC.sprite = sprite;
-            if (AssetLoader.CoreCColor != null) rendererC.color = AssetLoader.CoreCColor.Value;
+            if (AssetLoader.CoreCColor.HasValue) rendererC.color = AssetLoader.CoreCColor.Value;
         }
 
         string pathD = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/CoreD";
         if (cachedSpriteRenderers.TryGetValue(pathD, out var rendererD)) {
             if (AssetLoader.cacheUISprites.TryGetValue("CoreD", out var sprite2)) rendererD.sprite = sprite2;
-            if (AssetLoader.CoreDColor != null) rendererD.color = AssetLoader.CoreDColor.Value;
+            if (AssetLoader.CoreDColor.HasValue) rendererD.color = AssetLoader.CoreDColor.Value;
         }
     }
 
@@ -773,7 +819,7 @@ public class CustomSols : BaseUnityPlugin {
         string path = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/RageUI renderer/ArrowLineB (1)";
         if (cachedSpriteRenderers.TryGetValue(path, out var renderer)) {
             if (AssetLoader.cacheUISprites.TryGetValue("ArrowLineA", out var sprite)) renderer.sprite = sprite;
-            if (AssetLoader.ArrowLineBColor != null) renderer.color = AssetLoader.ArrowLineBColor.Value;
+            if (AssetLoader.ArrowLineBColor.HasValue) renderer.color = AssetLoader.ArrowLineBColor.Value;
         }
     }
 
@@ -782,7 +828,24 @@ public class CustomSols : BaseUnityPlugin {
         string path = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/RightDown/Butterfly_UIHintPanel/LineA";
         if (cachedSpriteRenderers.TryGetValue(path, out var renderer)) {
             if (AssetLoader.cacheUISprites.TryGetValue("ButterflyRightLine", out var sprite)) renderer.sprite = sprite;
-            if (AssetLoader.ButterflyRightLineColor != null) renderer.color = AssetLoader.ButterflyRightLineColor.Value;
+            if (AssetLoader.ButterflyRightLineColor.HasValue) renderer.color = AssetLoader.ButterflyRightLineColor.Value;
+        }
+    }
+
+    private void AirParryColor() {
+        string airParry = "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/AbilityChecker/Ability 識破/Effect_TAICHIParry_Air/YeeParryBlink/BlinkLight";
+        if (AssetLoader.AirParryColor.HasValue && cachedSpriteRenderers.TryGetValue(airParry, out var renderer)) {
+            if (AssetLoader.AirParryColor.HasValue)
+                renderer.color = AssetLoader.AirParryColor.Value;
+        }
+    }
+
+    private void UCParryColor() {
+        string UCParry = "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_TAICHIParry/YeeParryBlink/BlinkLight";
+        if (AssetLoader.UCParryColor.HasValue && cachedSpriteRenderers.TryGetValue(UCParry, out var renderer)) {
+            if (AssetLoader.UCParryColor.HasValue)
+                renderer.color = AssetLoader.UCParryColor.Value;
+
         }
     }
 

@@ -35,6 +35,11 @@ public class AssetLoader {
     public static Color? ButterflyRightLineColor = null;
     public static Color? CoreCColor = null;
     public static Color? CoreDColor = null;
+    public static Color? UCChargingColor = null;
+    public static Color? UCSuccessColor = null;
+    public static Color? AirParryColor = null;
+    public static Color? UCParryColor = null;
+    public static Color? DashColor = null;
 
     public static Vector3? NormalArrowLv1Pos = null;
     public static Vector3? NormalArrowLv2Pos = null;
@@ -68,6 +73,7 @@ public class AssetLoader {
             { "MenuLogo", (cacheMenuLogoSprites, new Vector2(0.5f, 0f), 8.0f, null) },
             { "Player", (cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f, filename => {
                 if (filename.StartsWith("SavePointPowerToYee")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
+                if (filename.StartsWith("Effect_HoHoYee_Parry_Sky")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 return null;
             }) },
             { "TalismanBall", (cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f, null) },
@@ -114,43 +120,47 @@ public class AssetLoader {
     }
 
     private static void LoadConfigs() {
-        var jsonFilePath = Path.Combine(assetFolder, "UI", "color.json");
-        if (File.Exists(jsonFilePath)) {
-            try {
-                string jsonContent = File.ReadAllText(jsonFilePath);
-                ColorConfig config = JsonConvert.DeserializeObject<ColorConfig>(jsonContent);
-                if (config != null) {
-                    TrySetColor(ref normalHpColor, config.NormalHpColor);
-                    TrySetColor(ref internalHpColor, config.InternalHpColor);
-                    TrySetColor(ref expRingOuterColor, config.ExpRingOuterColor);
-                    TrySetColor(ref expRingInnerColor, config.ExpRingInnerColor);
-                    TrySetColor(ref RageBarColor, config.RageBarColor);
-                    TrySetColor(ref RageBarFrameColor, config.RageBarFrameColor);
-                    TrySetColor(ref ArrowLineBColor, config.ArrowLineBColor);
-                    TrySetColor(ref ArrowGlowColor, config.ArrowGlowColor);
-                    TrySetColor(ref ChiBallLeftLineColor, config.ChiBallLeftLineColor);
-                    TrySetColor(ref ButterflyRightLineColor, config.ButterflyRightLineColor);
-                    TrySetColor(ref CoreCColor, config.CoreCColor);
-                    TrySetColor(ref CoreDColor, config.CoreDColor);
-                }
-            } catch (Exception ex) {
-                ToastManager.Toast($"Color Config Error: {ex.Message}");
-            }
-        }
+        // 設定單一 JSON 檔案路徑
+        var jsonFilePath = Path.Combine(assetFolder, "skinConfig.json");
 
-        var bowJsonFilePath = Path.Combine(assetFolder, "Bow", "bow.json");
-        if (File.Exists(bowJsonFilePath)) {
-            try {
-                string jsonContent = File.ReadAllText(bowJsonFilePath);
-                BowConfig config = JsonConvert.DeserializeObject<BowConfig>(jsonContent);
-                if (config != null) {
-                    TrySetVector3(ref NormalArrowLv1Pos, config.NormalArrowLv1);
-                    TrySetVector3(ref NormalArrowLv2Pos, config.NormalArrowLv2);
-                    TrySetVector3(ref NormalArrowLv3Pos, config.NormalArrowLv3);
-                }
-            } catch (Exception ex) {
-                ToastManager.Toast($"Bow Config Error: {ex.Message}");
+        if (!File.Exists(jsonFilePath)) return;
+
+        try {
+            string jsonContent = File.ReadAllText(jsonFilePath);
+            MainConfig mainConfig = JsonConvert.DeserializeObject<MainConfig>(jsonContent);
+
+            if (mainConfig != null) {
+                // 1. 處理顏色 (Colors)
+                var c = mainConfig.Colors;
+                TrySetColor(ref normalHpColor, c.NormalHpColor);
+                TrySetColor(ref internalHpColor, c.InternalHpColor);
+                TrySetColor(ref expRingOuterColor, c.ExpRingOuterColor);
+                TrySetColor(ref expRingInnerColor, c.ExpRingInnerColor);
+                TrySetColor(ref RageBarColor, c.RageBarColor);
+                TrySetColor(ref RageBarFrameColor, c.RageBarFrameColor);
+                TrySetColor(ref ArrowLineBColor, c.ArrowLineBColor);
+                TrySetColor(ref ArrowGlowColor, c.ArrowGlowColor);
+                TrySetColor(ref ChiBallLeftLineColor, c.ChiBallLeftLineColor);
+                TrySetColor(ref ButterflyRightLineColor, c.ButterflyRightLineColor);
+                TrySetColor(ref CoreCColor, c.CoreCColor);
+                TrySetColor(ref CoreDColor, c.CoreDColor);
+
+                // 2. 處理格擋 (Parry)
+                var p = mainConfig.Parry;
+                TrySetColor(ref UCChargingColor, p.UCChargingColor);
+                TrySetColor(ref UCSuccessColor, p.UCSuccessColor);
+                TrySetColor(ref AirParryColor, p.AirParryColor);
+                TrySetColor(ref UCParryColor, p.UCParryColor);
+                TrySetColor(ref DashColor, p.DashColor);
+
+                // 3. 處理弓箭座標 (Bow)
+                var b = mainConfig.Bow;
+                TrySetVector3(ref NormalArrowLv1Pos, b.NormalArrowLv1);
+                TrySetVector3(ref NormalArrowLv2Pos, b.NormalArrowLv2);
+                TrySetVector3(ref NormalArrowLv3Pos, b.NormalArrowLv3);
             }
+        } catch (Exception ex) {
+            ToastManager.Toast($"Config Load Error: {ex.Message}");
         }
     }
 

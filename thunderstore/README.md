@@ -43,23 +43,37 @@
 - and name 1 2 3 4 5....
 - ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/PlayerAllSpriteUseThis/Source/img/AllUse.png?raw=true)
 
-# Change UI Color
+# SkinConfig.json Color
 if you don't want change color use "NormalHpColor": "#"  
 "NormalHpColor": "#FF926EFF" Hex is RGBA Red 255, Green 146, Blue 110, Alpha 255
 ```
 {
-  "NormalHpColor": "#",
-  "InternalHpColor": "#",
-  "ExpRingOuterColor": "#",
-  "ExpRingInnerColor": "#",
-  "RageBarColor": "#",
-  "RageBarFrameColor": "#",
-  "ArrowLineBColor": "#",
-  "ArrowGlowColor": "#",
-  "ChiBallLeftLineColor": "#",
-  "ButterflyRightLineColor": "#",
-  "CoreCColor": "#",
-  "CoreDColor": "#"
+  "Colors": {
+    "NormalHpColor": "#",
+    "InternalHpColor": "#",
+    "ExpRingOuterColor": "#",
+    "ExpRingInnerColor": "#",
+    "RageBarColor": "#",
+    "RageBarFrameColor": "#",
+    "ArrowLineBColor": "#",
+    "ArrowGlowColor": "#",
+    "ChiBallLeftLineColor": "#",
+    "ButterflyRightLineColor": "#",
+    "CoreCColor": "#",
+    "CoreDColor": "#"
+  },
+  "Parry": {
+    "UCChargingColor": "#",
+    "UCSuccessColor": "#",
+    "AirParryColor": "#",
+    "UCParryColor": "#",
+    "DashColor": "#"
+  },
+  "Bow": {
+    "NormalArrowLv1": [-15.0, 0.0, 0.0],
+    "NormalArrowLv2": [-15.0, 0.0, 0.0],
+    "NormalArrowLv3": [-15.0, 0.0, 0.0]
+  }
 }
 ```
 
@@ -79,7 +93,7 @@ default is -15.0, 0.0, 0.0
 - cause when you apply skin object haven't created
 
 # Mod UnNeed Sprite
-- When Mod Update some UnNeed Sprite  Sprite Still inside folder
+- When Mod Update some UnNeed Sprite Sprite Still inside folder
 - If you want latest clean folder
 - remove `BepInEx\config\CustomSols` this folder ReInstall will get latest clean folder
 
@@ -87,7 +101,7 @@ default is -15.0, 0.0, 0.0
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
 # Origin Sprite
-- https://drive.google.com/file/d/1vyYBA_Z7iDHMoBY94f5nGG4QtbAXS2XC/view?usp=sharing
+- https://drive.google.com/drive/folders/102UGxf7OyI4CTQCI0H8iiOCntImi7jFD
 - YingZhao
 - https://drive.google.com/file/d/1ruhRussKrtjLR8uJol32EkoVr34S_AOI
 
