@@ -22,6 +22,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheOnlyOneSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheUISprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheYingZhaoSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> all = new Dictionary<string, Sprite>();
 
     public static Color? normalHpColor = null;
     public static Color? internalHpColor = null;
@@ -48,6 +49,7 @@ public class AssetLoader {
     public static Vector3? NormalArrowLv3Pos = null;
 
     public static void Init() {
+        all.Clear(); // 確保重新載入時是乾淨的
         ColorFieldNull();
 
         string basePath =
@@ -201,6 +203,7 @@ public class AssetLoader {
             var sprite = LoadSprite(file, pivot, ppu, border);
             if (sprite != null) {
                 cache[filename] = sprite;
+                all[filename] = sprite;
             }
         }
     }
