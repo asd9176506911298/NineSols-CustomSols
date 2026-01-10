@@ -12,7 +12,7 @@
 - Dash
 - Menu Logo
 - YingZhao
-- Other If you know Sprite Put into any folder
+- Other If you know SpriteName Put into any folder
 
 # Preview
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/Optimized/Source/img/CustomSolsPreview.png?raw=true)
