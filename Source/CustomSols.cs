@@ -131,7 +131,7 @@ public class CustomSols : BaseUnityPlugin {
         //YingZhao();
         
         //UI
-        //UpdateHeartSprite();
+        UpdateHeartSprite(); // Need
         UpdateArrowIcon(); // Need
         UpdateArrowColor(); //Need
         UpdateButterflySprite(); //Need
