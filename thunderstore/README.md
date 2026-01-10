@@ -103,7 +103,7 @@ default is -15.0, 0.0, 0.0
 # Notice
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
-# Origin Sprite¡BExample Skin
+# Origin Sprite Example Skin
 - https://drive.google.com/drive/folders/102UGxf7OyI4CTQCI0H8iiOCntImi7jFD
 - YingZhao
 - https://drive.google.com/file/d/1ruhRussKrtjLR8uJol32EkoVr34S_AOI
