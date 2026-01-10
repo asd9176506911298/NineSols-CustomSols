@@ -12,6 +12,7 @@
 - Dash
 - Menu Logo
 - YingZhao
+- Other If you know Sprite Put into any folder
 
 # Preview
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/Optimized/Source/img/CustomSolsPreview.png?raw=true)
@@ -32,7 +33,7 @@
 
 # How to Custom Player Sprite
 - F1 Toast you want Sprite Name
-- https://drive.google.com/file/d/1vS6sHwjBuPoQP7S4CbQ9-cBrJDvPate2/view?usp=sharing
+- https://drive.google.com/drive/folders/102UGxf7OyI4CTQCI0H8iiOCntImi7jFD
 - Download Origin Sprite Sprite include Player Sprite
 - Put Changed Player Sprite into Player Folder
 - ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/ConfigManagerOption/Source/img/PlayerExample.png?raw=true)
@@ -102,7 +103,7 @@ default is -15.0, 0.0, 0.0
 # Notice
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
-# Origin Sprite
+# Origin Sprite¡BExample Skin
 - https://drive.google.com/drive/folders/102UGxf7OyI4CTQCI0H8iiOCntImi7jFD
 - YingZhao
 - https://drive.google.com/file/d/1ruhRussKrtjLR8uJol32EkoVr34S_AOI

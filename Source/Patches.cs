@@ -121,4 +121,33 @@ public class Patches {
             }
         }
     }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(_2dxFX_ColorRGB), "OnEnable")]
+    private static void CatchSprite(_2dxFX_ColorRGB __instance) {
+        // 1. 安全檢查：確保實例本身存在
+        if (__instance == null) return;
+
+        // 2. 確定搜尋起點：如果有父物件就從父物件找，沒有就從自己找
+        var searchRoot = __instance.transform.parent != null
+                         ? __instance.transform.parent
+                         : __instance.transform;
+
+        // 3. 取得所有 SpriteRenderer
+        var renderers = searchRoot.GetComponentsInChildren<SpriteRenderer>(true);
+
+        if (renderers != null && renderers.Length > 0) {
+            // 4. 安全檢查：確保存放的列表已經初始化
+            if (CustomSols.DummyRenderers == null) {
+                CustomSols.DummyRenderers = new List<SpriteRenderer>();
+            }
+            
+            foreach (var r in renderers) {
+                // 防止重複加入
+                if (!CustomSols.DummyRenderers.Contains(r)) {
+                    CustomSols.DummyRenderers.Add(r);
+                }
+            }
+        }
+    }
 }

@@ -113,6 +113,9 @@ public class CustomSols : BaseUnityPlugin {
     private void LateUpdate() {
         if (!isAssetsLoaded) return;
 
+        //Some same sprite name need execute first
+        RendererReplace();
+
         PlayerSprite();
         AirParry();
         UCParryColor();
@@ -125,13 +128,13 @@ public class CustomSols : BaseUnityPlugin {
         TalismanBall();
         Foo();
         Sword();
-        YingZhao();
-
+        //YingZhao();
+        
         //UI
-        UpdateHeartSprite();
-        UpdateArrowIcon();
-        UpdateArrowColor();
-        UpdateButterflySprite();
+        //UpdateHeartSprite();
+        UpdateArrowIcon(); // Need
+        UpdateArrowColor(); //Need
+        UpdateButterflySprite(); //Need
 
         // 玩家部分
         if (isToastPlayerSprite.Value) {
@@ -260,6 +263,19 @@ public class CustomSols : BaseUnityPlugin {
         return path;
     }
 
+    private void RendererReplace() {
+        CustomSols.DummyRenderers.RemoveAll(r => r == null);
+
+        foreach (var renderer in CustomSols.DummyRenderers) {
+            if (renderer.sprite != null) {
+                // 根據目前的 Sprite 名稱從快取中找尋對應的新 Sprite
+                if (AssetLoader.all.TryGetValue(renderer.sprite.name, out var cachedSprite)) {
+                    renderer.sprite = cachedSprite;
+                }
+            }
+        }
+    }
+
     private void ChangeUIChiBall() {
         if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
             return;
@@ -301,10 +317,28 @@ public class CustomSols : BaseUnityPlugin {
             return;
         }
 
-        if (cachedSpriteRenderers.TryGetValue("YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0", out var renderer) &&
-            AssetLoader.cacheParrySprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+        string basePath = "YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0";
+
+        // 1. 處理第一個原始路徑 (無序號)
+        if (cachedSpriteRenderers.TryGetValue(basePath, out var renderer1)) {
+            ApplyParrySprite(renderer1);
+        }
+
+        // 2. 自動處理後續所有編號 (_2, _3, _4...)
+        int count = 2;
+        while (cachedSpriteRenderers.TryGetValue(basePath + "_" + count, out var nextRenderer)) {
+            ApplyParrySprite(nextRenderer);
+            count++;
+        }
+    }
+
+    // 提取共用邏輯，讓程式碼更乾淨
+    private void ApplyParrySprite(SpriteRenderer renderer) {
+        if (AssetLoader.cacheParrySprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
-            renderer.transform.rotation = Quaternion.Euler(0f, Player.i.Facing == Facings.Left ? 180f : 0f, 0f);
+            // 根據玩家朝向翻轉特效
+            float yRotation = (Player.i.Facing == Facings.Left) ? 180f : 0f;
+            renderer.transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
         }
     }
 
@@ -320,38 +354,66 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void Dash() {
-        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) return;
+        // 檢查總字典 all (包含所有圖片) 是否有資料
+        if (AssetLoader.all == null || AssetLoader.all.Count == 0) return;
 
         string path = "Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0";
 
-        // 處理第一個
+        // 1. 處理第一個 (原始路徑)
         if (cachedSpriteRenderers.TryGetValue(path, out var renderer1)) {
             ApplyToRenderer(renderer1);
         }
 
-        // 處理第二個 (如果有的話)
-        if (cachedSpriteRenderers.TryGetValue(path + "_2", out var renderer2)) {
-            ApplyToRenderer(renderer2);
+        // 2. 自動處理後續所有編號 (_2, _3, _4...)
+        int count = 2;
+        while (cachedSpriteRenderers.TryGetValue(path + "_" + count, out var nextRenderer)) {
+            ApplyToRenderer(nextRenderer);
+            count++;
         }
     }
 
     // 寫個小方法避免重寫兩次邏輯
     private void ApplyToRenderer(SpriteRenderer renderer) {
-        if (AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
-            renderer.sprite = sprite;
-        }
-        if (AssetLoader.DashColor.HasValue) {
-            renderer.color = AssetLoader.DashColor.Value;
+        // 1. 關鍵修正：必須先檢查 renderer 本身是否為 null (包含已被銷毀的情況)
+        if (renderer == null) return;
+
+        // 2. 檢查是否有 Sprite（有些特效消失前會先清空 Sprite）
+        if (renderer.sprite == null) return;
+
+        // 3. 確保 AssetLoader.all 已經初始化
+        if (AssetLoader.all == null) return;
+
+        // 4. 進行替換
+        if (AssetLoader.all.TryGetValue(renderer.sprite.name, out var customSprite)) {
+            if (renderer.sprite != customSprite) {
+                renderer.sprite = customSprite;
+            }
         }
     }
 
+    //Sometime will not work cause object dynamic create cache didn't cache it
     private void AirJump() {
         if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) {
             return;
         }
 
-        if (cachedSpriteRenderers.TryGetValue("Effect_AirJump(Clone)/Effect_HoHoYee_AirJump0", out var renderer) &&
-            AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+        string basePath = "Effect_AirJump(Clone)/Effect_HoHoYee_AirJump0";
+
+        // 1. 處理原始路徑
+        if (cachedSpriteRenderers.TryGetValue(basePath, out var renderer1)) {
+            ApplyAirJumpSprite(renderer1);
+        }
+
+        // 2. 自動處理後續所有編號 (_2, _3, _4...)
+        int count = 2;
+        while (cachedSpriteRenderers.TryGetValue(basePath + "_" + count, out var nextRenderer)) {
+            ApplyAirJumpSprite(nextRenderer);
+            count++;
+        }
+    }
+
+    private void ApplyAirJumpSprite(SpriteRenderer renderer) {
+        if (AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
             renderer.sprite = sprite;
         }
     }
@@ -483,21 +545,6 @@ public class CustomSols : BaseUnityPlugin {
             if (cachePlayer.TryGetValue(currentName, out var sprite)) {
                 Player.i.PlayerSprite.sprite = sprite;
             }
-
-            // --- 修正重點：使用 s?.name 並檢查 null ---
-
-            // 遍歷 List 中所有的渲染器
-            // 使用 RemoveAll 清理掉已經被銷毀 (null) 的渲染器，避免報錯
-            CustomSols.DummyRenderers.RemoveAll(r => r == null);
-
-            foreach (var renderer in CustomSols.DummyRenderers) {
-                if (renderer.sprite != null) {
-                    // 根據目前的 Sprite 名稱從快取中找尋對應的新 Sprite
-                    if (cachePlayer.TryGetValue(renderer.sprite.name, out var cachedSprite)) {
-                        renderer.sprite = cachedSprite;
-                    }
-                }
-            }
         }
     }
 
@@ -555,16 +602,19 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void Sword() {
-        if (AssetLoader.cacheSwordSprites == null || AssetLoader.cacheSwordSprites.Count == 0) {
-            return;
-        }
+        if (AssetLoader.cacheSwordSprites == null || AssetLoader.cacheSwordSprites.Count == 0) return;
 
         foreach (var path in swordSpritePaths) {
-            if (cachedSpriteRenderers.TryGetValue(path, out var renderer) &&
-                renderer != null &&
-                renderer.sprite != null &&
-                AssetLoader.cacheSwordSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
-                renderer.sprite = sprite;
+            // 1. 處理原始路徑
+            if (cachedSpriteRenderers.TryGetValue(path, out var r1)) {
+                ApplyToRenderer(r1);
+            }
+
+            // 2. 處理該路徑下所有編號實體 (_2, _3...)
+            int count = 2;
+            while (cachedSpriteRenderers.TryGetValue(path + "_" + count, out var nextR)) {
+                ApplyToRenderer(nextR);
+                count++;
             }
         }
     }
@@ -757,6 +807,7 @@ public class CustomSols : BaseUnityPlugin {
 
         string normalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health";
         if (AssetLoader.normalHpColor.HasValue && cachedSpriteRenderers.TryGetValue(normalHp, out var renderer)) {
+            ToastManager.Toast(AssetLoader.normalHpColor.Value);
             if (AssetLoader.normalHpColor.HasValue)
                 renderer.color = AssetLoader.normalHpColor.Value;
         }
@@ -916,7 +967,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowLine();
         UpdateRightLine();
         UpdateArrowBullet();
-        YingZhaoOnce();
+        //YingZhaoOnce();
     }
 
     private void OnDestroy() {

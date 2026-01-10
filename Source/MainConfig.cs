@@ -9,7 +9,7 @@
     }
 
     public class ColorConfig {
-        public string NormalHpColor { get; set; } = "#FF0000"; // 可設定預設值
+        public string NormalHpColor { get; set; } = string.Empty; // 可設定預設值
         public string InternalHpColor { get; set; } = string.Empty;
         public string ExpRingOuterColor { get; set; } = string.Empty;
         public string ExpRingInnerColor { get; set; } = string.Empty;
