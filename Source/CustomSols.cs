@@ -111,6 +111,18 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void LateUpdate() {
+        // 玩家部分
+        if (isToastPlayerSprite.Value) {
+            var s = Player.i?.PlayerSprite?.sprite;
+            if (s != null) CheckAndToast(s, ref playerSpriteName);
+        }
+
+        // Dummy 部分
+        if (isToastPlayerDummySprite.Value) {
+            var s = CurrentDummyRenderer?.sprite;
+            if (s != null) CheckAndToast(s, ref playerDummySpriteName, "Dummy: ");
+        }
+
         if (!isAssetsLoaded) return;
 
         //Some same sprite name need execute first
@@ -135,18 +147,6 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowIcon(); // Need
         UpdateArrowColor(); //Need
         UpdateButterflySprite(); //Need
-
-        // 玩家部分
-        if (isToastPlayerSprite.Value) {
-            var s = Player.i?.PlayerSprite?.sprite;
-            if (s != null) CheckAndToast(s, ref playerSpriteName);
-        }
-
-        // Dummy 部分
-        if (isToastPlayerDummySprite.Value) {
-            var s = CurrentDummyRenderer?.sprite;
-            if (s != null) CheckAndToast(s, ref playerDummySpriteName, "Dummy: ");
-        }
     }
 
     private void CheckAndToast(Sprite sprite, ref string cachedName, string prefix = "") {
@@ -239,17 +239,28 @@ public class CustomSols : BaseUnityPlugin {
 
     private void CacheSpriteRenderers() {
         cachedSpriteRenderers.Clear();
+        // 使用 true 包含隱藏物件
         var renderers = FindObjectsOfType<SpriteRenderer>(true);
-        foreach (var renderer in renderers) {
-            var path = GetGameObjectPath(renderer.gameObject);
 
-            // 如果這個路徑已經有東西了（重複了）
-            if (cachedSpriteRenderers.ContainsKey(path)) {
-                // 存成另一個 Key，例如 "路徑_2"
-                cachedSpriteRenderers[path + "_2"] = renderer;
-            } else {
-                cachedSpriteRenderers[path] = renderer;
+        foreach (var renderer in renderers) {
+            if (renderer == null) continue;
+
+            // 更新 DummyRenderers 清單
+            if (!CustomSols.DummyRenderers.Contains(renderer)) {
+                CustomSols.DummyRenderers.Add(renderer);
             }
+
+            string path = GetGameObjectPath(renderer.gameObject);
+            string finalPath = path;
+
+            // --- 改良重點：自動遞增序號 ---
+            int suffix = 2;
+            while (cachedSpriteRenderers.ContainsKey(finalPath)) {
+                finalPath = $"{path}_{suffix}";
+                suffix++;
+            }
+
+            cachedSpriteRenderers[finalPath] = renderer;
         }
     }
 
