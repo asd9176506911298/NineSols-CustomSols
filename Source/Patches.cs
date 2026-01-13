@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using BepInEx;
+using System.IO;
 
 namespace CustomSols;
 
@@ -148,6 +150,69 @@ public class Patches {
                     CustomSols.DummyRenderers.Add(r);
                 }
             }
+        }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(DialogueCharacter), "OnEnable")]
+    private static void DialogueCharacter_OnEnable_Patch(DialogueCharacter __instance) {
+        string fullName = __instance.name;
+        string coreName = "";
+        if (fullName.Contains("_")) {
+            coreName = fullName.Split('_')[1].Split(' ', '(')[0];
+        }
+
+        if (string.IsNullOrEmpty(coreName)) return;
+
+        // 直接從 AssetLoader 拿預載好的 4K 大圖
+        // 假設你的檔案叫 Portrait_GouMang_master.png，那 key 就是 "Portrait_GouMang_master"
+        Texture2D atlas = AssetLoader.GetAtlas($"Portrait_{coreName}_master");
+
+        if (atlas != null) {
+            ApplyAtlasToRoot(__instance.gameObject, atlas, false);
+        }
+    }
+
+    // 通用應用方法
+    private static void ApplyAtlasToRoot(GameObject root, Texture2D atlas, bool resetUV) {
+        SpriteRenderer[] renderers = root.GetComponentsInChildren<SpriteRenderer>(true);
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        foreach (var r in renderers) {
+            r.GetPropertyBlock(mpb);
+            mpb.SetTexture("_MainTex", atlas);
+            mpb.SetTexture("_Texture", atlas);
+            if (resetUV) mpb.SetVector("_MainTex_ST", new Vector4(1, 1, 0, 0));
+            r.SetPropertyBlock(mpb);
+        }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(DialogueAnswerManager), "DisplayAnswers")]
+    private static void DialogueAnswerManager_DisplayAnswers_Patch(DialogueAnswerManager __instance) {
+        try {
+            // 1. 定位 Yi 的頭像路徑
+            string yiPath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/Always Canvas/DialoguePlayer(KeepThisEnable)/UIControlGroup_AnswerPanels/AnswerPanel(Manga)/PlayerFrame/Portrait_Yi";
+            GameObject yiObj = GameObject.Find(yiPath);
+
+            if (yiObj == null) {
+                // 如果沒找到，可能是因為 UI 結構變動或尚未生成
+                return;
+            }
+
+            // 2. 從 AssetLoader 獲取已經預載好的 Yi 大圖
+            // 注意：這裡的 Key 要對應你放在 Atlas 資料夾下的檔名 (不含副檔名)
+            Texture2D atlas = AssetLoader.GetAtlas("Portrait_Yee_master");
+
+            if (atlas != null) {
+                // 3. 使用通用方法替換，resetUV 設為 true (UI 需要校正)
+                ApplyAtlasToRoot(yiObj, atlas, true);
+                // ToastManager.Toast("Yi 的頭像已透過 Atlas 快取替換");
+            } else {
+                // 如果快取沒抓到，可以檢查檔名或路徑
+                // UnityEngine.Debug.LogWarning("[Mod] 找不到 Portrait_Yee_master 快取");
+            }
+        } catch (Exception ex) {
+            UnityEngine.Debug.LogError("Yi 替換出錯: " + ex.Message);
         }
     }
 }

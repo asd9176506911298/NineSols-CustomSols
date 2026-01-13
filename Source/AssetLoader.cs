@@ -22,6 +22,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheOnlyOneSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheUISprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheYingZhaoSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Texture2D> cacheAtlasTextures = new Dictionary<string, Texture2D>();
     public static readonly Dictionary<string, Sprite> all = new Dictionary<string, Sprite>();
 
     public static Color? normalHpColor = null;
@@ -120,6 +121,13 @@ public class AssetLoader {
             }
         }
 
+        string atlasPath = Path.Combine(assetFolder, "Atlas");
+        if (Directory.Exists(atlasPath)) {
+            LoadAtlasSync(atlasPath);
+        } else {
+            cacheAtlasTextures.Clear();
+        }
+
         LoadConfigs();
     }
 
@@ -168,6 +176,44 @@ public class AssetLoader {
         } catch (Exception ex) {
             ToastManager.Toast($"Config Load Error: {ex.Message}");
         }
+    }
+
+    private static void LoadAtlasSync(string folder) {
+        cacheAtlasTextures.Clear();
+        string[] files;
+        try {
+            files = Directory.GetFiles(folder, "*.png", SearchOption.TopDirectoryOnly);
+        } catch { return; }
+
+        foreach (var file in files) {
+            try {
+                var filename = Path.GetFileNameWithoutExtension(file);
+                var data = File.ReadAllBytes(file);
+
+                // 使用你的優化設定：RGBA32, 無 mipChain
+                Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                if (tex.LoadImage(data)) {
+                    tex.wrapMode = TextureWrapMode.Clamp;
+                    tex.filterMode = FilterMode.Bilinear; // 4K大圖建議用 Bilinear 比較平滑
+                    tex.name = filename;
+                    tex.Apply();
+
+                    cacheAtlasTextures[filename] = tex;
+                } else {
+                    Object.Destroy(tex);
+                }
+            } catch (Exception ex) {
+                ToastManager.Toast($"Atlas Load Error {Path.GetFileName(file)}: {ex.Message}");
+            }
+        }
+    }
+
+    // 4. 提供一個方便獲取 Atlas 的方法
+    public static Texture2D GetAtlas(string name) {
+        if (cacheAtlasTextures.TryGetValue(name, out var tex)) {
+            return tex;
+        }
+        return null;
     }
 
     private static void LoadSpritesSync(
