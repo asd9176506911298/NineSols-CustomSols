@@ -39,6 +39,9 @@
     <Reference Include="2dFX">
       <HintPath>$(DllPath)/2dFX.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.2D.Animation.Runtime">
+      <HintPath>$(DllPath)/Unity.2D.Animation.Runtime.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

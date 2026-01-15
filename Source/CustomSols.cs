@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTHandles;
 using BepInEx;
 using BepInEx.Configuration;
+using Com.LuisPedroFonseca.ProCamera2D;
 using HarmonyLib;
 using NineSolsAPI;
 using NineSolsAPI.Utils;
@@ -9,8 +10,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using UnityEngine.U2D;
+using UnityEngine.U2D.Animation;
 
 namespace CustomSols;
 
@@ -25,6 +30,7 @@ public class CustomSols : BaseUnityPlugin {
     public ConfigEntry<bool> openFolder = null!;
     public ConfigEntry<bool> isToastPlayerSprite = null!;
     public ConfigEntry<bool> isToastPlayerDummySprite = null!;
+    public ConfigEntry<bool> isToastDialogue = null!;
     private ConfigEntry<float> spriteDelaySecond= null!;
     private ConfigEntry<KeyboardShortcut> reloadShortcut = null!;
 
@@ -126,7 +132,7 @@ public class CustomSols : BaseUnityPlugin {
         if (!isAssetsLoaded) return;
 
         //Some same sprite name need execute first
-        RendererReplace();
+        //RendererReplace();
 
         PlayerSprite();
         AirParry();
@@ -211,6 +217,7 @@ public class CustomSols : BaseUnityPlugin {
         openFolder = Config.Bind("Folder", "Open CustomSols Folder", false, "");
         isToastPlayerSprite = Config.Bind("", "Toast Player Sprite Name", false, "");
         isToastPlayerDummySprite = Config.Bind("", "Toast Player Dummy Sprite Name", false, "");
+        isToastDialogue = Config.Bind("", "Toast Dialogue Character", false, "");
         spriteDelaySecond = Config.Bind("Sprite Delay Second", "PlayerSpriteAllUseThis Sprite Delay Second", 0.12f, "");
         //UCChargingColor = Config.Bind("Color", "UCCharging Color", new Color(1f, 0.837f, 0f, 1f), "");
         //UCSuccessColor = Config.Bind("Color", "UCSuccess Color", new Color(1f, 0.718f, 1f, 1f), "");
@@ -963,7 +970,7 @@ public class CustomSols : BaseUnityPlugin {
         _cachedUCCharging = null;
         _cachedTalismanBalls.Clear();
         _talismanSearched = false;
-
+        
         InitializeAssets();
         ChangeMenuLogo();
         ChangeUIChiBall();
