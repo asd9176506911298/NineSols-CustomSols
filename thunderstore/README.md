@@ -13,6 +13,7 @@
 - Menu Logo
 - YingZhao
 - Other If you know SpriteName Put into any folder
+- Dialogue Atlas
 
 # Preview
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/Optimized/Source/img/CustomSolsPreview.png?raw=true)
@@ -43,6 +44,12 @@
 - put your image into folder PlayerSpriteAllUseThis
 - and name 1 2 3 4 5....
 - ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/PlayerAllSpriteUseThis/Source/img/AllUse.png?raw=true)
+
+# Dialogue Atlas
+- Atlas Folder
+- Toast Dialogue will toast Portrait_{name}
+- Portrait_Yee
+- ![]
 
 # SkinConfig.json Color
 if you don't want change color use "NormalHpColor": "#"  
