@@ -161,12 +161,13 @@ public class Patches {
         if (fullName.Contains("_")) {
             coreName = fullName.Split('_')[1].Split(' ', '(')[0];
         }
-
+        if(CustomSols.instance.isToastDialogue.Value)
+            ToastManager.Toast(coreName);
         if (string.IsNullOrEmpty(coreName)) return;
 
         // 直接從 AssetLoader 拿預載好的 4K 大圖
         // 假設你的檔案叫 Portrait_GouMang_master.png，那 key 就是 "Portrait_GouMang_master"
-        Texture2D atlas = AssetLoader.GetAtlas($"Portrait_{coreName}_master");
+        Texture2D atlas = AssetLoader.GetAtlas($"Portrait_{coreName}");
 
         if (atlas != null) {
             ApplyAtlasToRoot(__instance.gameObject, atlas, false);
@@ -201,7 +202,7 @@ public class Patches {
 
             // 2. 從 AssetLoader 獲取已經預載好的 Yi 大圖
             // 注意：這裡的 Key 要對應你放在 Atlas 資料夾下的檔名 (不含副檔名)
-            Texture2D atlas = AssetLoader.GetAtlas("Portrait_Yee_master");
+            Texture2D atlas = AssetLoader.GetAtlas("Portrait_Yee");
 
             if (atlas != null) {
                 // 3. 使用通用方法替換，resetUV 設為 true (UI 需要校正)
@@ -213,6 +214,55 @@ public class Patches {
             }
         } catch (Exception ex) {
             UnityEngine.Debug.LogError("Yi 替換出錯: " + ex.Message);
+        }
+    }
+    // 紀錄每個實例 ID 對應的高清貼圖，避免重複解析名字
+    private static Dictionary<int, Texture2D> instanceAtlasMapping = new Dictionary<int, Texture2D>();
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PhoneCharacter), "Update")]
+    private static void PhoneCharacter_Update_Patch(PhoneCharacter __instance) {
+        int id = __instance.GetInstanceID();
+
+        // 1. 嘗試從快取拿已經解析好的貼圖
+        if (!instanceAtlasMapping.TryGetValue(id, out Texture2D atlas)) {
+            // 2. 如果快取沒有，才執行解析邏輯 (這部分每個實例只會跑一次)
+            string fullName = __instance.name;
+            string coreName = "";
+            if (fullName.Contains("_")) {
+                coreName = fullName.Split('_')[1].Split(' ', '(')[0];
+            }
+
+            if (!string.IsNullOrEmpty(coreName)) {
+                // 從 AssetLoader 的全局快取拿貼圖
+                if (!AssetLoader.cacheAtlasTextures.TryGetValue(coreName, out atlas)) {
+                    atlas = AssetLoader.GetAtlas($"Portrait_{coreName}");
+                    AssetLoader.cacheAtlasTextures[coreName] = atlas;
+                }
+            }
+
+            // 將解析結果存入實例快取 (即使是 null 也存，避免解析失敗的物件每幀都在重複解析)
+            instanceAtlasMapping[id] = atlas;
+        }
+
+        // 3. 只要有貼圖，每一幀都執行套用 (防止 Animator 換回原圖)
+        if (atlas != null) {
+            ApplyAtlasToRoot(__instance.gameObject, atlas, false);
+        }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PhoneCharacter), "EnterLevelReset")]
+    private static void PhoneCharacter_EnterLevelReset_Patch(PhoneCharacter __instance) {
+        if (CustomSols.instance.isToastDialogue.Value) {
+            string fullName = __instance.name;
+            string coreName = "";
+            if (fullName.Contains("_")) {
+                coreName = fullName.Split('_')[1].Split(' ', '(')[0];
+            }
+            if (!string.IsNullOrEmpty(coreName)) {
+                ToastManager.Toast(coreName);
+            }
         }
     }
 }
