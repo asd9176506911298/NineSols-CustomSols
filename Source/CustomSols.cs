@@ -132,7 +132,7 @@ public class CustomSols : BaseUnityPlugin {
         if (!isAssetsLoaded) return;
 
         //Some same sprite name need execute first
-        //RendererReplace();
+        RendererReplace();
 
         PlayerSprite();
         AirParry();
