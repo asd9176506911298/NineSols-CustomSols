@@ -49,7 +49,7 @@
 - Atlas Folder
 - Toast Dialogue will toast Portrait_{name}
 - Portrait_Yee
-- ![]
+- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/Dialogue.png?raw=true)
 
 # SkinConfig.json Color
 if you don't want change color use "NormalHpColor": "#"  
