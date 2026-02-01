@@ -79,6 +79,7 @@ public class AssetLoader {
             { "Player", (cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f, filename => {
                 if (filename.StartsWith("SavePointPowerToYee")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 if (filename.StartsWith("Effect_HoHoYee_Parry_Sky")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
+                if (filename.StartsWith("HoHoYee_JumpKickEFFECT")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 return null;
             }) },
             { "TalismanBall", (cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f, null) },
