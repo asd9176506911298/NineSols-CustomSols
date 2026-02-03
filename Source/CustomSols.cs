@@ -55,6 +55,8 @@ public class CustomSols : BaseUnityPlugin {
 
     public static List<SpriteRenderer> DummyRenderers = new List<SpriteRenderer>();
 
+    private Dictionary<string, List<SpriteRenderer>> groupedRenderers = new Dictionary<string, List<SpriteRenderer>>();
+
     private ParticleSystemRenderer? _cachedUCSuccess;
     private ParticleSystemRenderer? _cachedUCCharging;
     private List<SpriteRenderer> _cachedTalismanBalls = new List<SpriteRenderer>();
@@ -95,10 +97,19 @@ public class CustomSols : BaseUnityPlugin {
 
     private void InitializeAssets() {
         isAssetsLoaded = false;
+
+        _spriteMappingCache.Clear();
+        _cachedUCSuccess = null;
+        _cachedUCCharging = null;
+        _cachedTalismanBalls.Clear();
+        _talismanSearched = false;
+
         AssetLoader.Init();
         if (currSkinFolder == "Default") return;
+
         isAssetsLoaded = true;
         CacheSpriteRenderers();
+
         ChangeMenuLogo(); // 立即應用 Logo
         ChangeUIChiBall();
         ImPerfectParry();
@@ -190,6 +201,7 @@ public class CustomSols : BaseUnityPlugin {
         _cachedUCSuccess = null;
         _cachedUCCharging = null;
         _cachedTalismanBalls.Clear();
+        _spriteMappingCache.Clear();
         _talismanSearched = false;
 
         CacheSpriteRenderers();
@@ -245,28 +257,33 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void CacheSpriteRenderers() {
-        cachedSpriteRenderers.Clear();
-        // 使用 true 包含隱藏物件
+        groupedRenderers.Clear();
+        cachedSpriteRenderers.Clear(); // 記得也要清空這個
         var renderers = FindObjectsOfType<SpriteRenderer>(true);
 
         foreach (var renderer in renderers) {
             if (renderer == null) continue;
 
-            // 更新 DummyRenderers 清單
+            // 維持 DummyRenderers 邏輯
             if (!CustomSols.DummyRenderers.Contains(renderer)) {
                 CustomSols.DummyRenderers.Add(renderer);
             }
 
             string path = GetGameObjectPath(renderer.gameObject);
-            string finalPath = path;
 
-            // --- 改良重點：自動遞增序號 ---
+            // 如果路徑還沒存在，建立新清單
+            if (!groupedRenderers.ContainsKey(path)) {
+                groupedRenderers[path] = new List<SpriteRenderer>();
+            }
+            groupedRenderers[path].Add(renderer);
+
+            // 2. 填充單一快取 (用於 UI 函數，確保功能不失效)
+            string finalPath = path;
             int suffix = 2;
             while (cachedSpriteRenderers.ContainsKey(finalPath)) {
                 finalPath = $"{path}_{suffix}";
                 suffix++;
             }
-
             cachedSpriteRenderers[finalPath] = renderer;
         }
     }
@@ -281,15 +298,44 @@ public class CustomSols : BaseUnityPlugin {
         return path;
     }
 
+    private Dictionary<Sprite, Sprite> _spriteMappingCache = new Dictionary<Sprite, Sprite>();
+    private int _cleanupCounter = 0;
+
     private void RendererReplace() {
-        CustomSols.DummyRenderers.RemoveAll(r => r == null);
+        // 優化 1：不要每幀都 RemoveAll。每 100 幀清理一次無效引用即可
+        _cleanupCounter++;
+        if (_cleanupCounter > 100) {
+            CustomSols.DummyRenderers.RemoveAll(r => r == null);
+            _cleanupCounter = 0;
+        }
 
         foreach (var renderer in CustomSols.DummyRenderers) {
-            if (renderer.sprite != null) {
-                // 根據目前的 Sprite 名稱從快取中找尋對應的新 Sprite
-                if (AssetLoader.all.TryGetValue(renderer.sprite.name, out var cachedSprite)) {
+            // 快速檢查
+            if (renderer == null) continue;
+
+            Sprite currentSprite = renderer.sprite;
+            if (currentSprite == null) continue;
+
+            // 優化 2：使用 Sprite 引用作為 Key，避免存取 .name (產生成對的字串垃圾)
+            // 如果這個 Sprite 已經在我們的「已處理緩存」中
+            if (_spriteMappingCache.TryGetValue(currentSprite, out var cachedSprite)) {
+                // 如果當前 renderer 的 sprite 不是目標 sprite，才賦值
+                if (currentSprite != cachedSprite) {
                     renderer.sprite = cachedSprite;
                 }
+                continue;
+            }
+
+            // 優化 3：如果緩存裡沒有，才進行耗時的字串比對與字典查尋
+            string spriteName = currentSprite.name; // 這裡才會產生一次字串分配
+            if (AssetLoader.all.TryGetValue(spriteName, out var newSprite)) {
+                // 存入引用緩存，下次同一個 Sprite 就不會再觸發 .name 分配
+                _spriteMappingCache[currentSprite] = newSprite;
+                _spriteMappingCache[newSprite] = newSprite; // 防止重複處理
+                renderer.sprite = newSprite;
+            } else {
+                // 如果沒找到對應的替換，也存入緩存（指向自己），避免下次重複查尋字典
+                _spriteMappingCache[currentSprite] = currentSprite;
             }
         }
     }
@@ -331,33 +377,35 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void PerfectParry() {
-        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
-            return;
-        }
+        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) return;
 
         string basePath = "YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0";
-
-        // 1. 處理第一個原始路徑 (無序號)
-        if (cachedSpriteRenderers.TryGetValue(basePath, out var renderer1)) {
-            ApplyParrySprite(renderer1);
-        }
-
-        // 2. 自動處理後續所有編號 (_2, _3, _4...)
-        int count = 2;
-        while (cachedSpriteRenderers.TryGetValue(basePath + "_" + count, out var nextRenderer)) {
-            ApplyParrySprite(nextRenderer);
-            count++;
+        if (groupedRenderers.TryGetValue(basePath, out var list)) {
+            foreach (var r in list) {
+                ApplyParrySprite(r);
+            }
         }
     }
 
     // 提取共用邏輯，讓程式碼更乾淨
     private void ApplyParrySprite(SpriteRenderer renderer) {
-        if (AssetLoader.cacheParrySprites.TryGetValue(renderer.sprite.name, out var sprite)) {
-            renderer.sprite = sprite;
-            // 根據玩家朝向翻轉特效
-            float yRotation = (Player.i.Facing == Facings.Left) ? 180f : 0f;
-            renderer.transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
+        if (renderer == null || renderer.sprite == null) return;
+
+        // 1. 先找引用快取
+        if (_spriteMappingCache.TryGetValue(renderer.sprite, out var cachedSprite)) {
+            if (renderer.sprite != cachedSprite) renderer.sprite = cachedSprite;
         }
+        // 2. 找不到才讀取 .name (僅此一次)
+        else if (AssetLoader.cacheParrySprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+            _spriteMappingCache[renderer.sprite] = sprite;
+            renderer.sprite = sprite;
+        } else {
+            _spriteMappingCache[renderer.sprite] = renderer.sprite;
+        }
+
+        // 原有的翻轉邏輯保持不變
+        float yRotation = (Player.i.Facing == Facings.Left) ? 180f : 0f;
+        renderer.transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
     }
 
     private void AirParry() {
@@ -372,67 +420,63 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void Dash() {
-        // 檢查總字典 all (包含所有圖片) 是否有資料
         if (AssetLoader.all == null || AssetLoader.all.Count == 0) return;
 
         string path = "Effect_Roll Dodge AfterImage(Clone)/Effect_HoHoYee_AirJump0";
-
-        // 1. 處理第一個 (原始路徑)
-        if (cachedSpriteRenderers.TryGetValue(path, out var renderer1)) {
-            ApplyToRenderer(renderer1);
-        }
-
-        // 2. 自動處理後續所有編號 (_2, _3, _4...)
-        int count = 2;
-        while (cachedSpriteRenderers.TryGetValue(path + "_" + count, out var nextRenderer)) {
-            ApplyToRenderer(nextRenderer);
-            count++;
+        if (groupedRenderers.TryGetValue(path, out var list)) {
+            foreach (var r in list) {
+                ApplyToRenderer(r);
+            }
         }
     }
 
     // 寫個小方法避免重寫兩次邏輯
     private void ApplyToRenderer(SpriteRenderer renderer) {
-        // 1. 關鍵修正：必須先檢查 renderer 本身是否為 null (包含已被銷毀的情況)
-        if (renderer == null) return;
+        if (renderer == null || renderer.sprite == null) return;
 
-        // 2. 檢查是否有 Sprite（有些特效消失前會先清空 Sprite）
-        if (renderer.sprite == null) return;
+        // 第一步：用「引用(記憶體地址)」去查快取 (極快，零垃圾產生)
+        if (_spriteMappingCache.TryGetValue(renderer.sprite, out var cachedSprite)) {
+            if (renderer.sprite != cachedSprite) renderer.sprite = cachedSprite;
+            return; // <--- 只要快取有中，後面的 .name 永遠不會被執行到！！
+        }
 
-        // 3. 確保 AssetLoader.all 已經初始化
-        if (AssetLoader.all == null) return;
+        // 第二步：如果快取找不到 (代表這是這一幀剛出現的新 Sprite，或是還沒處理過)
+        // 只有在這個「第一次碰面」的瞬間，才會執行昂貴的 .name
+        string spriteName = renderer.sprite.name;
 
-        // 4. 進行替換
-        if (AssetLoader.all.TryGetValue(renderer.sprite.name, out var customSprite)) {
-            if (renderer.sprite != customSprite) {
-                renderer.sprite = customSprite;
-            }
+        if (AssetLoader.all.TryGetValue(spriteName, out var customSprite)) {
+            // 找到替換後，立刻存入快取
+            _spriteMappingCache[renderer.sprite] = customSprite;
+            _spriteMappingCache[customSprite] = customSprite;
+            renderer.sprite = customSprite;
+        } else {
+            // 沒找到替換，也存入快取(指向自己)，確保「下一幀」同一個 Sprite 進來時，在第一步就會被 return
+            _spriteMappingCache[renderer.sprite] = renderer.sprite;
         }
     }
 
     //Sometime will not work cause object dynamic create cache didn't cache it
     private void AirJump() {
-        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) {
-            return;
-        }
+        if (AssetLoader.cachePlayerSprites == null || AssetLoader.cachePlayerSprites.Count == 0) return;
 
         string basePath = "Effect_AirJump(Clone)/Effect_HoHoYee_AirJump0";
-
-        // 1. 處理原始路徑
-        if (cachedSpriteRenderers.TryGetValue(basePath, out var renderer1)) {
-            ApplyAirJumpSprite(renderer1);
-        }
-
-        // 2. 自動處理後續所有編號 (_2, _3, _4...)
-        int count = 2;
-        while (cachedSpriteRenderers.TryGetValue(basePath + "_" + count, out var nextRenderer)) {
-            ApplyAirJumpSprite(nextRenderer);
-            count++;
+        if (groupedRenderers.TryGetValue(basePath, out var list)) {
+            foreach (var r in list) {
+                ApplyAirJumpSprite(r);
+            }
         }
     }
 
     private void ApplyAirJumpSprite(SpriteRenderer renderer) {
-        if (AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+        if (renderer == null || renderer.sprite == null) return;
+
+        if (_spriteMappingCache.TryGetValue(renderer.sprite, out var cachedSprite)) {
+            if (renderer.sprite != cachedSprite) renderer.sprite = cachedSprite;
+        } else if (AssetLoader.cachePlayerSprites.TryGetValue(renderer.sprite.name, out var sprite)) {
+            _spriteMappingCache[renderer.sprite] = sprite;
             renderer.sprite = sprite;
+        } else {
+            _spriteMappingCache[renderer.sprite] = renderer.sprite;
         }
     }
 
@@ -539,15 +583,21 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void PlayerSprite() {
-        // 1. 檢查 Cache 是否存在
         var cacheOnly = AssetLoader.cacheOnlyOneSprites;
         var cachePlayer = AssetLoader.cachePlayerSprites;
 
-        if (cacheOnly is { Count: > 0 } && Player.i?.PlayerSprite is not null) {
+        // 安全檢查：確保玩家和 Sprite 存在
+        if (Player.i?.PlayerSprite == null || Player.i.PlayerSprite.sprite == null) return;
+
+        // 拿到當前遊戲原本想顯示的 Sprite 引用
+        Sprite originalSprite = Player.i.PlayerSprite.sprite;
+
+        // 情況 A：強制序列幀動畫 (這裡通常是特殊用途，保持原本邏輯即可)
+        if (cacheOnly is { Count: > 0 }) {
             spriteChangeTimer += Time.deltaTime;
 
-            if (cacheOnly.TryGetValue(currentSpriteIndex.ToString(), out var sprite)) {
-                Player.i.PlayerSprite.sprite = sprite;
+            if (cacheOnly.TryGetValue(currentSpriteIndex.ToString(), out var seqSprite)) {
+                Player.i.PlayerSprite.sprite = seqSprite;
 
                 if (spriteChangeTimer >= spriteDelaySecond.Value) {
                     currentSpriteIndex++;
@@ -557,11 +607,31 @@ public class CustomSols : BaseUnityPlugin {
                     spriteChangeTimer = 0f;
                 }
             }
-        } else if (cachePlayer is { Count: > 0 } && Player.i?.PlayerSprite?.sprite is not null) {
-            // 安全獲取玩家當前 Sprite 名稱
-            string currentName = Player.i.PlayerSprite.sprite.name;
-            if (cachePlayer.TryGetValue(currentName, out var sprite)) {
-                Player.i.PlayerSprite.sprite = sprite;
+        }
+        // 情況 B：根據 Sprite 名稱替換 (這是最常用、也是最吃效能的地方)
+        else if (cachePlayer is { Count: > 0 }) {
+
+            // --- 優化重點：開始使用引用快取 ---
+
+            // 1. 先用 Sprite 引用在 _spriteMappingCache 找
+            if (_spriteMappingCache.TryGetValue(originalSprite, out var cachedReplacement)) {
+                // 如果找到了，且當前顯示的不是我們要的，就換掉
+                if (originalSprite != cachedReplacement) {
+                    Player.i.PlayerSprite.sprite = cachedReplacement;
+                }
+                return; // 這裡直接返回，不用跑後面的字串邏輯
+            }
+
+            // 2. 如果快取沒中，才執行「昂貴」的 .name 讀取
+            string currentName = originalSprite.name;
+            if (cachePlayer.TryGetValue(currentName, out var newSprite)) {
+                // 存入快取：下次遇到這個 originalSprite 引用，直接換成 newSprite
+                _spriteMappingCache[originalSprite] = newSprite;
+                _spriteMappingCache[newSprite] = newSprite; // 防止重複處理
+                Player.i.PlayerSprite.sprite = newSprite;
+            } else {
+                // 如果這個 Sprite 不需要替換，也存入快取指向自己，避免下次又跑一次 .name
+                _spriteMappingCache[originalSprite] = originalSprite;
             }
         }
     }
@@ -623,16 +693,11 @@ public class CustomSols : BaseUnityPlugin {
         if (AssetLoader.cacheSwordSprites == null || AssetLoader.cacheSwordSprites.Count == 0) return;
 
         foreach (var path in swordSpritePaths) {
-            // 1. 處理原始路徑
-            if (cachedSpriteRenderers.TryGetValue(path, out var r1)) {
-                ApplyToRenderer(r1);
-            }
-
-            // 2. 處理該路徑下所有編號實體 (_2, _3...)
-            int count = 2;
-            while (cachedSpriteRenderers.TryGetValue(path + "_" + count, out var nextR)) {
-                ApplyToRenderer(nextR);
-                count++;
+            if (groupedRenderers.TryGetValue(path, out var list)) {
+                // 直接遍歷 List，不產生任何字串拼接
+                foreach (var r in list) {
+                    ApplyToRenderer(r);
+                }
             }
         }
     }
@@ -970,7 +1035,8 @@ public class CustomSols : BaseUnityPlugin {
         _cachedUCCharging = null;
         _cachedTalismanBalls.Clear();
         _talismanSearched = false;
-        
+        _spriteMappingCache.Clear();
+
         InitializeAssets();
         ChangeMenuLogo();
         ChangeUIChiBall();
