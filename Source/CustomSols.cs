@@ -426,27 +426,43 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void ImPerfectParry() {
-        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) {
+        bool hasSprites = AssetLoader.cacheParrySprites != null && AssetLoader.cacheParrySprites.Count > 0;
+        if (!hasSprites &&
+            !AssetLoader.ImperfectParryColor.HasValue) {
             return;
         }
 
+        // 事先準備好要替換的 Shader (Alpha 混合模式，不會顏色相加)
+        Shader alphaBlendShader = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
+
         foreach (var renderer in FindObjectsOfType<ParticleSystemRenderer>(true)) {
             if (renderer.transform.parent.name == "YeeParryEffect_Not Accurate(Clone)") {
-                if (AssetLoader.cacheParrySprites.TryGetValue("imPerfect", out var sprite)) {
-                    renderer.materials[1].SetTexture("_MainTex", sprite.texture);
-                }
 
-                if (AssetLoader.ImperfectParryColor.HasValue) {
-                    if (renderer.materials.Length > 0) {
-                        renderer.materials[1].SetColor(TintColorID, AssetLoader.ImperfectParryColor.Value);
+                var mats = renderer.materials;
+                if (mats.Length > 1) {
+                    var targetMat = mats[1];
+
+                    if (alphaBlendShader != null) {
+                        targetMat.shader = alphaBlendShader;
                     }
+                    if (AssetLoader.cacheParrySprites.TryGetValue("imPerfect", out var sprite)) {
+                        targetMat.SetTexture("_MainTex", sprite.texture);
+                    }
+                    if (AssetLoader.ImperfectParryColor.HasValue) {
+                        targetMat.SetColor(TintColorID, AssetLoader.ImperfectParryColor.Value);
+                    }
+                    renderer.materials = mats;
                 }
             }
         }
     }
 
     private void PerfectParry() {
-        if (AssetLoader.cacheParrySprites == null || AssetLoader.cacheParrySprites.Count == 0) return;
+        bool hasSprites = AssetLoader.cacheParrySprites != null && AssetLoader.cacheParrySprites.Count > 0;
+        if (!hasSprites &&
+            !AssetLoader.PerfectParryColor.HasValue) {
+            return;
+        }
 
         string basePath = "YeeParryEffectAccurate_Green(Clone)/ParrySparkAccurate0";
         if (groupedRenderers.TryGetValue(basePath, out var list)) {
@@ -775,30 +791,62 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void SwordOnce() {
-        if (AssetLoader.cacheSwordSprites == null || AssetLoader.cacheSwordSprites.Count == 0) {
+        // 1. 基本檢查邏輯 (維持你之前的設定)
+        bool hasSprites = AssetLoader.cacheSwordSprites != null && AssetLoader.cacheSwordSprites.Count > 0;
+        if (!hasSprites &&
+            !AssetLoader.SwordCharingCirlceColor.HasValue &&
+            !AssetLoader.SwordCharingAbsorbColor.HasValue &&
+            !AssetLoader.SwordCharingGlowColor.HasValue) {
             return;
         }
 
-        // 周圍圍繞圓形粒子
-        var chargePaths = new[] { "F1", "F2", "F3", "F4", "F5" };
+        // 2. 獲取根路徑物件 (這部分可以考慮改用 FindObjectsOfTypeAll)
+        // 為了效能，先找出父物件，再用 transform.Find 找子物件
+        var rootObj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle");
+
+        if (rootObj == null) {
+            // 如果找不到，嘗試搜尋非活躍物件 (效能較重，慎用)
+            var allRenderers = Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>();
+            // 這裡需要透過過濾名稱或路徑來定位，但通常建議在物件生成時就取得引用
+            return;
+        }
+
+        Transform rootTrans = rootObj.transform;
+
+        // --- 圓形粒子 ---
+        var chargePaths = new[] { "P_PowerCharged/F1", "P_PowerCharged/F2", "P_PowerCharged/F3", "P_PowerCharged/F4", "P_PowerCharged/F5" };
         foreach (var path in chargePaths) {
-            if (GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}") != null &&
-                AssetLoader.cacheSwordSprites.TryGetValue("FooSmokeGlow", out var sprite)) {
-                GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", sprite.texture);
-                if (AssetLoader.SwordCharingCirlceColor.HasValue)
-                    GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}").GetComponent<ParticleSystemRenderer>().materials[1].color = AssetLoader.SwordCharingCirlceColor.Value;
+            var target = rootTrans.Find(path);
+            if (target != null) {
+                var renderer = target.GetComponent<ParticleSystemRenderer>();
+                // 設定貼圖
+                if (hasSprites && AssetLoader.cacheSwordSprites.TryGetValue("FooSmokeGlow", out var s)) {
+                    renderer.materials[1].SetTexture("_MainTex", s.texture);
+                }
+                // 設定顏色
+                if (AssetLoader.SwordCharingCirlceColor.HasValue) {
+                    renderer.materials[1].color = AssetLoader.SwordCharingCirlceColor.Value;
+                }
             }
         }
 
-        // 周圍往中心吸收粒子
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit") != null &&
-            AssetLoader.cacheSwordSprites.TryGetValue("bubbletrail", out var sprite2)) {
-            if(AssetLoader.SwordCharingAbsorbColor.HasValue)
-                GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit").GetComponent<ParticleSystemRenderer>().materials[1].color = AssetLoader.SwordCharingAbsorbColor.Value;
+        // --- 吸收粒子 ---
+        var absorbObj = rootTrans.Find("P_PowerCharging/P_hit");
+        if (absorbObj != null) {
+            var renderer = absorbObj.GetComponent<ParticleSystemRenderer>();
+            if (hasSprites && AssetLoader.cacheSwordSprites.TryGetValue("bubbletrail", out var s2)) {
+                renderer.materials[1].SetTexture("_MainTex", s2.texture);
+            }
+            if (AssetLoader.SwordCharingAbsorbColor.HasValue) {
+                renderer.materials[1].color = AssetLoader.SwordCharingAbsorbColor.Value;
+            }
         }
 
-        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/Glow") != null && AssetLoader.SwordCharingGlowColor.HasValue) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/Glow").GetComponent<SpriteRenderer>().material.color = AssetLoader.SwordCharingGlowColor.Value;
+        // --- Glow ---
+        var glowObj = rootTrans.Find("Glow");
+        if (glowObj != null && AssetLoader.SwordCharingGlowColor.HasValue) {
+            var sr = glowObj.GetComponent<SpriteRenderer>();
+            sr.material.color = AssetLoader.SwordCharingGlowColor.Value;
         }
     }
 
@@ -886,10 +934,15 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UpdateArrowColor() {
-        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+        bool hasSprites = AssetLoader.cacheUISprites != null && AssetLoader.cacheUISprites.Count > 0;
+        if (!hasSprites &&
+            !AssetLoader.ArrowGlowColor.HasValue &&
+            !AssetLoader.RageBarFrameColor.HasValue &&
+            !AssetLoader.RageBarColor.HasValue) {
             return;
         }
-   
+
+
         if (cachedSpriteRenderers.TryGetValue("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftDown/Bow UI Area/ItemSelection/CurrentItemPanel spr/Glow", out var renderer3)) {
             if(AssetLoader.ArrowGlowColor.HasValue)
                 renderer3.color = AssetLoader.ArrowGlowColor.Value;
@@ -947,7 +1000,10 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void UpdateExpRing() {
-        if (AssetLoader.cacheUISprites == null) {
+        bool hasSprites = AssetLoader.cacheUISprites != null && AssetLoader.cacheUISprites.Count > 0;
+        if (!hasSprites &&
+            !AssetLoader.expRingOuterColor.HasValue &&
+            !AssetLoader.expRingInnerColor.HasValue) {
             return;
         }
 
@@ -968,10 +1024,15 @@ public class CustomSols : BaseUnityPlugin {
         if (AssetLoader.cacheUISprites == null) {
             return;
         }
+        bool hasSprites = AssetLoader.cacheUISprites != null && AssetLoader.cacheUISprites.Count > 0;
+        if (!hasSprites &&
+            !AssetLoader.normalHpColor.HasValue &&
+            !AssetLoader.internalHpColor.HasValue) {
+            return;
+        }
 
         string normalHp = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health";
         if (AssetLoader.normalHpColor.HasValue && cachedSpriteRenderers.TryGetValue(normalHp, out var renderer)) {
-            ToastManager.Toast(AssetLoader.normalHpColor.Value);
             if (AssetLoader.normalHpColor.HasValue)
                 renderer.color = AssetLoader.normalHpColor.Value;
         }
