@@ -143,3 +143,10 @@ default is -15.0, 0.0, 0.0
 - https://github.com/asd9176506911298/StudioDev/releases/latest
 - ask in Modding Discord
 - https://discord.gg/NYT4vQpweS
+
+# Know Issue
+- Change skin maybe will crash game
+- Cause i don't know how to release memory or other
+- seem not effect use skin
+- Sometime start game crash maybe memory use too much
+- bad code didn't optimized and didn't release memroy
