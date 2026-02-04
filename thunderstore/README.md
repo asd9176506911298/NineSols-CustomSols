@@ -86,9 +86,18 @@ if you don't want change color use "NormalHpColor": "#"
   }
 }
 ```
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/UCParryColor.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/SwordCharingAbsorbColor.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/SwrodCharingCircleAndGlow.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/DrawFooBall.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/DrawFooLight.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/FooLight.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/PerfectParry.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/ImperfectParry.png?raw=true)
+
 
 # Normal Arrow Light Adjust Position
-![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/BowLightOffset/Source/img/BowPosition.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/BowPosition.png?raw=true)
 default is -15.0, 0.0, 0.0
 ```
 {
