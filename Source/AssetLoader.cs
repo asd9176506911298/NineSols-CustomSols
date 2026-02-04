@@ -44,6 +44,21 @@ public class AssetLoader {
     public static Color? AirParryColor = null;
     public static Color? UCParryColor = null;
     public static Color? DashColor = null;
+    public static Color? PerfectParryColor = null;
+    public static Color? ImperfectParryColor = null;
+    public static Color? SwordCharingCirlceColor = null;
+    public static Color? SwordCharingAbsorbColor = null;
+    public static Color? SwordCharingGlowColor = null;
+
+    public static Color? ParticlesFooColor = null;
+    public static Color? FooLightColor = null;
+    public static Color? DrawFooBallColor1 = null;
+    public static Color? DrawFooBallColor2 = null;
+    public static Color? DrawFooBallColor3 = null;
+    public static Color? DrawFooBallColor4 = null;
+    public static Color? DrawFooBallColor5 = null;
+    public static Color? DrawFooLightColor = null;
+    public static Color? DrawFooBottomLightColor = null;
 
     public static Vector3? NormalArrowLv1Pos = null;
     public static Vector3? NormalArrowLv2Pos = null;
@@ -80,6 +95,7 @@ public class AssetLoader {
                 if (filename.StartsWith("SavePointPowerToYee")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 if (filename.StartsWith("Effect_HoHoYee_Parry_Sky")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 if (filename.StartsWith("HoHoYee_JumpKickEFFECT")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
+                if (filename.StartsWith("EFFECT_HoHoYee_ChargingAttack_impact")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 return null;
             }) },
             { "TalismanBall", (cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f, null) },
@@ -157,6 +173,21 @@ public class AssetLoader {
                 TrySetColor(ref ButterflyRightLineColor, c.ButterflyRightLineColor);
                 TrySetColor(ref CoreCColor, c.CoreCColor);
                 TrySetColor(ref CoreDColor, c.CoreDColor);
+                TrySetColor(ref DashColor, c.DashColor);
+                TrySetColor(ref PerfectParryColor, c.PerfectParryColor);
+                TrySetColor(ref ImperfectParryColor, c.ImperfectParryColor);
+                TrySetColor(ref SwordCharingCirlceColor, c.SwordCharingCirlceColor);
+                TrySetColor(ref SwordCharingAbsorbColor, c.SwordCharingAbsorbColor);
+                TrySetColor(ref SwordCharingGlowColor, c.SwordCharingGlowColor);
+                TrySetColor(ref ParticlesFooColor, c.ParticlesFooColor);
+                TrySetColor(ref FooLightColor, c.FooLightColor);
+                TrySetColor(ref DrawFooBallColor1, c.DrawFooBallColor1);
+                TrySetColor(ref DrawFooBallColor2, c.DrawFooBallColor2);
+                TrySetColor(ref DrawFooBallColor3, c.DrawFooBallColor3);
+                TrySetColor(ref DrawFooBallColor4, c.DrawFooBallColor4);
+                TrySetColor(ref DrawFooBallColor5, c.DrawFooBallColor5);
+                TrySetColor(ref DrawFooLightColor, c.DrawFooLightColor);
+                TrySetColor(ref DrawFooBottomLightColor, c.DrawFooBottomLightColor);
 
                 // 2. 處理格擋 (Parry)
                 var p = mainConfig.Parry;
@@ -166,7 +197,6 @@ public class AssetLoader {
                 TrySetColor(ref UCSuccess2Color, p.UCSuccess2Color);
                 TrySetColor(ref AirParryColor, p.AirParryColor);
                 TrySetColor(ref UCParryColor, p.UCParryColor);
-                TrySetColor(ref DashColor, p.DashColor);
 
                 // 3. 處理弓箭座標 (Bow)
                 var b = mainConfig.Bow;

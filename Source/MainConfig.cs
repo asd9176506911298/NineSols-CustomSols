@@ -21,6 +21,22 @@
         public string ButterflyRightLineColor { get; set; } = string.Empty;
         public string CoreCColor { get; set; } = string.Empty;
         public string CoreDColor { get; set; } = string.Empty;
+        public string DashColor { get; set; } = string.Empty;
+        public string PerfectParryColor { get; set; } = string.Empty;
+        public string ImperfectParryColor { get; set; } = string.Empty;
+        public string SwordCharingCirlceColor { get; set; } = string.Empty;
+        public string SwordCharingAbsorbColor { get; set; } = string.Empty;
+        public string SwordCharingGlowColor { get; set; } = string.Empty;
+        public string ParticlesFooColor { get; set; } = string.Empty;
+        public string FooLightColor { get; set; } = string.Empty;
+        public string DrawFooBallColor1 { get; set; } = string.Empty;
+        public string DrawFooBallColor2 { get; set; } = string.Empty;
+        public string DrawFooBallColor3 { get; set; } = string.Empty;
+        public string DrawFooBallColor4 { get; set; } = string.Empty;
+        public string DrawFooBallColor5 { get; set; } = string.Empty;
+        public string DrawFooLightColor { get; set; } = string.Empty;
+        public string DrawFooBottomLightColor { get; set; } = string.Empty;
+
     }
 
     public class ParryConfig {
@@ -30,7 +46,6 @@
         public string UCSuccess2Color { get; set; } = string.Empty;
         public string AirParryColor { get; set; } = string.Empty;
         public string UCParryColor { get; set; } = string.Empty;
-        public string DashColor { get; set; } = string.Empty;
     }
 
     public class BowConfig {
