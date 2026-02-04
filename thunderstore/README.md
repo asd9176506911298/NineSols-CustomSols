@@ -91,14 +91,13 @@ if you don't want change color use "NormalHpColor": "#"
     "UCSuccess1Color": "#",
     "UCSuccess2Color": "#",
     "AirParryColor": "#",
-    "UCParryColor": "#4287eeFF"
+    "UCParryColor": "#"
   },
   "Bow": {
     "NormalArrowLv1": [-15.0, 0.0, 0.0],
     "NormalArrowLv2": [-15.0, 0.0, 0.0],
     "NormalArrowLv3": [-15.0, 0.0, 0.0]
   }
-}
 }
 ```
 
