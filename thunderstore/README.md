@@ -68,7 +68,22 @@ if you don't want change color use "NormalHpColor": "#"
     "ChiBallLeftLineColor": "#",
     "ButterflyRightLineColor": "#",
     "CoreCColor": "#",
-    "CoreDColor": "#"
+    "CoreDColor": "#",    
+    "DashColor": "#",
+    "PerfectParryColor": "#",
+    "ImperfectParryColor": "#",
+    "SwordCharingCirlceColor": "#",
+    "SwordCharingAbsorbColor": "#",
+    "SwordCharingGlowColor": "#",
+    "ParticlesFooColor": "#",
+    "FooLightColor": "#",
+    "DrawFooBallColor1": "#",
+    "DrawFooBallColor2": "#",
+    "DrawFooBallColor3": "#",
+    "DrawFooBallColor4": "#",
+    "DrawFooBallColor5": "#",
+    "DrawFooLightColor": "#",
+    "DrawFooBottomLightColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",
@@ -76,14 +91,14 @@ if you don't want change color use "NormalHpColor": "#"
     "UCSuccess1Color": "#",
     "UCSuccess2Color": "#",
     "AirParryColor": "#",
-    "UCParryColor": "#",
-    "DashColor": "#"
+    "UCParryColor": "#4287eeFF"
   },
   "Bow": {
     "NormalArrowLv1": [-15.0, 0.0, 0.0],
     "NormalArrowLv2": [-15.0, 0.0, 0.0],
     "NormalArrowLv3": [-15.0, 0.0, 0.0]
   }
+}
 }
 ```
 
