@@ -62,6 +62,9 @@ public class CustomSols : BaseUnityPlugin {
     private List<SpriteRenderer> _cachedTalismanBalls = new List<SpriteRenderer>();
     private bool _talismanSearched = false;
 
+    private Dictionary<Sprite, Sprite> _spriteMappingCache = new Dictionary<Sprite, Sprite>();
+    private int _cleanupCounter = 0;
+
     public static readonly HashSet<string> bowSpritePaths = new HashSet<string> {
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow",
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow/Bow_A",
@@ -125,6 +128,32 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowBullet();
         YingZhaoOnce();
         AirParryColor();
+        FooColorOnce();
+    }
+
+    private void FooColorOnce() {
+        //if (!Input.GetKeyDown(KeyCode.F5)) return;
+        string FooLight = "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo/FOO/Foo1/Light";
+        if (cachedSpriteRenderers.TryGetValue(FooLight, out var renderer)) {
+            if (AssetLoader.FooLightColor.HasValue)
+                renderer.color = AssetLoader.FooLightColor.Value;
+        }
+
+        string DrawFooLight = "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo/DrawFoo/Light";
+        if (cachedSpriteRenderers.TryGetValue(DrawFooLight, out var renderer2)) {
+            if (AssetLoader.DrawFooLightColor.HasValue)
+                renderer2.color = AssetLoader.DrawFooLightColor.Value;
+        }
+
+        if (AssetLoader.ParticlesFooColor.HasValue) {
+            foreach (var PSR in FindObjectsOfType<ParticleSystemRenderer>(true)) {
+                if (PSR.name == "Particles_Foo" && PSR.material.name == "YeeDrone (Instance)") {
+                    PSR.material.color = AssetLoader.ParticlesFooColor.Value;
+                }
+            }
+        }
+
+
     }
 
     private void LateUpdate() {
@@ -157,13 +186,49 @@ public class CustomSols : BaseUnityPlugin {
         TalismanBall();
         Foo();
         Sword();
+        FooColor();
         //YingZhao();
-        
+
         //UI
         UpdateHeartSprite(); // Need
         UpdateArrowIcon(); // Need
         UpdateArrowColor(); //Need
         UpdateButterflySprite(); //Need
+    }
+
+    private void FooColor() {
+        string DrawFooBottomLight = "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo/DrawFoo/BottomLight";
+        if (cachedSpriteRenderers.TryGetValue(DrawFooBottomLight, out var renderer)) {
+            if (AssetLoader.DrawFooBottomLightColor.HasValue)
+                renderer.color = AssetLoader.DrawFooBottomLightColor.Value;
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            // 1. 動態生成路徑字串
+            string path = $"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Effect_Foo/FooDots/D{i}/FooDot ({i})/JENG/Ball";
+
+            // 2. 檢查快取中是否存在該路徑
+            if (cachedSpriteRenderers.TryGetValue(path, out var renderer2)) {
+                // 3. 取得對應的顏色
+                Color? targetColor = GetColorByIndex(i);
+
+                // 4. 只有在顏色有值（不為 null）時才賦值
+                if (targetColor.HasValue) {
+                    renderer2.color = targetColor.Value;
+                }
+            }
+        }
+    }
+
+    private Color? GetColorByIndex(int index) {
+        return index switch {
+            1 => AssetLoader.DrawFooBallColor1,
+            2 => AssetLoader.DrawFooBallColor2,
+            3 => AssetLoader.DrawFooBallColor3,
+            4 => AssetLoader.DrawFooBallColor4,
+            5 => AssetLoader.DrawFooBallColor5,
+            _ => null // 索引超出範圍時回傳 null
+        };
     }
 
     private void CheckAndToast(Sprite sprite, ref string cachedName, string prefix = "") {
@@ -220,6 +285,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowBullet();
         YingZhaoOnce();
         AirParryColor();
+        FooColorOnce();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -298,9 +364,6 @@ public class CustomSols : BaseUnityPlugin {
         return path;
     }
 
-    private Dictionary<Sprite, Sprite> _spriteMappingCache = new Dictionary<Sprite, Sprite>();
-    private int _cleanupCounter = 0;
-
     private void RendererReplace() {
         // 優化 1：不要每幀都 RemoveAll。每 100 幀清理一次無效引用即可
         _cleanupCounter++;
@@ -372,6 +435,12 @@ public class CustomSols : BaseUnityPlugin {
                 if (AssetLoader.cacheParrySprites.TryGetValue("imPerfect", out var sprite)) {
                     renderer.materials[1].SetTexture("_MainTex", sprite.texture);
                 }
+
+                if (AssetLoader.ImperfectParryColor.HasValue) {
+                    if (renderer.materials.Length > 0) {
+                        renderer.materials[1].SetColor(TintColorID, AssetLoader.ImperfectParryColor.Value);
+                    }
+                }
             }
         }
     }
@@ -383,6 +452,9 @@ public class CustomSols : BaseUnityPlugin {
         if (groupedRenderers.TryGetValue(basePath, out var list)) {
             foreach (var r in list) {
                 ApplyParrySprite(r);
+                if (AssetLoader.PerfectParryColor.HasValue) {
+                    r.color = AssetLoader.PerfectParryColor.Value;
+                }
             }
         }
     }
@@ -707,17 +779,26 @@ public class CustomSols : BaseUnityPlugin {
             return;
         }
 
+        // 周圍圍繞圓形粒子
         var chargePaths = new[] { "F1", "F2", "F3", "F4", "F5" };
         foreach (var path in chargePaths) {
             if (GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}") != null &&
                 AssetLoader.cacheSwordSprites.TryGetValue("FooSmokeGlow", out var sprite)) {
                 GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", sprite.texture);
+                if (AssetLoader.SwordCharingCirlceColor.HasValue)
+                    GameObject.Find($"GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharged/{path}").GetComponent<ParticleSystemRenderer>().materials[1].color = AssetLoader.SwordCharingCirlceColor.Value;
             }
         }
 
+        // 周圍往中心吸收粒子
         if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit") != null &&
             AssetLoader.cacheSwordSprites.TryGetValue("bubbletrail", out var sprite2)) {
-            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit").GetComponent<ParticleSystemRenderer>().materials[1].SetTexture("_MainTex", sprite2.texture);
+            if(AssetLoader.SwordCharingAbsorbColor.HasValue)
+                GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/P_PowerCharging/P_hit").GetComponent<ParticleSystemRenderer>().materials[1].color = AssetLoader.SwordCharingAbsorbColor.Value;
+        }
+
+        if (GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/Glow") != null && AssetLoader.SwordCharingGlowColor.HasValue) {
+            GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/ChargeAttackParticle/Glow").GetComponent<SpriteRenderer>().material.color = AssetLoader.SwordCharingGlowColor.Value;
         }
     }
 
@@ -1051,8 +1132,10 @@ public class CustomSols : BaseUnityPlugin {
         UpdateArrowLine();
         UpdateRightLine();
         UpdateArrowBullet();
+        FooColorOnce();
         //YingZhaoOnce();
     }
+
 
     private void OnDestroy() {
         harmony.UnpatchSelf();
