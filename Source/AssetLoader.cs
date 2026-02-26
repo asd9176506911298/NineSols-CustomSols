@@ -4,6 +4,7 @@ using NineSolsAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -64,6 +65,8 @@ public class AssetLoader {
     public static Vector3? NormalArrowLv2Pos = null;
     public static Vector3? NormalArrowLv3Pos = null;
 
+    static Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> Selector(Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> f) => f;
+
     public static void Init() {
         all.Clear(); // 確保重新載入時是乾淨的
         ColorFieldNull();
@@ -91,16 +94,16 @@ public class AssetLoader {
         var folders = new Dictionary<string, (Dictionary<string, Sprite> cache, Vector2 pivot, float ppu, Func<string, (Vector2 pivot, Vector4 border, float? ppu)?> selector)>
         {
             { "MenuLogo", (cacheMenuLogoSprites, new Vector2(0.5f, 0f), 8.0f, null) },
-            { "Player", (cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f, filename => {
+            { "Player", (cachePlayerSprites, new Vector2(0.5f, 0f), 8.0f, Selector(filename => {
                 if (filename.StartsWith("SavePointPowerToYee")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 if (filename.StartsWith("Effect_HoHoYee_Parry_Sky")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 if (filename.StartsWith("HoHoYee_JumpKickEFFECT")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 if (filename.StartsWith("EFFECT_HoHoYee_ChargingAttack_impact")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 if (filename.StartsWith("HoHoYee_Drone")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
-                if (filename.StartsWith("HoHoYee_Dash")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
-                if (filename.StartsWith("HoHoYee_TurnAround")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
+                if (Regex.IsMatch(filename, @"^HoHoYee_Dash\d")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
+                if (Regex.IsMatch(filename, @"^HoHoYee_TurnAround\d")) return (new Vector2(0.5f, 0.5f), Vector4.zero, null);
                 return null;
-            }) },
+            })) },
             { "TalismanBall", (cacheTalismanBallSprites, new Vector2(0.18f, -1.2f), 8.0f, null) },
             { "Parry", (cacheParrySprites, new Vector2(0.5f, 0f), 8.0f, filename => filename.StartsWith("ParrySparkAccurate") ? (new Vector2(0.5f, 0.5f), Vector4.zero, null) : null) },
             { "Sword", (cacheSwordSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
