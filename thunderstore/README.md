@@ -83,7 +83,8 @@ if you don't want change color use "NormalHpColor": "#"
     "DrawFooBallColor4": "#",
     "DrawFooBallColor5": "#",
     "DrawFooLightColor": "#",
-    "DrawFooBottomLightColor": "#"
+    "DrawFooBottomLightColor": "#",
+    "HitSparkColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",

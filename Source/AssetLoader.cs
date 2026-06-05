@@ -23,6 +23,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheOnlyOneSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheUISprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheYingZhaoSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheHitSparkSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Texture2D> cacheAtlasTextures = new Dictionary<string, Texture2D>();
     public static readonly Dictionary<string, Sprite> all = new Dictionary<string, Sprite>();
 
@@ -60,6 +61,7 @@ public class AssetLoader {
     public static Color? DrawFooBallColor5 = null;
     public static Color? DrawFooLightColor = null;
     public static Color? DrawFooBottomLightColor = null;
+    public static Color? HitSparkColor = null;
 
     public static Vector3? NormalArrowLv1Pos = null;
     public static Vector3? NormalArrowLv2Pos = null;
@@ -131,7 +133,8 @@ public class AssetLoader {
                 if (filename.StartsWith("CoreD")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
             }) },
-            { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) }
+            { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
+            { "HitSpark", (cacheHitSparkSprites, new Vector2(0.5f, 0.5f), 8.0f, null) }
         };
 
         foreach (var (folderName, (cache, pivot, ppu, selector)) in folders) {
@@ -194,6 +197,7 @@ public class AssetLoader {
                 TrySetColor(ref DrawFooBallColor5, c.DrawFooBallColor5);
                 TrySetColor(ref DrawFooLightColor, c.DrawFooLightColor);
                 TrySetColor(ref DrawFooBottomLightColor, c.DrawFooBottomLightColor);
+                TrySetColor(ref HitSparkColor, c.HitSparkColor);
 
                 // 2. 處理格擋 (Parry)
                 var p = mainConfig.Parry;
@@ -353,5 +357,6 @@ public class AssetLoader {
         ButterflyRightLineColor = null;
         CoreCColor = null;
         CoreDColor = null;
+        HitSparkColor = null;
     }
 }

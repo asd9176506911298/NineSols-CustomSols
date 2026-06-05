@@ -116,6 +116,7 @@ public class CustomSols : BaseUnityPlugin {
         ChangeMenuLogo(); // 立即應用 Logo
         ChangeUIChiBall();
         ImPerfectParry();
+        HitSpark();
         SwordOnce();
         InitializeBowSprites();
         UpdateExpRing();
@@ -273,6 +274,7 @@ public class CustomSols : BaseUnityPlugin {
         ChangeMenuLogo();
         ChangeUIChiBall();
         ImPerfectParry();
+        HitSpark();
         SwordOnce();
         InitializeBowSprites();
         UpdateExpRing();
@@ -425,32 +427,70 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
-    private void ImPerfectParry() {
-        bool hasSprites = AssetLoader.cacheParrySprites != null && AssetLoader.cacheParrySprites.Count > 0;
-        if (!hasSprites &&
-            !AssetLoader.ImperfectParryColor.HasValue) {
+    private void HitSpark() {
+        bool hasSprites = AssetLoader.cacheHitSparkSprites != null && AssetLoader.cacheHitSparkSprites.Count > 0;
+        if (!hasSprites) {
             return;
         }
 
-        // 事先準備好要替換的 Shader (Alpha 混合模式，不會顏色相加)
+        foreach (var renderer in FindObjectsOfType<ParticleSystemRenderer>(true)) {
+            // --- 修正重點：必須先檢查 renderer 與 parent 是否為空 ---
+            if (renderer == null || renderer.transform.parent == null) continue;
+
+            if (renderer.transform.parent.name == "YeeEffect_Attack Hit Enemy(Clone)") {
+                // renderer.material 在存取時會自動產生 Instance，但建議還是檢查一下
+                if (renderer.material != null) {
+                    if (AssetLoader.cacheHitSparkSprites.TryGetValue("Hit Enemy", out var sprite)) {
+                        // 確保 sprite 和 texture 都不為 null
+                        if (sprite != null && sprite.texture != null) {
+                            renderer.material.SetTexture(MainTexID, sprite.texture);
+                        }
+                    }
+
+                    if (AssetLoader.HitSparkColor.HasValue) {
+                        renderer.material.color = AssetLoader.HitSparkColor.Value;
+                    }
+                }
+            }
+        }
+    }
+
+    private void ImPerfectParry() {
+        bool hasSprites = AssetLoader.cacheParrySprites != null && AssetLoader.cacheParrySprites.Count > 0;
+        if (!hasSprites && !AssetLoader.ImperfectParryColor.HasValue) {
+            return;
+        }
+
+        // 事先準備好要替換的 Shader
         Shader alphaBlendShader = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
 
         foreach (var renderer in FindObjectsOfType<ParticleSystemRenderer>(true)) {
-            if (renderer.transform.parent.name == "YeeParryEffect_Not Accurate(Clone)") {
+            // --- 修正重點 1: 增加 renderer 與 parent 的 null 檢查 ---
+            if (renderer == null || renderer.transform.parent == null) continue;
 
+            if (renderer.transform.parent.name == "YeeParryEffect_Not Accurate(Clone)") {
+                // --- 修正重點 2: 檢查 materials 陣列是否存在 ---
                 var mats = renderer.materials;
-                if (mats.Length > 1) {
+                if (mats != null && mats.Length > 1) {
                     var targetMat = mats[1];
+                    if (targetMat == null) continue;
 
                     if (alphaBlendShader != null) {
                         targetMat.shader = alphaBlendShader;
                     }
+
                     if (AssetLoader.cacheParrySprites.TryGetValue("imPerfect", out var sprite)) {
-                        targetMat.SetTexture("_MainTex", sprite.texture);
+                        // --- 修正重點 3: 確保 sprite 與 texture 都不為空 ---
+                        if (sprite != null && sprite.texture != null) {
+                            targetMat.SetTexture(MainTexID, sprite.texture);
+                        }
                     }
+
                     if (AssetLoader.ImperfectParryColor.HasValue) {
                         targetMat.SetColor(TintColorID, AssetLoader.ImperfectParryColor.Value);
                     }
+
+                    // 重新賦值回 renderer
                     renderer.materials = mats;
                 }
             }
@@ -868,6 +908,23 @@ public class CustomSols : BaseUnityPlugin {
                 renderer.sprite = sprite;
             }
         }
+
+        for (int i = 1; i <= 5; i++) {
+            string path = $"FooExplode(Clone)/LV{i}/SpriteHolder";
+
+            if (cachedSpriteRenderers.TryGetValue(path, out var renderer2) &&
+                renderer2.sprite != null && 
+                AssetLoader.cacheFooSprites.TryGetValue(renderer2.sprite.name, out var sprite2)) {
+
+                renderer2.sprite = sprite2;
+            }
+        }
+
+        if (cachedSpriteRenderers.TryGetValue("Effect_FooAttack0(Clone)", out var renderer3) &&
+
+           AssetLoader.cacheFooSprites.TryGetValue(renderer3.sprite.name, out var sprite3)) {
+            renderer3.sprite = sprite3;
+        }
     }
 
     private void YingZhaoOnce() {
@@ -1183,6 +1240,7 @@ public class CustomSols : BaseUnityPlugin {
         ChangeMenuLogo();
         ChangeUIChiBall();
         ImPerfectParry();
+        HitSpark();
         SwordOnce();
         InitializeBowSprites();
         UpdateExpRing();

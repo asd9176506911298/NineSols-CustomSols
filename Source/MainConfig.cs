@@ -36,7 +36,7 @@
         public string DrawFooBallColor5 { get; set; } = string.Empty;
         public string DrawFooLightColor { get; set; } = string.Empty;
         public string DrawFooBottomLightColor { get; set; } = string.Empty;
-
+        public string HitSparkColor { get; set; } = string.Empty;
     }
 
     public class ParryConfig {

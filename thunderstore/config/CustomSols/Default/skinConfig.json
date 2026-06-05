@@ -26,7 +26,8 @@
     "DrawFooBallColor4": "#",
     "DrawFooBallColor5": "#",
     "DrawFooLightColor": "#",
-    "DrawFooBottomLightColor": "#"
+    "DrawFooBottomLightColor": "#",
+    "HitSparkColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",
