@@ -892,7 +892,7 @@ public class CustomSols : BaseUnityPlugin {
 
     private void Foo() {
         if (AssetLoader.cacheFooSprites == null || AssetLoader.cacheFooSprites.Count == 0) {
-            return;
+            return; 
         }
 
         var fooPaths = new Dictionary<string, string> {
@@ -920,7 +920,7 @@ public class CustomSols : BaseUnityPlugin {
             }
         }
 
-        if (cachedSpriteRenderers.TryGetValue("Effect_FooAttack0(Clone)", out var renderer3) &&
+        if (cachedSpriteRenderers.TryGetValue("Effect_FooAttack0(Clone)/Effect_FooAttackHit", out var renderer3) &&
 
            AssetLoader.cacheFooSprites.TryGetValue(renderer3.sprite.name, out var sprite3)) {
             renderer3.sprite = sprite3;
