@@ -2,10 +2,7 @@
 using NineSolsAPI;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 using System;
-using BepInEx;
-using System.IO;
 
 namespace CustomSols;
 
@@ -264,5 +261,62 @@ public class Patches {
                 ToastManager.Toast(coreName);
             }
         }
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(_2dxFX_ColorRGB), "XUpdate")]
+    private static bool _2dxFX_ColorRGB_Patch(_2dxFX_ColorRGB __instance) {
+
+        // 1. 【效能最高】如果根本不是主角，第一秒直接放行，完全不影響原版遊戲
+        if (__instance.name != "PlayerSprite") return true;
+
+        // 2. 處理衝刺狀態
+        if (Player.i != null && Player.i.IsDodgeAttack) {
+            // 只有在玩家「有自訂 Dash 顏色」時才介入
+            if (AssetLoader.DashColor.HasValue) {
+                Color dashColor = AssetLoader.DashColor.Value;
+                if (dashColor.a == 0f) {
+                    __instance._ColorR = 0f; __instance._ColorG = 0f; __instance._ColorB = 0f;
+                } else {
+                    __instance._Alpha = dashColor.a;
+                    __instance._ColorR = dashColor.r;
+                    __instance._ColorG = dashColor.g;
+                    __instance._ColorB = dashColor.b;
+                }
+                return true; // 處理完了自訂 Dash，直接結束
+            }
+
+            // 💡 關鍵修復：玩家沒有自訂 Dash 顏色，此時正在跑原版 Dash。
+            // 我們直接 return true 讓原版遊戲接管，而且絕對不去第 4 區塊污染材質數據！
+            return true;
+        }
+
+        // 3. 處理受擊狀態
+        if (Player.i != null && Player.i.CurrentStateType == PlayerStateType.Hurt) {
+            // 只有在玩家「有自訂 Hurt 顏色」時才介入
+            if (AssetLoader.HurtColor.HasValue) {
+                Color hurtColor = AssetLoader.HurtColor.Value;
+                if (hurtColor.a == 0f) {
+                    __instance._ColorR = 0f; __instance._ColorG = 0f; __instance._ColorB = 0f;
+                } else {
+                    __instance._Alpha = hurtColor.a;
+                    __instance._ColorR = hurtColor.r;
+                    __instance._ColorG = hurtColor.g;
+                    __instance._ColorB = hurtColor.b;
+                }
+                return true;
+            }
+            return true;
+        }
+
+        __instance._Alpha = 1f;
+
+        if(AssetLoader.DashColor.HasValue && AssetLoader.DashColor.Value.a > 0f) 
+        {
+            __instance._ColorR = 0f;
+            __instance._ColorG = 0f;
+            __instance._ColorB = 0f;
+        }
+        return true;
     }
 }

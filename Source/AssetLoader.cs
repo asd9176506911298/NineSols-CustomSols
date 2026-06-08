@@ -62,6 +62,19 @@ public class AssetLoader {
     public static Color? DrawFooLightColor = null;
     public static Color? DrawFooBottomLightColor = null;
     public static Color? HitSparkColor = null;
+    public static Color? HealPColor = null;
+    public static Color? HealGlowColor = null;
+    public static Color? HealParticleColor = null;
+    public static Color? HealLightMask1Color = null;
+    public static Color? HealLightMask2Color = null;
+    public static Color? HurtColor = null;
+    public static Color? FooPColor = null;
+    public static Color? FooGlowColor = null;
+    public static Color? FooAttachedParticleColor = null;
+    public static Color? FooFullControlKaboomCircleColor = null;
+    public static Color? FooFullControlCircle1Color = null;
+    public static Color? FooFullControlCircle2Color = null;
+    public static Color? FooFullControlRiseLineColor = null;
 
     public static Vector3? NormalArrowLv1Pos = null;
     public static Vector3? NormalArrowLv2Pos = null;
@@ -198,6 +211,19 @@ public class AssetLoader {
                 TrySetColor(ref DrawFooLightColor, c.DrawFooLightColor);
                 TrySetColor(ref DrawFooBottomLightColor, c.DrawFooBottomLightColor);
                 TrySetColor(ref HitSparkColor, c.HitSparkColor);
+                TrySetColor(ref HealPColor, c.HealPColor);
+                TrySetColor(ref HealGlowColor, c.HealGlowColor);
+                TrySetColor(ref HealParticleColor, c.HealParticleColor);
+                TrySetColor(ref HealLightMask1Color, c.HealLightMask1Color);
+                TrySetColor(ref HealLightMask2Color, c.HealLightMask2Color);
+                TrySetColor(ref HurtColor, c.HurtColor);
+                TrySetColor(ref FooPColor, c.FooPColor);
+                TrySetColor(ref FooGlowColor, c.FooGlowColor);
+                TrySetColor(ref FooAttachedParticleColor, c.FooAttachedParticleColor);
+                TrySetColor(ref FooFullControlKaboomCircleColor, c.FooFullControlKaboomCircleColor);
+                TrySetColor(ref FooFullControlCircle1Color, c.FooFullControlCircle1Color);
+                TrySetColor(ref FooFullControlCircle2Color, c.FooFullControlCircle2Color);
+                TrySetColor(ref FooFullControlRiseLineColor, c.FooFullControlRiseLineColor);
 
                 // 2. 處理格擋 (Parry)
                 var p = mainConfig.Parry;
@@ -358,5 +384,6 @@ public class AssetLoader {
         CoreCColor = null;
         CoreDColor = null;
         HitSparkColor = null;
+        HealPColor = null;
     }
 }

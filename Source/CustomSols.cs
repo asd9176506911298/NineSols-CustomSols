@@ -1,21 +1,13 @@
-﻿using Battlehub.RTHandles;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
-using Com.LuisPedroFonseca.ProCamera2D;
 using HarmonyLib;
 using NineSolsAPI;
-using NineSolsAPI.Utils;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
-using UnityEngine.U2D;
-using UnityEngine.U2D.Animation;
 
 namespace CustomSols;
 
@@ -64,6 +56,8 @@ public class CustomSols : BaseUnityPlugin {
 
     private Dictionary<Sprite, Sprite> _spriteMappingCache = new Dictionary<Sprite, Sprite>();
     private int _cleanupCounter = 0;
+
+    public static List<SpriteRenderer> AreaLightRenderers = new List<SpriteRenderer>();
 
     public static readonly HashSet<string> bowSpritePaths = new HashSet<string> {
         "GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/Yee_Skill/HoHoYee_Archery/Bow",
@@ -118,6 +112,9 @@ public class CustomSols : BaseUnityPlugin {
         ImPerfectParry();
         HitSpark();
         SwordOnce();
+        HealSmokeOnce();
+        HealParticleOnce();
+        FooOnce();
         InitializeBowSprites();
         UpdateExpRing();
         UpdateHpBar();
@@ -146,15 +143,22 @@ public class CustomSols : BaseUnityPlugin {
                 renderer2.color = AssetLoader.DrawFooLightColor.Value;
         }
 
-        if (AssetLoader.ParticlesFooColor.HasValue) {
-            foreach (var PSR in FindObjectsOfType<ParticleSystemRenderer>(true)) {
-                if (PSR.name == "Particles_Foo" && PSR.material.name == "YeeDrone (Instance)") {
-                    PSR.material.color = AssetLoader.ParticlesFooColor.Value;
-                }
+        foreach (var PSR in FindObjectsOfType<ParticleSystemRenderer>(true)) {
+            // 檢查名稱，並確保 AssetLoader 的 Color 確實有值才寫入
+            if (PSR.name == "Particles_Foo" && PSR.material.name == "YeeDrone (Instance)" && AssetLoader.ParticlesFooColor.HasValue) {
+                PSR.material.color = AssetLoader.ParticlesFooColor.Value;
+            } else if (PSR.name == "ChiAttack sub" && AssetLoader.FooAttachedParticleColor.HasValue) {
+                PSR.material.color = AssetLoader.FooAttachedParticleColor.Value;
+            } else if (PSR.name == "KaboomCircle" && AssetLoader.FooFullControlKaboomCircleColor.HasValue) {
+                PSR.materials[1].color = AssetLoader.FooFullControlKaboomCircleColor.Value;
+            } else if (PSR.name == "P" && PSR.transform.parent.name == "FOOEFFECTAREA 蓄能" && AssetLoader.FooFullControlCircle1Color.HasValue) {
+                PSR.materials[1].color = AssetLoader.FooFullControlCircle1Color.Value;
+            } else if (PSR.name == "P (1)" && PSR.transform.parent.name == "FOOEFFECTAREA 蓄能" && AssetLoader.FooFullControlCircle2Color.HasValue) {
+                PSR.materials[1].color = AssetLoader.FooFullControlCircle2Color.Value;
+            } else if (PSR.name == "F1" && PSR.transform.parent.name == "DrawFoo" && AssetLoader.FooFullControlRiseLineColor.HasValue) {
+                PSR.materials[1].color = AssetLoader.FooFullControlRiseLineColor.Value;
             }
         }
-
-
     }
 
     private void LateUpdate() {
@@ -188,6 +192,8 @@ public class CustomSols : BaseUnityPlugin {
         Foo();
         Sword();
         FooColor();
+        HealGlow();
+        HealLightMask();
         //YingZhao();
 
         //UI
@@ -276,6 +282,9 @@ public class CustomSols : BaseUnityPlugin {
         ImPerfectParry();
         HitSpark();
         SwordOnce();
+        HealSmokeOnce();
+        HealParticleOnce();
+        FooOnce();
         InitializeBowSprites();
         UpdateExpRing();
         UpdateHpBar();
@@ -890,6 +899,111 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    private void HealGlow() 
+    {
+        if (cachedSpriteRenderers.TryGetValue("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/回血特效/Glow", out var renderer)) 
+        {
+            if(AssetLoader.HealGlowColor.HasValue)
+                renderer.color = AssetLoader.HealGlowColor.Value;
+        }
+    }
+
+    private void HealLightMask() {
+        if (cachedSpriteRenderers.TryGetValue("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/HealSmoke/GameObject3/LIGHTMASK (4)", out var renderer)) {
+            if (AssetLoader.HealLightMask1Color.HasValue)
+                renderer.color = AssetLoader.HealLightMask1Color.Value;
+        }
+
+        if (cachedSpriteRenderers.TryGetValue("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/HealSmoke/GameObject3/LIGHTMASK", out var renderer2)) {
+            if (AssetLoader.HealLightMask2Color.HasValue)
+                renderer2.color = AssetLoader.HealLightMask2Color.Value;
+        }
+    }   
+
+    private void HealParticleOnce() {
+        bool hasSprites = AssetLoader.cacheFooSprites != null && AssetLoader.cacheFooSprites.Count > 0;
+
+        var targetObject = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/HealSmoke/YeeHookSmoke (1)");
+
+        if (targetObject != null) {
+            var renderer = targetObject.GetComponent<ParticleSystemRenderer>();
+            // 設定顏色
+            if (AssetLoader.HealParticleColor.HasValue) {
+                renderer.material.color = AssetLoader.HealParticleColor.Value;
+            }
+        }
+    }
+
+    private void FooOnce() {
+        foreach (var renderer in FindObjectsOfType<ParticleSystemRenderer>(true)) {
+            // --- 修正重點：必須先檢查 renderer 與 parent 是否為空 ---
+            if (renderer == null || renderer.transform.parent == null) continue;
+
+            if (renderer.transform.parent.name == "行雲流水") {
+                // renderer.material 在存取時會自動產生 Instance，但建議還是檢查一下
+                var mats = renderer.materials;
+                if (mats != null && mats.Length > 1) {
+                    var targetMat = mats[1];
+                    if (targetMat == null) continue;
+
+                    if (AssetLoader.FooPColor.HasValue) {
+                        targetMat.color = AssetLoader.FooPColor.Value;
+                    }
+
+                    // 重新賦值回 renderer
+                    renderer.materials = mats;
+                }
+            }
+        }
+
+        // 1. 初始化，清空舊地圖的殘留
+        AreaLightRenderers.Clear();
+
+        // 2. 搜出所有 BlendModeEffect
+        foreach (var effect in FindObjectsOfType<BlendModes.BlendModeEffect>(true)) {
+            if (effect.name == "AreaLight") {
+                // 3. 抓取它身上的 SpriteRenderer 元件
+                var sr = effect.GetComponent<SpriteRenderer>();
+                if (sr != null) {
+                    AreaLightRenderers.Add(sr);
+                }
+            }
+        }
+    }
+
+    private void HealSmokeOnce() {
+        bool hasSprites = AssetLoader.cacheFooSprites != null && AssetLoader.cacheFooSprites.Count > 0;
+
+        var rootObj = GameObject.Find("GameCore(Clone)/RCG LifeCycle/PPlayer/RotateProxy/SpriteHolder/PlayerSprite/回血特效");
+
+        if (rootObj == null) {
+            // 如果找不到，嘗試搜尋非活躍物件 (效能較重，慎用)
+            var allRenderers = Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>();
+            // 這裡需要透過過濾名稱或路徑來定位，但通常建議在物件生成時就取得引用
+            return;
+        }
+
+        Transform rootTrans = rootObj.transform;
+
+        // --- 圓形粒子 ---
+        var chargePaths = new[] { "P", "P (1)", "P (2)" };
+        foreach (var path in chargePaths) {
+            var target = rootTrans.Find(path);
+            if (target != null) {
+                var renderer = target.GetComponent<ParticleSystemRenderer>();
+                // 設定貼圖 
+                if (hasSprites && AssetLoader.cacheFooSprites.TryGetValue("HealP", out var s)) {
+                    renderer.materials[1].SetTexture("_MainTex", s.texture);
+                }
+                // 設定顏色
+                if (AssetLoader.HealPColor.HasValue) {
+                    renderer.materials[1].color = AssetLoader.HealPColor.Value;
+                }
+            }
+        }
+
+    }
+
     private void Foo() {
         if (AssetLoader.cacheFooSprites == null || AssetLoader.cacheFooSprites.Count == 0) {
             return; 
@@ -909,21 +1023,42 @@ public class CustomSols : BaseUnityPlugin {
             }
         }
 
-        for (int i = 1; i <= 5; i++) {
-            string path = $"FooExplode(Clone)/LV{i}/SpriteHolder";
+        //for (int i = 1; i <= 5; i++) {
+        //    string path = $"FooExplode(Clone)/LV{i}/SpriteHolder";
 
-            if (cachedSpriteRenderers.TryGetValue(path, out var renderer2) &&
-                renderer2.sprite != null && 
-                AssetLoader.cacheFooSprites.TryGetValue(renderer2.sprite.name, out var sprite2)) {
+        //    if (cachedSpriteRenderers.TryGetValue(path, out var renderer2) &&
+        //        renderer2.sprite != null && 
+        //        AssetLoader.cacheFooSprites.TryGetValue(renderer2.sprite.name, out var sprite2)) {
 
-                renderer2.sprite = sprite2;
-            }
-        }
+        //        renderer2.sprite = sprite2;
+        //    }
+        //}
 
         if (cachedSpriteRenderers.TryGetValue("Effect_FooAttack0(Clone)/Effect_FooAttackHit", out var renderer3) &&
 
            AssetLoader.cacheFooSprites.TryGetValue(renderer3.sprite.name, out var sprite3)) {
             renderer3.sprite = sprite3;
+        }
+
+        if (AreaLightRenderers == null || AreaLightRenderers.Count == 0) return;
+
+        AreaLightRenderers.RemoveAll(sr => sr == null);
+
+        if (AssetLoader.FooGlowColor.HasValue) {
+            Color targetColor = AssetLoader.FooGlowColor.Value;
+
+            foreach (var sr in AreaLightRenderers) {
+                // 關鍵修改：只應用 RGB，保留當前 sr 自己的 Alpha (a)
+                // 這樣當遊戲進行消失動畫時，Alpha 會正常變小，物件就會正常消失
+                sr.color = new Color(targetColor.r, targetColor.g, targetColor.b, sr.color.a);
+            }
+        } else {
+            // 如果沒有自定義顏色，恢復為白色（也要保留 Alpha）
+            foreach (var sr in AreaLightRenderers) {
+                if (sr != null) {
+                    sr.color = new Color(1f, 1f, 1f, sr.color.a);
+                }
+            }
         }
     }
 
@@ -1242,6 +1377,9 @@ public class CustomSols : BaseUnityPlugin {
         ImPerfectParry();
         HitSpark();
         SwordOnce();
+        HealSmokeOnce();
+        HealParticleOnce();
+        FooOnce();
         InitializeBowSprites();
         UpdateExpRing();
         UpdateHpBar();

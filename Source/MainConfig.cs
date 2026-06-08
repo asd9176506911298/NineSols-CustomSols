@@ -37,6 +37,19 @@
         public string DrawFooLightColor { get; set; } = string.Empty;
         public string DrawFooBottomLightColor { get; set; } = string.Empty;
         public string HitSparkColor { get; set; } = string.Empty;
+        public string HealPColor { get; set; } = string.Empty;
+        public string HealGlowColor { get; set; } = string.Empty;
+        public string HealParticleColor { get; set; } = string.Empty;
+        public string HealLightMask1Color { get; set; } = string.Empty;
+        public string HealLightMask2Color { get; set; } = string.Empty;
+        public string HurtColor { get; set; } = string.Empty;
+        public string FooPColor { get; set; } = string.Empty;
+        public string FooGlowColor { get; set; } = string.Empty;
+        public string FooAttachedParticleColor { get; set; } = string.Empty;
+        public string FooFullControlKaboomCircleColor { get; set; } = string.Empty;
+        public string FooFullControlCircle1Color { get; set; } = string.Empty;
+        public string FooFullControlCircle2Color { get; set; } = string.Empty;
+        public string FooFullControlRiseLineColor { get; set; } = string.Empty;
     }
 
     public class ParryConfig {
