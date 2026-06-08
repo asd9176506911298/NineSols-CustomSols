@@ -123,6 +123,13 @@ if you don't want change color use "NormalHpColor": "#"
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/FooLight.png?raw=true)
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/PerfectParry.png?raw=true)
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/ImperfectParry.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/HitSpark.jpg?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/Heal.jpg?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/Dash.jpg?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/Hurt.jpg?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/FooBlast.jpg?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/FooWaterFlow.jpg?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/FooFullControl.jpg?raw=true)
 
 
 # Normal Arrow Light Adjust Position
