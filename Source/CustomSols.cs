@@ -1045,12 +1045,11 @@ public class CustomSols : BaseUnityPlugin {
         AreaLightRenderers.RemoveAll(sr => sr == null);
 
         if (AssetLoader.FooGlowColor.HasValue) {
-            Color targetColor = AssetLoader.FooGlowColor.Value;
 
             foreach (var sr in AreaLightRenderers) {
                 // 關鍵修改：只應用 RGB，保留當前 sr 自己的 Alpha (a)
                 // 這樣當遊戲進行消失動畫時，Alpha 會正常變小，物件就會正常消失
-                sr.color = new Color(targetColor.r, targetColor.g, targetColor.b, sr.color.a);
+                sr.color = AssetLoader.FooGlowColor.Value;
             }
         } else {
             // 如果沒有自定義顏色，恢復為白色（也要保留 Alpha）
