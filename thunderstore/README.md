@@ -6,6 +6,7 @@
 - Arrow
 - Sword
 - Foo
+- HitSpark
 - UI
 - TalismanBall
 - Air Dash
@@ -68,7 +69,7 @@ if you don't want change color use "NormalHpColor": "#"
     "ChiBallLeftLineColor": "#",
     "ButterflyRightLineColor": "#",
     "CoreCColor": "#",
-    "CoreDColor": "#",    
+    "CoreDColor": "#",
     "DashColor": "#",
     "PerfectParryColor": "#",
     "ImperfectParryColor": "#",
@@ -84,7 +85,20 @@ if you don't want change color use "NormalHpColor": "#"
     "DrawFooBallColor5": "#",
     "DrawFooLightColor": "#",
     "DrawFooBottomLightColor": "#",
-    "HitSparkColor": "#"
+    "HitSparkColor": "#",
+    "HealPColor": "#",
+    "HealGlowColor": "#",
+    "HealParticleColor": "#",
+    "HealLightMask1Color": "#",
+    "HealLightMask2Color": "#",
+    "HurtColor": "#",
+    "FooPColor": "#",
+    "FooGlowColor": "#",
+    "FooAttachedParticleColor": "#",
+    "FooFullControlKaboomCircleColor": "#",
+    "FooFullControlCircle1Color": "#",
+    "FooFullControlCircle2Color": "#",
+    "FooFullControlRiseLineColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",
