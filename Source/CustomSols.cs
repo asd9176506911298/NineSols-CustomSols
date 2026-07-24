@@ -75,6 +75,14 @@ public class CustomSols : BaseUnityPlugin {
         "HoHoYee_Charging 蓄力攻擊特效(Clone)/Super Charge Ability/childNode/ChargeAttackSprite"
     };
 
+    // 翻滾攻擊煙霧特效的基礎名稱（遊戲原始動畫用的 sprite 名稱）
+    public static readonly HashSet<string> dodgeSmokeBaseNames = new HashSet<string> {
+    "HoHoYee_DashRoll_CatSmoke2",
+    "HoHoYee_DashRoll_CatSmoke4",
+    "HoHoYee_DashRoll_CatSmoke7",
+    "HoHoYee_DashRoll_CatSmoke8"
+};
+
     private void Awake() {
         instance = this;
         Log.Init(Logger);
@@ -729,6 +737,17 @@ public class CustomSols : BaseUnityPlugin {
         // 拿到當前遊戲原本想顯示的 Sprite 引用
         Sprite originalSprite = Player.i.PlayerSprite.sprite;
 
+        // --- 新增：翻滾攻擊(IsDodgeAttack)依 IsAirBorne 切換地面/空中煙霧特效 ---
+        // 這裡刻意不走 _spriteMappingCache，因為同一個原始 Sprite 引用
+        // 在地面/空中兩種狀態下需要對應到不同的替換圖，用參照快取會鎖死結果
+        if (Player.i.IsDodgeAttack && dodgeSmokeBaseNames.Contains(originalSprite.name)) {
+            string suffix = Player.i.IsAirBorne ? "_Air" : "_Ground";
+            if (cachePlayer != null && cachePlayer.TryGetValue(originalSprite.name + suffix, out var dodgeSprite)) {
+                Player.i.PlayerSprite.sprite = dodgeSprite;
+            }
+            return; // 不論有沒有找到替換圖，這幾張特效都不走下面一般邏輯
+        }
+
         // 情況 A：強制序列幀動畫 (這裡通常是特殊用途，保持原本邏輯即可)
         if (cacheOnly is { Count: > 0 }) {
             spriteChangeTimer += Time.deltaTime;
@@ -747,27 +766,19 @@ public class CustomSols : BaseUnityPlugin {
         }
         // 情況 B：根據 Sprite 名稱替換 (這是最常用、也是最吃效能的地方)
         else if (cachePlayer is { Count: > 0 }) {
-
-            // --- 優化重點：開始使用引用快取 ---
-
-            // 1. 先用 Sprite 引用在 _spriteMappingCache 找
             if (_spriteMappingCache.TryGetValue(originalSprite, out var cachedReplacement)) {
-                // 如果找到了，且當前顯示的不是我們要的，就換掉
                 if (originalSprite != cachedReplacement) {
                     Player.i.PlayerSprite.sprite = cachedReplacement;
                 }
-                return; // 這裡直接返回，不用跑後面的字串邏輯
+                return;
             }
 
-            // 2. 如果快取沒中，才執行「昂貴」的 .name 讀取
             string currentName = originalSprite.name;
             if (cachePlayer.TryGetValue(currentName, out var newSprite)) {
-                // 存入快取：下次遇到這個 originalSprite 引用，直接換成 newSprite
                 _spriteMappingCache[originalSprite] = newSprite;
-                _spriteMappingCache[newSprite] = newSprite; // 防止重複處理
+                _spriteMappingCache[newSprite] = newSprite;
                 Player.i.PlayerSprite.sprite = newSprite;
             } else {
-                // 如果這個 Sprite 不需要替換，也存入快取指向自己，避免下次又跑一次 .name
                 _spriteMappingCache[originalSprite] = originalSprite;
             }
         }
