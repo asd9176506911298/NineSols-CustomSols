@@ -15,6 +15,7 @@
 - YingZhao
 - Other If you know SpriteName Put into any folder
 - Dialogue Atlas
+- Jade
 
 # Preview
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/Optimized/Source/img/CustomSolsPreview.png?raw=true)
