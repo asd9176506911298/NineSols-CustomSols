@@ -25,6 +25,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheYingZhaoSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> cacheHitSparkSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Texture2D> cacheAtlasTextures = new Dictionary<string, Texture2D>();
+    public static readonly Dictionary<string, Sprite> cacheJadeSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> all = new Dictionary<string, Sprite>();
 
     public static Color? normalHpColor = null;
@@ -147,7 +148,8 @@ public class AssetLoader {
                 return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
             }) },
             { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
-            { "HitSpark", (cacheHitSparkSprites, new Vector2(0.5f, 0.5f), 8.0f, null) }
+            { "HitSpark", (cacheHitSparkSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
+            { "Jade", (cacheJadeSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
         };
 
         foreach (var (folderName, (cache, pivot, ppu, selector)) in folders) {

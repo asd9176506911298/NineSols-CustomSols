@@ -3,6 +3,7 @@ using NineSolsAPI;
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
 
 namespace CustomSols;
 
@@ -103,6 +104,26 @@ public class Patches {
     private static void CatchLevelUpDummy(_2dxFX_NewTeleportation2 __instance) {
         var renderer = __instance.transform.GetComponentInChildren<SpriteRenderer>(true);
         AddToDummyList(renderer);
+    }
+
+    // Jade 1
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(_2dxFX_ColorChange), "OnEnable")]
+    private static void CatchJadeDummy(_2dxFX_ColorChange __instance) {
+        var image = __instance.GetComponent<Image>();
+        if (image != null) {
+            CustomSols.AddToDummyList(image);
+        }
+    }
+
+    // Jade 2
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(UIImageValueBinder), "OnEnable")]
+    private static void CatchJade2Dummy(UIImageValueBinder __instance) {
+        var image = __instance.GetComponent<Image>();
+        if (image != null) {
+            CustomSols.AddToDummyList(image);
+        }
     }
 
     [HarmonyPostfix]

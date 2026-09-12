@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace CustomSols;
 
@@ -46,6 +47,8 @@ public class CustomSols : BaseUnityPlugin {
     public static SpriteRenderer? CurrentDummyRenderer = null;
 
     public static List<SpriteRenderer> DummyRenderers = new List<SpriteRenderer>();
+    public static List<Image> DummyImages = new List<Image>();
+
 
     private Dictionary<string, List<SpriteRenderer>> groupedRenderers = new Dictionary<string, List<SpriteRenderer>>();
 
@@ -341,6 +344,18 @@ public class CustomSols : BaseUnityPlugin {
         };
     }
 
+    public static void AddToDummyList(SpriteRenderer renderer) {
+        if (renderer != null && !DummyRenderers.Contains(renderer)) {
+            DummyRenderers.Add(renderer);
+        }
+    }
+
+    public static void AddToDummyList(Image image) {
+        if (image != null && !DummyImages.Contains(image)) {
+            DummyImages.Add(image);
+        }
+    }
+
     private void CacheSpriteRenderers() {
         groupedRenderers.Clear();
         cachedSpriteRenderers.Clear(); // 記得也要清空這個
@@ -384,39 +399,51 @@ public class CustomSols : BaseUnityPlugin {
     }
 
     private void RendererReplace() {
-        // 優化 1：不要每幀都 RemoveAll。每 100 幀清理一次無效引用即可
         _cleanupCounter++;
         if (_cleanupCounter > 100) {
             CustomSols.DummyRenderers.RemoveAll(r => r == null);
+            CustomSols.DummyImages.RemoveAll(r => r == null); // 順便清理 Image
             _cleanupCounter = 0;
         }
 
+        // 原本 SpriteRenderer 那段維持不變
         foreach (var renderer in CustomSols.DummyRenderers) {
-            // 快速檢查
             if (renderer == null) continue;
-
             Sprite currentSprite = renderer.sprite;
             if (currentSprite == null) continue;
 
-            // 優化 2：使用 Sprite 引用作為 Key，避免存取 .name (產生成對的字串垃圾)
-            // 如果這個 Sprite 已經在我們的「已處理緩存」中
             if (_spriteMappingCache.TryGetValue(currentSprite, out var cachedSprite)) {
-                // 如果當前 renderer 的 sprite 不是目標 sprite，才賦值
-                if (currentSprite != cachedSprite) {
-                    renderer.sprite = cachedSprite;
-                }
+                if (currentSprite != cachedSprite) renderer.sprite = cachedSprite;
                 continue;
             }
 
-            // 優化 3：如果緩存裡沒有，才進行耗時的字串比對與字典查尋
-            string spriteName = currentSprite.name; // 這裡才會產生一次字串分配
+            string spriteName = currentSprite.name;
             if (AssetLoader.all.TryGetValue(spriteName, out var newSprite)) {
-                // 存入引用緩存，下次同一個 Sprite 就不會再觸發 .name 分配
                 _spriteMappingCache[currentSprite] = newSprite;
-                _spriteMappingCache[newSprite] = newSprite; // 防止重複處理
+                _spriteMappingCache[newSprite] = newSprite;
                 renderer.sprite = newSprite;
             } else {
-                // 如果沒找到對應的替換，也存入緩存（指向自己），避免下次重複查尋字典
+                _spriteMappingCache[currentSprite] = currentSprite;
+            }
+        }
+
+        // 新增：Image 版本，共用同一份 _spriteMappingCache
+        foreach (var image in CustomSols.DummyImages) {
+            if (image == null) continue;
+            Sprite currentSprite = image.sprite;
+            if (currentSprite == null) continue;
+
+            if (_spriteMappingCache.TryGetValue(currentSprite, out var cachedSprite)) {
+                if (currentSprite != cachedSprite) image.sprite = cachedSprite;
+                continue;
+            }
+
+            string spriteName = currentSprite.name;
+            if (AssetLoader.all.TryGetValue(spriteName, out var newSprite)) {
+                _spriteMappingCache[currentSprite] = newSprite;
+                _spriteMappingCache[newSprite] = newSprite;
+                image.sprite = newSprite;
+            } else {
                 _spriteMappingCache[currentSprite] = currentSprite;
             }
         }
