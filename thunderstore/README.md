@@ -19,13 +19,13 @@
 
 # Showcase
 - https://youtu.be/2GmyNUWKyrQ
-![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/Optimized/Source/img/CustomSolsPreview.png?raw=true)
-![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/MoreUISprite/Source/img/UIPreview.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/CustomSolsPreview.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/UIPreview.png?raw=true)
 
 - https://youtu.be/nuvcjOfWFJA
-![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/MoreUISprite/Source/img/PlayerSpriteAllUseThisExample.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/PlayerSpriteAllUseThisExample.png?raw=true)
 - https://youtu.be/erabTVB50a8
-![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/MoreUISprite/Source/img/JadeExample.png?raw=true)
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/JadeExample.png?raw=true)
 
 # Open Custom Sols Folder
 - F1 have a checkbox can open folder
