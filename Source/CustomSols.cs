@@ -308,6 +308,7 @@ public class CustomSols : BaseUnityPlugin {
         YingZhaoOnce();
         AirParryColor();
         FooColorOnce();
+        UpdateReviveSymbol();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -1401,6 +1402,18 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    private void UpdateReviveSymbol() {
+        if (AssetLoader.cacheUISprites == null || AssetLoader.cacheUISprites.Count == 0) {
+            return;
+        }
+
+        string ReviveSymbol = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/HUD_Heart/替死/Shield";
+        if (cachedSpriteRenderers.TryGetValue(ReviveSymbol, out var renderer) && renderer.sprite != null
+            && AssetLoader.cacheUISprites.TryGetValue(renderer.sprite.name, out var sprtie)) {
+            renderer.sprite = sprtie;
+        }
+    }
+
     private void Reload() {
         _cachedUCSuccess = null;
         _cachedUCCharging = null;
@@ -1427,6 +1440,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateRightLine();
         UpdateArrowBullet();
         FooColorOnce();
+        UpdateReviveSymbol();
         //YingZhaoOnce();
     }
 

@@ -145,6 +145,7 @@ public class AssetLoader {
                 if (filename.StartsWith("Icon_BloodEmpty")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("CoreC")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 if (filename.StartsWith("CoreD")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
+                if (filename.StartsWith("Shield_icon")) return (new Vector2(0.5f, 0.5f), Vector4.zero, 2.0f);
                 return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
             }) },
             { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
