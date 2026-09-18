@@ -32,12 +32,12 @@
 
 # Create Your Skin
 - Copy Paste Default Folder and Rename Folder into correspond Folder put edited image
-- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/ConfigManagerOption/Source/img/CreateSkinFolder.png?raw=true)
+- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/CreateSkinFolder.png?raw=true)
  
 # How to Custom Sprite
 - Change Image
 - Put changed image to correspond Folder
-- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/ConfigManagerOption/Source/img/LogoExample.png?raw=true)
+- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/LogoExample.png?raw=true)
 - Ctrl + H Reload
 
 # How to Custom Player Sprite
@@ -45,13 +45,13 @@
 - https://drive.google.com/drive/folders/102UGxf7OyI4CTQCI0H8iiOCntImi7jFD
 - Download Origin Sprite Sprite include Player Sprite
 - Put Changed Player Sprite into Player Folder
-- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/ConfigManagerOption/Source/img/PlayerExample.png?raw=true)
+- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/PlayerExample.png?raw=true)
 - Ctrl + H Reload
 
 # How to replace Player All Sprite 
 - put your image into folder PlayerSpriteAllUseThis
 - and name 1 2 3 4 5....
-- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/PlayerAllSpriteUseThis/Source/img/AllUse.png?raw=true)
+- ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/AllUse.png?raw=true)
 
 # Dialogue Atlas
 - Atlas Folder
