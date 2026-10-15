@@ -23,6 +23,10 @@
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/CustomSolsPreview.png?raw=true)
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/UIPreview.png?raw=true)
 
+- https://youtu.be/KikiT1tNMPA
+
+![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/EigongExample.png?raw=true)
+
 - https://youtu.be/nuvcjOfWFJA
 
 ![](https://github.com/asd9176506911298/NineSols-CustomSols/blob/main/Source/img/PlayerSpriteAllUseThisExample.png?raw=true)
@@ -169,10 +173,11 @@ default is -15.0, 0.0, 0.0
 # Notice
 - If you use PlayerSpriteAllUseThis folder your Player will not work only PlayerSpriteAllUseThis work 
 
+# Change Sprite Color
+- https://github.com/asd9176506911298/EigongCustomizer/releases/latest
+
 # Origin Sprite Example Skin
 - https://drive.google.com/drive/folders/102UGxf7OyI4CTQCI0H8iiOCntImi7jFD
-- YingZhao
-- https://drive.google.com/file/d/1ruhRussKrtjLR8uJol32EkoVr34S_AOI
 
 # If not found want sprite
 - use Asset Studio
