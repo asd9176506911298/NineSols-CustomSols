@@ -16,6 +16,7 @@
 - Other If you know SpriteName Put into any folder
 - Dialogue Atlas
 - Jade
+- Eigong
 
 # Showcase
 - https://youtu.be/2GmyNUWKyrQ
@@ -108,7 +109,10 @@ if you don't want change color use "NormalHpColor": "#"
     "FooFullControlKaboomCircleColor": "#",
     "FooFullControlCircle1Color": "#",
     "FooFullControlCircle2Color": "#",
-    "FooFullControlRiseLineColor": "#"
+    "FooFullControlRiseLineColor": "#",
+    "JieChuanFireColor": "#",
+    "TaiDangerColor": "#",
+    "KickHintColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",

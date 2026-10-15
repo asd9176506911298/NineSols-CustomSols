@@ -26,6 +26,7 @@ public class AssetLoader {
     public static readonly Dictionary<string, Sprite> cacheHitSparkSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Texture2D> cacheAtlasTextures = new Dictionary<string, Texture2D>();
     public static readonly Dictionary<string, Sprite> cacheJadeSprites = new Dictionary<string, Sprite>();
+    public static readonly Dictionary<string, Sprite> cacheEigongSprites = new Dictionary<string, Sprite>();
     public static readonly Dictionary<string, Sprite> all = new Dictionary<string, Sprite>();
 
     public static Color? normalHpColor = null;
@@ -76,6 +77,9 @@ public class AssetLoader {
     public static Color? FooFullControlCircle1Color = null;
     public static Color? FooFullControlCircle2Color = null;
     public static Color? FooFullControlRiseLineColor = null;
+    public static Color? JieChuanFireColor = null;
+    public static Color? TaiDangerColor = null;
+    public static Color? KickHintColor = null;
 
     public static Vector3? NormalArrowLv1Pos = null;
     public static Vector3? NormalArrowLv2Pos = null;
@@ -151,6 +155,10 @@ public class AssetLoader {
             { "YingZhao", (cacheYingZhaoSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
             { "HitSpark", (cacheHitSparkSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
             { "Jade", (cacheJadeSprites, new Vector2(0.5f, 0.5f), 8.0f, null) },
+            { "Eigong", (cacheEigongSprites, new Vector2(0.5f, 0.5f), 8.0f, filename => {
+                if (filename == "Sword") return (new Vector2(0.5f, 0.0f), Vector4.zero, 8.0f);
+                return (new Vector2(0.5f, 0.5f), Vector4.zero, 8.0f);
+            }) },
         };
 
         foreach (var (folderName, (cache, pivot, ppu, selector)) in folders) {
@@ -227,6 +235,9 @@ public class AssetLoader {
                 TrySetColor(ref FooFullControlCircle1Color, c.FooFullControlCircle1Color);
                 TrySetColor(ref FooFullControlCircle2Color, c.FooFullControlCircle2Color);
                 TrySetColor(ref FooFullControlRiseLineColor, c.FooFullControlRiseLineColor);
+                TrySetColor(ref JieChuanFireColor, c.JieChuanFireColor);
+                TrySetColor(ref TaiDangerColor, c.TaiDangerColor);
+                TrySetColor(ref KickHintColor, c.KickHintColor);
 
                 // 2. 處理格擋 (Parry)
                 var p = mainConfig.Parry;

@@ -206,12 +206,75 @@ public class CustomSols : BaseUnityPlugin {
         HealGlow();
         HealLightMask();
         //YingZhao();
+        TaiDangerColor();
 
         //UI
         UpdateHeartSprite(); // Need
         UpdateArrowIcon(); // Need
         UpdateArrowColor(); //Need
         UpdateButterflySprite(); //Need
+    }
+
+    private void ShiPoHintOnce() {
+        if (!AssetLoader.KickHintColor.HasValue) return;
+        Color targetColor = AssetLoader.KickHintColor.Value;
+
+        foreach (var sr in FindObjectsOfType<SpriteRenderer>(true)) {
+            if (sr == null) continue;
+
+            string path = GetGameObjectPath(sr.gameObject);
+            // 只要路徑裡有這個關鍵字就改
+            if (!path.Contains("MultiSpriteEffect_Prefab 識破提示")) continue;
+
+            if (sr.material != null && sr.material.HasProperty("_OutlineColor")) {
+                sr.material.SetColor("_OutlineColor", targetColor);
+            }
+            sr.color = targetColor;
+        }
+    }
+
+    private void JieChuanFireOnce() {
+        if (!AssetLoader.JieChuanFireColor.HasValue) return;
+
+        Color targetColor = AssetLoader.JieChuanFireColor.Value;
+
+        foreach (var renderer in FindObjectsOfType<ParticleSystemRenderer>(true)) {
+            if (renderer == null) continue;
+
+            string path = GetGameObjectPath(renderer.gameObject);
+
+            // 正確判斷：包含其中一個就處理
+            if (!path.Contains("Fire_FX_damage_Long jiechuan") &&
+                !path.Contains("Fire_FX_damage Short"))
+                continue;
+
+            var ps = renderer.GetComponent<ParticleSystem>();
+            if (ps == null) continue;
+
+            // Start Color
+            var main = ps.main;
+            main.startColor = targetColor;
+
+            // Color over Lifetime
+            var colOverLife = ps.colorOverLifetime;
+            if (colOverLife.enabled) {
+                colOverLife.color = new ParticleSystem.MinMaxGradient(targetColor);
+            }
+
+            // Color by Speed（可選）
+            var colBySpeed = ps.colorBySpeed;
+            if (colBySpeed.enabled) {
+                colBySpeed.color = new ParticleSystem.MinMaxGradient(targetColor);
+            }
+        }
+    }
+
+    private void TaiDangerColor() {
+        string TaiDanger = "Effect_TaiDanger(Clone)/Sprite";
+        if (cachedSpriteRenderers.TryGetValue(TaiDanger, out var renderer)) {
+            if (AssetLoader.TaiDangerColor.HasValue)
+                renderer.color = AssetLoader.TaiDangerColor.Value;
+        }
     }
 
     private void FooColor() {
@@ -309,6 +372,8 @@ public class CustomSols : BaseUnityPlugin {
         AirParryColor();
         FooColorOnce();
         UpdateReviveSymbol();
+        JieChuanFireOnce();
+        ShiPoHintOnce();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -1442,6 +1507,8 @@ public class CustomSols : BaseUnityPlugin {
         FooColorOnce();
         UpdateReviveSymbol();
         //YingZhaoOnce();
+        JieChuanFireOnce();
+        ShiPoHintOnce();
     }
 
 

@@ -40,7 +40,10 @@
     "FooFullControlKaboomCircleColor": "#",
     "FooFullControlCircle1Color": "#",
     "FooFullControlCircle2Color": "#",
-    "FooFullControlRiseLineColor": "#"
+    "FooFullControlRiseLineColor": "#",
+    "JieChuanFireColor": "#",
+    "TaiDangerColor": "#",
+    "KickHintColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",

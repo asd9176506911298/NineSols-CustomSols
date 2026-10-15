@@ -50,6 +50,9 @@
         public string FooFullControlCircle1Color { get; set; } = string.Empty;
         public string FooFullControlCircle2Color { get; set; } = string.Empty;
         public string FooFullControlRiseLineColor { get; set; } = string.Empty;
+        public string JieChuanFireColor { get; set; } = string.Empty;
+        public string TaiDangerColor { get; set; } = string.Empty;
+        public string KickHintColor { get; set; } = string.Empty;
     }
 
     public class ParryConfig {
