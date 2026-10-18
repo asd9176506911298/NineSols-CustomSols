@@ -343,6 +343,15 @@ public class CustomSols : BaseUnityPlugin {
         }
     }
 
+    private void UpdateHeartSpriteColor() {
+        string heartPath = "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/EXP_RING/HUD_Heart/Heart";
+        if (cachedSpriteRenderers.TryGetValue(heartPath, out var renderer)) {
+            if (AssetLoader.HeartColor.HasValue) {
+                renderer.color = AssetLoader.HeartColor.Value;
+            }
+        }
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         _cachedUCSuccess = null;
         _cachedUCCharging = null;
@@ -374,6 +383,7 @@ public class CustomSols : BaseUnityPlugin {
         UpdateReviveSymbol();
         JieChuanFireOnce();
         ShiPoHintOnce();
+        UpdateHeartSpriteColor();
 
         arrowInit = false;
         arrowInit2 = false;
@@ -1509,6 +1519,7 @@ public class CustomSols : BaseUnityPlugin {
         //YingZhaoOnce();
         JieChuanFireOnce();
         ShiPoHintOnce();
+        UpdateHeartSpriteColor();
     }
 
 

@@ -43,7 +43,8 @@
     "FooFullControlRiseLineColor": "#",
     "JieChuanFireColor": "#",
     "TaiDangerColor": "#",
-    "KickHintColor": "#"
+    "KickHintColor": "#",
+    "HeartColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",

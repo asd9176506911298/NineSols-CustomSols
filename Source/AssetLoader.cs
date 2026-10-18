@@ -80,6 +80,7 @@ public class AssetLoader {
     public static Color? JieChuanFireColor = null;
     public static Color? TaiDangerColor = null;
     public static Color? KickHintColor = null;
+    public static Color? HeartColor = null;
 
     public static Vector3? NormalArrowLv1Pos = null;
     public static Vector3? NormalArrowLv2Pos = null;
@@ -238,6 +239,7 @@ public class AssetLoader {
                 TrySetColor(ref JieChuanFireColor, c.JieChuanFireColor);
                 TrySetColor(ref TaiDangerColor, c.TaiDangerColor);
                 TrySetColor(ref KickHintColor, c.KickHintColor);
+                TrySetColor(ref HeartColor, c.HeartColor);
 
                 // 2. 處理格擋 (Parry)
                 var p = mainConfig.Parry;

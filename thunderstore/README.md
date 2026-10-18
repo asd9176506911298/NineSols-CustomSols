@@ -116,7 +116,8 @@ if you don't want change color use "NormalHpColor": "#"
     "FooFullControlRiseLineColor": "#",
     "JieChuanFireColor": "#",
     "TaiDangerColor": "#",
-    "KickHintColor": "#"
+    "KickHintColor": "#",
+    "HeartColor": "#"
   },
   "Parry": {
     "UCCharging1Color": "#",

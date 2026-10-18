@@ -53,6 +53,7 @@
         public string JieChuanFireColor { get; set; } = string.Empty;
         public string TaiDangerColor { get; set; } = string.Empty;
         public string KickHintColor { get; set; } = string.Empty;
+        public string HeartColor { get; set; } = string.Empty;
     }
 
     public class ParryConfig {
